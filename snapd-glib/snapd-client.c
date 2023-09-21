@@ -28,6 +28,8 @@
 #include "requests/snapd-get-interfaces.h"
 #include "requests/snapd-get-interfaces-legacy.h"
 #include "requests/snapd-get-logs.h"
+#include "requests/snapd-get-prompting-request.h"
+#include "requests/snapd-get-prompting-requests.h"
 #include "requests/snapd-get-sections.h"
 #include "requests/snapd-get-snap.h"
 #include "requests/snapd-get-snap-conf.h"
@@ -45,6 +47,7 @@
 #include "requests/snapd-post-interfaces.h"
 #include "requests/snapd-post-login.h"
 #include "requests/snapd-post-logout.h"
+#include "requests/snapd-post-prompting-request.h"
 #include "requests/snapd-post-snap.h"
 #include "requests/snapd-post-snap-stream.h"
 #include "requests/snapd-post-snap-try.h"
@@ -960,6 +963,37 @@ log_cb (SnapdGetLogs *request, SnapdLog *log, gpointer user_data)
 {
     FollowLogsData *data = user_data;
     data->callback (data->client, log, data->callback_data);
+}
+
+typedef struct
+{
+    SnapdClient *client;
+    SnapdPromptingRequestCallback callback;
+    gpointer callback_data;
+} FollowPromptingRequestsData;
+
+static FollowPromptingRequestsData *
+follow_prompting_requests_data_new (SnapdClient *client, SnapdPromptingRequestCallback callback, gpointer callback_data)
+{
+    FollowPromptingRequestsData *data = g_slice_new0 (FollowPromptingRequestsData);
+    data->client = client;
+    data->callback = callback;
+    data->callback_data = callback_data;
+
+    return data;
+}
+
+static void
+follow_prompting_requests_data_free (FollowPromptingRequestsData *data)
+{
+    g_slice_free (FollowPromptingRequestsData, data);
+}
+
+static void
+prompt_request_cb (SnapdGetPromptingRequests *request, SnapdPromptingRequest *prompting_request, gpointer user_data)
+{
+    FollowPromptingRequestsData *data = user_data;
+    data->callback (data->client, prompting_request, data->callback_data);
 }
 
 /**
@@ -4401,6 +4435,276 @@ snapd_client_follow_logs_finish (SnapdClient *self, GAsyncResult *result, GError
     SnapdGetLogs *request = SNAPD_GET_LOGS (result);
 
     return _snapd_request_propagate_error (SNAPD_REQUEST (request), error);
+}
+
+/**
+ * snapd_client_get_prompting_requests_async:
+ * @client: a #SnapdClient.
+ * @cancellable: (allow-none): a #GCancellable or %NULL.
+ * @callback: (scope async): a #GAsyncReadyCallback to call when the request is satisfied.
+ * @user_data: (closure): the data to pass to callback function.
+ *
+ * Asynchronously get any prompting requests that are active.
+ * See snapd_client_get_prompting_requests_sync() for more information.
+ *
+ * Since: 1.65
+ */
+void
+snapd_client_get_prompting_requests_async (SnapdClient *self, GCancellable *cancellable, GAsyncReadyCallback callback, gpointer user_data)
+{
+    g_return_if_fail (SNAPD_IS_CLIENT (self));
+
+    g_autoptr(SnapdGetPromptingRequests) request = _snapd_get_prompting_requests_new (FALSE, NULL, NULL, NULL, cancellable, callback, user_data);
+    send_request (self, SNAPD_REQUEST (request));
+}
+
+/**
+ * snapd_client_get_prompting_requests_finish:
+ * @client: a #SnapdClient.
+ * @result: a #GAsyncResult.
+ * @error: (allow-none): #GError location to store the error occurring, or %NULL to ignore.
+ *
+ * Complete request started with snapd_client_get_prompting_requests_async().
+ * See snapd_client_get_prompting_requests_sync() for more information.
+ *
+ * Returns: (transfer container) (element-type SnapdPromptingRequest): an array of #SnapdPromptingRequest or %NULL on error.
+ *
+ * Since: 1.65
+ */
+GPtrArray *
+snapd_client_get_prompting_requests_finish (SnapdClient *self, GAsyncResult *result, GError **error)
+{
+    g_return_val_if_fail (SNAPD_IS_CLIENT (self), FALSE);
+    g_return_val_if_fail (SNAPD_IS_GET_PROMPTING_REQUESTS (result), FALSE);
+
+    SnapdGetPromptingRequests *request = SNAPD_GET_PROMPTING_REQUESTS (result);
+
+    if (!_snapd_request_propagate_error (SNAPD_REQUEST (request), error))
+        return NULL;
+    return g_ptr_array_ref (_snapd_get_prompting_requests_get_requests (request));
+}
+
+/**
+ * snapd_client_follow_prompting_requests_async:
+ * @client: a #SnapdClient.
+ * @request_callback: (scope async): a #SnapdPromptingRequestCallback to call when a request is received.
+ * @request_callback_data: (closure): the data to pass to @request_callback.
+ * @cancellable: (allow-none): a #GCancellable or %NULL.
+ * @callback: (scope async): a #GAsyncReadyCallback to call when the request is satisfied.
+ * @user_data: (closure): the data to pass to callback function.
+ *
+ * Asynchronously follow prompting requests.
+ * See snapd_client_follow_prompting_requests_sync() for more information.
+ *
+ * Since: 1.65
+ */
+void
+snapd_client_follow_prompting_requests_async (SnapdClient *self,
+					      SnapdPromptingRequestCallback request_callback, gpointer request_callback_data,
+					      GCancellable *cancellable, GAsyncReadyCallback callback, gpointer user_data)
+{
+    g_return_if_fail (SNAPD_IS_CLIENT (self));
+
+    g_autoptr(SnapdGetPromptingRequests) request = _snapd_get_prompting_requests_new (TRUE, prompt_request_cb, follow_prompting_requests_data_new (self, request_callback, request_callback_data), (GDestroyNotify) follow_prompting_requests_data_free, cancellable, callback, user_data);
+    send_request (self, SNAPD_REQUEST (request));
+}
+
+/**
+ * snapd_client_follow_prompting_requests_finish:
+ * @client: a #SnapdClient.
+ * @result: a #GAsyncResult.
+ * @error: (allow-none): #GError location to store the error occurring, or %NULL to ignore.
+ *
+ * Complete request started with snapd_client_follow_prompting_requests_async().
+ * See snapd_client_follow_prompting_requests_sync() for more information.
+ *
+ * Returns: %TRUE on success or %FALSE on error.
+ *
+ * Since: 1.65
+ */
+gboolean
+snapd_client_follow_prompting_requests_finish (SnapdClient *self, GAsyncResult *result, GError **error)
+{
+    g_return_val_if_fail (SNAPD_IS_CLIENT (self), FALSE);
+    g_return_val_if_fail (SNAPD_IS_GET_PROMPTING_REQUESTS (result), FALSE);
+
+    SnapdGetPromptingRequests *request = SNAPD_GET_PROMPTING_REQUESTS (result);
+
+    return _snapd_request_propagate_error (SNAPD_REQUEST (request), error);
+}
+
+/**
+ * snapd_client_get_prompting_request_async:
+ * @client: a #SnapdClient.
+ * @id: a request ID to get information on.
+ * @cancellable: (allow-none): a #GCancellable or %NULL.
+ * @callback: (scope async): a #GAsyncReadyCallback to call when the request is satisfied.
+ * @user_data: (closure): the data to pass to callback function.
+ *
+ * Asynchronously get information on a prompting request.
+ * See snapd_client_get_prompting_request_sync() for more information.
+ *
+ * Since: 1.65
+ */
+void
+snapd_client_get_prompting_request_async (SnapdClient *self,
+                                          const gchar *id,
+                                          GCancellable *cancellable, GAsyncReadyCallback callback, gpointer user_data)
+{
+    g_return_if_fail (SNAPD_IS_CLIENT (self));
+    g_return_if_fail (id != NULL);
+
+    g_autoptr(SnapdGetPromptingRequest) request = _snapd_get_prompting_request_new (id, cancellable, callback, user_data);
+    send_request (self, SNAPD_REQUEST (request));
+}
+
+/**
+ * snapd_client_get_prompting_request_finish:
+ * @client: a #SnapdClient.
+ * @result: a #GAsyncResult.
+ * @error: (allow-none): #GError location to store the error occurring, or %NULL to ignore.
+ *
+ * Complete request started with snapd_client_get_prompting_request_async().
+ * See snapd_client_get_prompting_request_sync() for more information.
+ *
+ * Returns: (transfer full): a #SnapdPromptingRequest or %NULL on error.
+ *
+ * Since: 1.65
+ */
+SnapdPromptingRequest *
+snapd_client_get_prompting_request_finish (SnapdClient *self, GAsyncResult *result, GError **error)
+{
+    g_return_val_if_fail (SNAPD_IS_CLIENT (self), NULL);
+    g_return_val_if_fail (SNAPD_IS_GET_PROMPTING_REQUEST (result), NULL);
+
+    SnapdGetPromptingRequest *request = SNAPD_GET_PROMPTING_REQUEST (result);
+
+    if (!_snapd_request_propagate_error (SNAPD_REQUEST (request), error))
+        return NULL;
+    return g_object_ref (_snapd_get_prompting_request_get_request (request));
+}
+
+/**
+ * snapd_client_prompting_respond_async:
+ * @client: a #SnapdClient.
+ * @id: a request ID to get information on.
+ * @action: outcome of the decision.
+ * @lifespan: how long the decision lasts for.
+ * @duration: duration this decision lasts for if @lifespan is %SNAPD_PROMPTING_LIFESPAN_TIMESPAN.
+ * @path_pattern: paths this decision relates to.
+ * @permissions: permissions this decision relates to.
+ * @cancellable: (allow-none): a #GCancellable or %NULL.
+ * @callback: (scope async): a #GAsyncReadyCallback to call when the request is satisfied.
+ * @user_data: (closure): the data to pass to callback function.
+ *
+ * Asynchronously respond to a prompting request.
+ * See snapd_client_prompting_respond_sync() for more information.
+ *
+ * Since: 1.65
+ */
+void
+snapd_client_prompting_respond_async (SnapdClient                  *self,
+                                      const gchar                  *id,
+                                      SnapdPromptingOutcome         action,
+                                      SnapdPromptingLifespan        lifespan,
+                                      const gchar                  *duration,
+                                      const gchar                  *path_pattern,
+                                      SnapdPromptingPermissionFlags permissions,
+                                      GCancellable                 *cancellable,
+                                      GAsyncReadyCallback           callback,
+                                      gpointer                      user_data)
+{
+    g_return_if_fail (SNAPD_IS_CLIENT (self));
+    g_return_if_fail (id != NULL);
+
+    const gchar *action_string;
+    switch (action) {
+    case SNAPD_PROMPTING_OUTCOME_ALLOW:
+        action_string = "allow";
+        break;
+    case SNAPD_PROMPTING_OUTCOME_DENY:
+        action_string = "deny";
+        break;
+    default:
+        action_string = "";
+        break;
+    }
+
+    const gchar *lifespan_string;
+    switch (lifespan) {
+    case SNAPD_PROMPTING_LIFESPAN_FOREVER:
+        lifespan_string = "forever";
+        break;
+    case SNAPD_PROMPTING_LIFESPAN_SESSION:
+        lifespan_string = "session";
+        break;
+    case SNAPD_PROMPTING_LIFESPAN_SINGLE:
+        lifespan_string = "single";
+        break;
+    case SNAPD_PROMPTING_LIFESPAN_TIMESPAN:
+        lifespan_string = "timespan";
+        break;
+    default:
+        lifespan_string = "";
+        break;
+    }
+
+    struct { SnapdPromptingPermissionFlags flag; const char *name; } flags_to_name[] = {
+        { SNAPD_PROMPTING_PERMISSION_FLAGS_EXECUTE, "execute" },
+        { SNAPD_PROMPTING_PERMISSION_FLAGS_WRITE, "write" },
+        { SNAPD_PROMPTING_PERMISSION_FLAGS_READ, "read" },
+        { SNAPD_PROMPTING_PERMISSION_FLAGS_APPEND, "append" },
+        { SNAPD_PROMPTING_PERMISSION_FLAGS_CREATE, "create" },
+        { SNAPD_PROMPTING_PERMISSION_FLAGS_DELETE, "delete" },
+        { SNAPD_PROMPTING_PERMISSION_FLAGS_OPEN, "open" },
+        { SNAPD_PROMPTING_PERMISSION_FLAGS_RENAME, "rename" },
+        { SNAPD_PROMPTING_PERMISSION_FLAGS_SET_ATTR, "set-attr" },
+        { SNAPD_PROMPTING_PERMISSION_FLAGS_GET_ATTR, "get-attr" },
+        { SNAPD_PROMPTING_PERMISSION_FLAGS_SET_CRED, "set-cred" },
+        { SNAPD_PROMPTING_PERMISSION_FLAGS_GET_CRED, "get-cred" },
+        { SNAPD_PROMPTING_PERMISSION_FLAGS_CHANGE_MODE, "change-mode" },
+        { SNAPD_PROMPTING_PERMISSION_FLAGS_CHANGE_OWNER, "change-owner" },
+        { SNAPD_PROMPTING_PERMISSION_FLAGS_CHANGE_GROUP, "change-group" },
+        { SNAPD_PROMPTING_PERMISSION_FLAGS_LOCK, "lock" },
+        { SNAPD_PROMPTING_PERMISSION_FLAGS_EXECUTE_MAP, "execute-map" },
+        { SNAPD_PROMPTING_PERMISSION_FLAGS_LINK, "link" },
+        { SNAPD_PROMPTING_PERMISSION_FLAGS_CHANGE_PROFILE, "change-profile" },
+        { SNAPD_PROMPTING_PERMISSION_FLAGS_CHANGE_PROFILE_ON_EXEC, "change-profile-on-exec" },
+        { SNAPD_PROMPTING_PERMISSION_FLAGS_NONE, NULL }
+    };
+    g_autoptr(GPtrArray) permission_names = g_ptr_array_new ();
+    for (size_t i = 0; flags_to_name[i].flag != SNAPD_PROMPTING_PERMISSION_FLAGS_NONE; i++) {
+        if ((permissions & flags_to_name[i].flag) != 0) {
+            g_ptr_array_add(permission_names, (gpointer) flags_to_name[i].name);
+        }
+    }
+
+    g_ptr_array_add (permission_names, NULL);
+
+    g_autoptr(SnapdPostPromptingRequest) request = _snapd_post_prompting_request_new (id, action_string, lifespan_string, duration, path_pattern, (GStrv) permission_names->pdata, cancellable, callback, user_data);
+    send_request (self, SNAPD_REQUEST (request));
+}
+
+/**
+ * snapd_client_prompting_respond_finish:
+ * @client: a #SnapdClient.
+ * @result: a #GAsyncResult.
+ * @error: (allow-none): #GError location to store the error occurring, or %NULL to ignore.
+ *
+ * Complete request started with snapd_client_prompting_respond_async().
+ * See snapd_client_prompting_respond_sync() for more information.
+ *
+ * Returns: %TRUE on success or %FALSE on error.
+ *
+ * Since: 1.65
+ */
+gboolean
+snapd_client_prompting_respond_finish (SnapdClient *self, GAsyncResult *result, GError **error)
+{
+    g_return_val_if_fail (SNAPD_IS_CLIENT (self), FALSE);
+    g_return_val_if_fail (SNAPD_IS_POST_PROMPTING_REQUEST (result), FALSE);
+
+    return _snapd_request_propagate_error (SNAPD_REQUEST (result), error);
 }
 
 /**
