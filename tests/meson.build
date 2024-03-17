@@ -38,31 +38,32 @@ test_file = configure_file (input: 'test-markdown-glib.test.in',
                             configuration: test_data_conf)
 install_data (test_file, install_dir: installed_tests_data_dir)
 
-if get_option ('qt-bindings')
-  moc_files = qt5.preprocess (moc_headers: [ 'test-qt.h' ])
+foreach qt_major : get_option('qt-bindings')
+# loop through the qt versions
+  moc_files = qt.preprocess (moc_headers: [ 'test-qt.h' ])
 
-  test_executable = executable ('test-qt',
+  test_executable = executable (f'test-qt@qt_major@',
                                 'test-qt.cpp', moc_files,
                                 dependencies: [ glib_dep, snapd_qt_dep ],
                                 link_with: [ mock_snapd_lib ],
                                 cpp_args: [ '-DVERSION="@0@"'.format (meson.project_version ()) ],
                                 install_dir: installed_tests_exec_dir,
                                 install: true)
-  test ('Tests (Qt)', test_executable, timeout: 600)
-  test_file = configure_file (input: 'test-qt.test.in',
-                              output: 'test-qt.test',
+  test ('f'Tests (Qt@qt_major@)' ', test_executable, timeout: 600)
+  test_file = configure_file (input: f'test-qt@qt_major@.test.in',
+                              output: f'test-qt@qt_major@.test',
                               configuration: test_data_conf)
   install_data (test_file, install_dir: installed_tests_data_dir)
 
-  test_executable = executable ('test-markdown-qt',
+  test_executable = executable (f'test-markdown-qt@qt_major@',
                                 'test-markdown-qt.cpp',
                                 dependencies: [ glib_dep, snapd_qt_dep ],
                                 link_with: [ mock_snapd_lib ],
                                 install_dir: installed_tests_exec_dir,
                                 install: true)
-  test ('Markdown tests (Qt)', test_executable, timeout: 600)
-  test_file = configure_file (input: 'test-markdown-qt.test.in',
-                              output: 'test-markdown-qt.test',
+  test ('f'Markdown tests (Qt@qt_major@)'', test_executable, timeout: 600)
+  test_file = configure_file (input: f'test-markdown-qt@qt_major@.test.in',
+                              output: f'test-markdown-qt@qt_major@.test',
                               configuration: test_data_conf)
   install_data (test_file, install_dir: installed_tests_data_dir)
-endif
+endforeach
