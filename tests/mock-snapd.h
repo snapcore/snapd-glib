@@ -481,6 +481,8 @@ void            mock_snapd_add_log                (MockSnapd     *snapd,
 void            mock_change_add_data              (MockChange    *change,
                                                    const JsonNode *data);
 
+void            mock_change_set_kind              (MockChange    *change,
+                                                   const gchar   *kind);
 G_END_DECLS
 
 #endif /* __MOCK_SNAPD_H__ */
