@@ -2,13 +2,13 @@
 
 passed=true
 for file in snapd-glib/*.[ch] snapd-glib/requests/*.[ch] snapd-qt/*.cpp snapd-qt/*.h snapd-qt/Snapd/*.h tests/*.[ch] tests/*.cpp; do
-    if [ $# -eq 0 ];
+    if [ $# -eq 0 ]; then
         # no parameters? Just apply the changes
         echo Formating $file
         clang-format -i $file
     else
         # any parameter? check that the formatting is fine
-        clang-format -i $file > $file.formatted
+        clang-format $file > $file.formatted
         echo $file
         diff $file $file.formatted
         if [ $? != 0 ]; then
