@@ -1,5 +1,7 @@
 #!/bin/bash
 
+SOURCE_FILES="snapd-glib/*.[ch] snapd-glib/requests/*.[ch] snapd-qt/*.cpp snapd-qt/*.h snapd-qt/Snapd/*.h tests/*.[ch] tests/*.cpp"
+
 if [[ "$1" == "pre-commit" ]]; then
     echo Checking source style
     PRE_COMMIT=1
@@ -8,7 +10,7 @@ else
 fi
 
 passed=true
-for file in snapd-glib/*.[ch] snapd-glib/requests/*.[ch] snapd-qt/*.cpp snapd-qt/*.h snapd-qt/Snapd/*.h tests/*.[ch] tests/*.cpp; do
+for file in $SOURCE_FILES; do
     if [ $# -eq 0 ]; then
         # no parameters? Just apply the changes
         echo Formating $file
@@ -16,7 +18,7 @@ for file in snapd-glib/*.[ch] snapd-glib/requests/*.[ch] snapd-qt/*.cpp snapd-qt
     else
         # any parameter? check that the formatting is fine
         clang-format $file > $file.formatted
-        echo $file
+        echo Checking $file
         if [ $PRE_COMMIT -eq 0 ]; then
             diff $file $file.formatted
         else
