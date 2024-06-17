@@ -1183,7 +1183,7 @@ class Q_DECL_EXPORT QSnapdClient : public QObject {
     Q_INVOKABLE QSnapdAbortChangeRequest *abortChange (const QString &id);
     Q_INVOKABLE QSnapdGetSystemInformationRequest *getSystemInformation ();
     Q_INVOKABLE
-        Q_DECL_DEPRECATED_X ("Use getSnaps()") QSnapdListRequest *list ();
+    Q_DECL_DEPRECATED_X ("Use getSnaps()") QSnapdListRequest *list ();
     Q_INVOKABLE QSnapdGetSnapsRequest *getSnaps (GetSnapsFlags flags,
                                                  const QStringList &snaps);
     Q_INVOKABLE QSnapdGetSnapsRequest *getSnaps (GetSnapsFlags flags,
