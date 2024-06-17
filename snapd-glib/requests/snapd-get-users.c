@@ -1,10 +1,10 @@
 /*
  * Copyright (C) 2017 Canonical Ltd.
  *
- * This library is free software; you can redistribute it and/or modify it under
- * the terms of the GNU Lesser General Public License as published by the Free
- * Software Foundation; either version 2 or version 3 of the License.
- * See http://www.gnu.org/copyleft/lgpl.html the full text of the license.
+ * This library is free software; you can redistribute it and/or modify it
+ * under the terms of the GNU Lesser General Public License as published by the
+ * Free Software Foundation; either version 2 or version 3 of the License. See
+ * http://www.gnu.org/copyleft/lgpl.html the full text of the license.
  */
 
 #include "snapd-get-users.h"
@@ -21,13 +21,13 @@ struct _SnapdGetUsers
 G_DEFINE_TYPE (SnapdGetUsers, snapd_get_users, snapd_request_get_type ())
 
 SnapdGetUsers *
-_snapd_get_users_new (GCancellable *cancellable, GAsyncReadyCallback callback, gpointer user_data)
+_snapd_get_users_new (GCancellable *cancellable,
+                      GAsyncReadyCallback callback,
+                      gpointer user_data)
 {
-    return SNAPD_GET_USERS (g_object_new (snapd_get_users_get_type (),
-                                          "cancellable", cancellable,
-                                          "ready-callback", callback,
-                                          "ready-callback-data", user_data,
-                                          NULL));
+    return SNAPD_GET_USERS (g_object_new (
+        snapd_get_users_get_type (), "cancellable", cancellable,
+        "ready-callback", callback, "ready-callback-data", user_data, NULL));
 }
 
 GPtrArray *
@@ -43,22 +43,31 @@ generate_get_users_request (SnapdRequest *request, GBytes **body)
 }
 
 static gboolean
-parse_get_users_response (SnapdRequest *request, guint status_code, const gchar *content_type, GBytes *body, SnapdMaintenance **maintenance, GError **error)
+parse_get_users_response (SnapdRequest *request,
+                          guint status_code,
+                          const gchar *content_type,
+                          GBytes *body,
+                          SnapdMaintenance **maintenance,
+                          GError **error)
 {
     SnapdGetUsers *self = SNAPD_GET_USERS (request);
 
-    g_autoptr(JsonObject) response = _snapd_json_parse_response (content_type, body, maintenance, NULL, error);
+    g_autoptr (JsonObject) response = _snapd_json_parse_response (
+        content_type, body, maintenance, NULL, error);
     if (response == NULL)
         return FALSE;
-    g_autoptr(JsonArray) result = _snapd_json_get_sync_result_a (response, error);
+    g_autoptr (JsonArray) result
+        = _snapd_json_get_sync_result_a (response, error);
     if (result == NULL)
         return FALSE;
 
-    g_autoptr(GPtrArray) users_information = g_ptr_array_new_with_free_func (g_object_unref);
+    g_autoptr (GPtrArray) users_information
+        = g_ptr_array_new_with_free_func (g_object_unref);
     for (guint i = 0; i < json_array_get_length (result); i++) {
         JsonNode *node = json_array_get_element (result, i);
 
-        SnapdUserInformation *user_information = _snapd_json_parse_user_information (node, error);
+        SnapdUserInformation *user_information
+            = _snapd_json_parse_user_information (node, error);
         if (user_information == NULL)
             return FALSE;
 
@@ -83,12 +92,12 @@ snapd_get_users_finalize (GObject *object)
 static void
 snapd_get_users_class_init (SnapdGetUsersClass *klass)
 {
-   SnapdRequestClass *request_class = SNAPD_REQUEST_CLASS (klass);
-   GObjectClass *gobject_class = G_OBJECT_CLASS (klass);
+    SnapdRequestClass *request_class = SNAPD_REQUEST_CLASS (klass);
+    GObjectClass *gobject_class = G_OBJECT_CLASS (klass);
 
-   request_class->generate_request = generate_get_users_request;
-   request_class->parse_response = parse_get_users_response;
-   gobject_class->finalize = snapd_get_users_finalize;
+    request_class->generate_request = generate_get_users_request;
+    request_class->parse_response = parse_get_users_response;
+    gobject_class->finalize = snapd_get_users_finalize;
 }
 
 static void

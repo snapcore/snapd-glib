@@ -1,16 +1,16 @@
 /*
  * Copyright (C) 2016 Canonical Ltd.
  *
- * This library is free software; you can redistribute it and/or modify it under
- * the terms of the GNU Lesser General Public License as published by the Free
- * Software Foundation; either version 2 or version 3 of the License.
- * See http://www.gnu.org/copyleft/lgpl.html the full text of the license.
+ * This library is free software; you can redistribute it and/or modify it
+ * under the terms of the GNU Lesser General Public License as published by the
+ * Free Software Foundation; either version 2 or version 3 of the License. See
+ * http://www.gnu.org/copyleft/lgpl.html the full text of the license.
  */
 
 #include <string.h>
 
-#include "snapd-plug.h"
 #include "snapd-connection.h"
+#include "snapd-plug.h"
 #include "snapd-slot-ref.h"
 
 /**
@@ -113,11 +113,13 @@ snapd_plug_get_interface (SnapdPlug *self)
 /**
  * snapd_plug_get_attribute_names:
  * @plug: a #SnapdPlug.
- * @length: (out) (allow-none): location to write number of attributes or %NULL if not required.
+ * @length: (out) (allow-none): location to write number of attributes or %NULL
+ * if not required.
  *
  * Get the names of the attributes this plug has.
  *
- * Returns: (transfer full) (array zero-terminated=1): a string array of attribute names. Free with g_strfreev().
+ * Returns: (transfer full) (array zero-terminated=1): a string array of
+ * attribute names. Free with g_strfreev().
  *
  * Since: 1.3
  */
@@ -167,7 +169,8 @@ snapd_plug_has_attribute (SnapdPlug *self, const gchar *name)
  *
  * Get an attribute for this interface.
  *
- * Returns: (transfer none) (allow-none): an attribute value or %NULL if not set.
+ * Returns: (transfer none) (allow-none): an attribute value or %NULL if not
+ * set.
  *
  * Since: 1.3
  */
@@ -201,7 +204,8 @@ snapd_plug_get_label (SnapdPlug *self)
  *
  * Get the connections being made with this plug.
  *
- * Returns: (transfer none) (element-type SnapdConnection): an array of #SnapdConnection.
+ * Returns: (transfer none) (element-type SnapdConnection): an array of
+ * #SnapdConnection.
  *
  * Since: 1.0
  * Deprecated: 1.48: Use snapd_plug_get_connected_slots()
@@ -218,10 +222,9 @@ snapd_plug_get_connections (SnapdPlug *self)
     for (int i = 0; i < self->connections->len; i++) {
         SnapdSlotRef *slot_ref = g_ptr_array_index (self->connections, i);
 
-        SnapdConnection *connection = g_object_new (SNAPD_TYPE_CONNECTION,
-                                                    "name", snapd_slot_ref_get_slot (slot_ref),
-                                                    "snap", snapd_slot_ref_get_snap (slot_ref),
-                                                    NULL);
+        SnapdConnection *connection = g_object_new (
+            SNAPD_TYPE_CONNECTION, "name", snapd_slot_ref_get_slot (slot_ref),
+            "snap", snapd_slot_ref_get_snap (slot_ref), NULL);
         g_ptr_array_add (self->legacy_connections, connection);
     }
 
@@ -234,7 +237,8 @@ snapd_plug_get_connections (SnapdPlug *self)
  *
  * Get the slots connected to this plug.
  *
- * Returns: (transfer none) (element-type SnapdSlotRef): an array of #SnapdSlotRef.
+ * Returns: (transfer none) (element-type SnapdSlotRef): an array of
+ * #SnapdSlotRef.
  *
  * Since: 1.48
  */
@@ -246,7 +250,10 @@ snapd_plug_get_connected_slots (SnapdPlug *self)
 }
 
 static void
-snapd_plug_set_property (GObject *object, guint prop_id, const GValue *value, GParamSpec *pspec)
+snapd_plug_set_property (GObject *object,
+                         guint prop_id,
+                         const GValue *value,
+                         GParamSpec *pspec)
 {
     SnapdPlug *self = SNAPD_PLUG (object);
 
@@ -284,7 +291,10 @@ snapd_plug_set_property (GObject *object, guint prop_id, const GValue *value, GP
 }
 
 static void
-snapd_plug_get_property (GObject *object, guint prop_id, GValue *value, GParamSpec *pspec)
+snapd_plug_get_property (GObject *object,
+                         guint prop_id,
+                         GValue *value,
+                         GParamSpec *pspec)
 {
     SnapdPlug *self = SNAPD_PLUG (object);
 
@@ -338,52 +348,39 @@ snapd_plug_class_init (SnapdPlugClass *klass)
     gobject_class->get_property = snapd_plug_get_property;
     gobject_class->finalize = snapd_plug_finalize;
 
-    g_object_class_install_property (gobject_class,
-                                     PROP_NAME,
-                                     g_param_spec_string ("name",
-                                                          "name",
-                                                          "Plug name",
-                                                          NULL,
-                                                          G_PARAM_READWRITE | G_PARAM_CONSTRUCT_ONLY));
-    g_object_class_install_property (gobject_class,
-                                     PROP_SNAP,
-                                     g_param_spec_string ("snap",
-                                                          "snap",
-                                                          "Snap this plug is on",
-                                                          NULL,
-                                                          G_PARAM_READWRITE | G_PARAM_CONSTRUCT_ONLY));
-    g_object_class_install_property (gobject_class,
-                                     PROP_INTERFACE,
-                                     g_param_spec_string ("interface",
-                                                          "interface",
-                                                          "Interface this plug provides",
-                                                          NULL,
-                                                          G_PARAM_READWRITE | G_PARAM_CONSTRUCT_ONLY));
-    g_object_class_install_property (gobject_class,
-                                     PROP_LABEL,
-                                     g_param_spec_string ("label",
-                                                          "label",
-                                                          "Short description of this plug",
-                                                          NULL,
-                                                          G_PARAM_READWRITE | G_PARAM_CONSTRUCT_ONLY));
-    g_object_class_install_property (gobject_class,
-                                     PROP_CONNECTIONS,
-                                     g_param_spec_boxed ("connections",
-                                                         "connections",
-                                                         "Connections with this plug",
-                                                         G_TYPE_PTR_ARRAY,
-                                                         G_PARAM_READWRITE | G_PARAM_CONSTRUCT_ONLY));
-    g_object_class_install_property (gobject_class,
-                                     PROP_ATTRIBUTES,
-                                     g_param_spec_boxed ("attributes",
-                                                         "attributes",
-                                                         "Attributes for this plug",
-                                                         G_TYPE_HASH_TABLE,
-                                                         G_PARAM_READWRITE | G_PARAM_CONSTRUCT_ONLY));
+    g_object_class_install_property (
+        gobject_class, PROP_NAME,
+        g_param_spec_string ("name", "name", "Plug name", NULL,
+                             G_PARAM_READWRITE | G_PARAM_CONSTRUCT_ONLY));
+    g_object_class_install_property (
+        gobject_class, PROP_SNAP,
+        g_param_spec_string ("snap", "snap", "Snap this plug is on", NULL,
+                             G_PARAM_READWRITE | G_PARAM_CONSTRUCT_ONLY));
+    g_object_class_install_property (
+        gobject_class, PROP_INTERFACE,
+        g_param_spec_string ("interface", "interface",
+                             "Interface this plug provides", NULL,
+                             G_PARAM_READWRITE | G_PARAM_CONSTRUCT_ONLY));
+    g_object_class_install_property (
+        gobject_class, PROP_LABEL,
+        g_param_spec_string ("label", "label",
+                             "Short description of this plug", NULL,
+                             G_PARAM_READWRITE | G_PARAM_CONSTRUCT_ONLY));
+    g_object_class_install_property (
+        gobject_class, PROP_CONNECTIONS,
+        g_param_spec_boxed ("connections", "connections",
+                            "Connections with this plug", G_TYPE_PTR_ARRAY,
+                            G_PARAM_READWRITE | G_PARAM_CONSTRUCT_ONLY));
+    g_object_class_install_property (
+        gobject_class, PROP_ATTRIBUTES,
+        g_param_spec_boxed ("attributes", "attributes",
+                            "Attributes for this plug", G_TYPE_HASH_TABLE,
+                            G_PARAM_READWRITE | G_PARAM_CONSTRUCT_ONLY));
 }
 
 static void
 snapd_plug_init (SnapdPlug *self)
 {
-    self->attributes = g_hash_table_new_full (g_str_hash, g_str_equal, g_free, (GDestroyNotify) g_variant_unref);
+    self->attributes = g_hash_table_new_full (g_str_hash, g_str_equal, g_free,
+                                              (GDestroyNotify)g_variant_unref);
 }

@@ -1,23 +1,24 @@
 /*
  * Copyright (C) 2019 Canonical Ltd.
  *
- * This library is free software; you can redistribute it and/or modify it under
- * the terms of the GNU Lesser General Public License as published by the Free
- * Software Foundation; either version 2 or version 3 of the License.
- * See http://www.gnu.org/copyleft/lgpl.html the full text of the license.
+ * This library is free software; you can redistribute it and/or modify it
+ * under the terms of the GNU Lesser General Public License as published by the
+ * Free Software Foundation; either version 2 or version 3 of the License. See
+ * http://www.gnu.org/copyleft/lgpl.html the full text of the license.
  */
 
 #include <ctype.h>
 
-#include "snapd-markdown-node.h"
 #include "snapd-enum-types.h"
+#include "snapd-markdown-node.h"
 
 /**
  * SECTION:snapd-markdown-node
  * @short_description: Snap markdown node
  * @include: snapd-glib/snapd-glib.h
  *
- * A #SnapdMarkdownNode represents a markdown node extracted from text. See #SnapdMarkdownParser for more information.
+ * A #SnapdMarkdownNode represents a markdown node extracted from text. See
+ * #SnapdMarkdownParser for more information.
  */
 
 /**
@@ -48,7 +49,10 @@ enum
 G_DEFINE_TYPE (SnapdMarkdownNode, snapd_markdown_node, G_TYPE_OBJECT)
 
 static void
-snapd_markdown_node_set_property (GObject *object, guint prop_id, const GValue *value, GParamSpec *pspec)
+snapd_markdown_node_set_property (GObject *object,
+                                  guint prop_id,
+                                  const GValue *value,
+                                  GParamSpec *pspec)
 {
     SnapdMarkdownNode *self = SNAPD_MARKDOWN_NODE (object);
 
@@ -72,7 +76,10 @@ snapd_markdown_node_set_property (GObject *object, guint prop_id, const GValue *
 }
 
 static void
-snapd_markdown_node_get_property (GObject *object, guint prop_id, GValue *value, GParamSpec *pspec)
+snapd_markdown_node_get_property (GObject *object,
+                                  guint prop_id,
+                                  GValue *value,
+                                  GParamSpec *pspec)
 {
     SnapdMarkdownNode *self = SNAPD_MARKDOWN_NODE (object);
 
@@ -112,27 +119,20 @@ snapd_markdown_node_class_init (SnapdMarkdownNodeClass *klass)
     gobject_class->get_property = snapd_markdown_node_get_property;
     gobject_class->finalize = snapd_markdown_node_finalize;
 
-    g_object_class_install_property (gobject_class,
-                                     PROP_NODE_TYPE,
-                                     g_param_spec_enum ("node-type",
-                                                        "node-type",
-                                                        "Type of node",
-                                                        SNAPD_TYPE_MARKDOWN_NODE_TYPE, 0,
-                                                        G_PARAM_READWRITE | G_PARAM_CONSTRUCT_ONLY));
-    g_object_class_install_property (gobject_class,
-                                     PROP_TEXT,
-                                     g_param_spec_string ("text",
-                                                          "text",
-                                                          "Text this node contains",
-                                                          NULL,
-                                                          G_PARAM_READWRITE | G_PARAM_CONSTRUCT_ONLY));
-    g_object_class_install_property (gobject_class,
-                                     PROP_CHILDREN,
-                                     g_param_spec_boxed ("children",
-                                                         "children",
-                                                         "Child nodes",
-                                                         G_TYPE_PTR_ARRAY,
-                                                         G_PARAM_READWRITE | G_PARAM_CONSTRUCT_ONLY));
+    g_object_class_install_property (
+        gobject_class, PROP_NODE_TYPE,
+        g_param_spec_enum ("node-type", "node-type", "Type of node",
+                           SNAPD_TYPE_MARKDOWN_NODE_TYPE, 0,
+                           G_PARAM_READWRITE | G_PARAM_CONSTRUCT_ONLY));
+    g_object_class_install_property (
+        gobject_class, PROP_TEXT,
+        g_param_spec_string ("text", "text", "Text this node contains", NULL,
+                             G_PARAM_READWRITE | G_PARAM_CONSTRUCT_ONLY));
+    g_object_class_install_property (
+        gobject_class, PROP_CHILDREN,
+        g_param_spec_boxed ("children", "children", "Child nodes",
+                            G_TYPE_PTR_ARRAY,
+                            G_PARAM_READWRITE | G_PARAM_CONSTRUCT_ONLY));
 }
 
 static void
@@ -161,8 +161,8 @@ snapd_markdown_node_get_node_type (SnapdMarkdownNode *self)
  * snapd_markdown_node_get_text:
  * @node: a #SnapdMarkdownNode.
  *
- * Gets the text associated with this node. This is only present for nodes of type
- * %SNAPD_MARKDOWN_NODE_TYPE_TEXT.
+ * Gets the text associated with this node. This is only present for nodes of
+ * type %SNAPD_MARKDOWN_NODE_TYPE_TEXT.
  *
  * Returns: a UTF-8 string or %NULL if none in this node.
  *
@@ -181,8 +181,8 @@ snapd_markdown_node_get_text (SnapdMarkdownNode *self)
  *
  * Get the child nodes of this node.
  *
- * Returns: (transfer none) (element-type SnapdMarkdownNode): child nodes or %NULL if none.
- * Since: 1.48
+ * Returns: (transfer none) (element-type SnapdMarkdownNode): child nodes or
+ * %NULL if none. Since: 1.48
  */
 GPtrArray *
 snapd_markdown_node_get_children (SnapdMarkdownNode *self)

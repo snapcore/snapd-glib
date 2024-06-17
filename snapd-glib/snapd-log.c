@@ -1,10 +1,10 @@
 /*
  * Copyright (C) 2023 Canonical Ltd.
  *
- * This library is free software; you can redistribute it and/or modify it under
- * the terms of the GNU Lesser General Public License as published by the Free
- * Software Foundation; either version 2 or version 3 of the License.
- * See http://www.gnu.org/copyleft/lgpl.html the full text of the license.
+ * This library is free software; you can redistribute it and/or modify it
+ * under the terms of the GNU Lesser General Public License as published by the
+ * Free Software Foundation; either version 2 or version 3 of the License. See
+ * http://www.gnu.org/copyleft/lgpl.html the full text of the license.
  */
 
 #include "snapd-log.h"
@@ -15,7 +15,8 @@
  * @short_description: Snap service log entry
  * @include: snapd-glib/snapd-glib.h
  *
- * A #SnapdLog contains a line from a log for a snap service as returned using snapd_client_get_logs_sync().
+ * A #SnapdLog contains a line from a log for a snap service as returned using
+ * snapd_client_get_logs_sync().
  */
 
 /**
@@ -117,7 +118,10 @@ snapd_log_get_pid (SnapdLog *self)
 }
 
 static void
-snapd_log_set_property (GObject *object, guint prop_id, const GValue *value, GParamSpec *pspec)
+snapd_log_set_property (GObject *object,
+                        guint prop_id,
+                        const GValue *value,
+                        GParamSpec *pspec)
 {
     SnapdLog *self = SNAPD_LOG (object);
 
@@ -146,7 +150,10 @@ snapd_log_set_property (GObject *object, guint prop_id, const GValue *value, GPa
 }
 
 static void
-snapd_log_get_property (GObject *object, guint prop_id, GValue *value, GParamSpec *pspec)
+snapd_log_get_property (GObject *object,
+                        guint prop_id,
+                        GValue *value,
+                        GParamSpec *pspec)
 {
     SnapdLog *self = SNAPD_LOG (object);
 
@@ -191,34 +198,23 @@ snapd_log_class_init (SnapdLogClass *klass)
     gobject_class->get_property = snapd_log_get_property;
     gobject_class->finalize = snapd_log_finalize;
 
-    g_object_class_install_property (gobject_class,
-                                     PROP_TIMESTAMP,
-                                     g_param_spec_boxed ("timestamp",
-                                                         "timestamp",
-                                                         "Timestamp",
-                                                         G_TYPE_DATE_TIME,
-                                                         G_PARAM_READWRITE | G_PARAM_CONSTRUCT_ONLY));
-    g_object_class_install_property (gobject_class,
-                                     PROP_MESSAGE,
-                                     g_param_spec_string ("message",
-                                                          "message",
-                                                          "Message",
-                                                          NULL,
-                                                          G_PARAM_READWRITE | G_PARAM_CONSTRUCT_ONLY));
-    g_object_class_install_property (gobject_class,
-                                     PROP_SID,
-                                     g_param_spec_string ("sid",
-                                                          "sid",
-                                                          "Syslog ID",
-                                                          NULL,
-                                                          G_PARAM_READWRITE | G_PARAM_CONSTRUCT_ONLY));
-    g_object_class_install_property (gobject_class,
-                                     PROP_PID,
-                                     g_param_spec_string ("pid",
-                                                          "pid",
-                                                          "Process ID",
-                                                          NULL,
-                                                          G_PARAM_READWRITE | G_PARAM_CONSTRUCT_ONLY));
+    g_object_class_install_property (
+        gobject_class, PROP_TIMESTAMP,
+        g_param_spec_boxed ("timestamp", "timestamp", "Timestamp",
+                            G_TYPE_DATE_TIME,
+                            G_PARAM_READWRITE | G_PARAM_CONSTRUCT_ONLY));
+    g_object_class_install_property (
+        gobject_class, PROP_MESSAGE,
+        g_param_spec_string ("message", "message", "Message", NULL,
+                             G_PARAM_READWRITE | G_PARAM_CONSTRUCT_ONLY));
+    g_object_class_install_property (
+        gobject_class, PROP_SID,
+        g_param_spec_string ("sid", "sid", "Syslog ID", NULL,
+                             G_PARAM_READWRITE | G_PARAM_CONSTRUCT_ONLY));
+    g_object_class_install_property (
+        gobject_class, PROP_PID,
+        g_param_spec_string ("pid", "pid", "Process ID", NULL,
+                             G_PARAM_READWRITE | G_PARAM_CONSTRUCT_ONLY));
 }
 
 static void

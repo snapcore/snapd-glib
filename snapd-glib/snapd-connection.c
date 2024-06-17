@@ -1,10 +1,10 @@
 /*
  * Copyright (C) 2016 Canonical Ltd.
  *
- * This library is free software; you can redistribute it and/or modify it under
- * the terms of the GNU Lesser General Public License as published by the Free
- * Software Foundation; either version 2 or version 3 of the License.
- * See http://www.gnu.org/copyleft/lgpl.html the full text of the license.
+ * This library is free software; you can redistribute it and/or modify it
+ * under the terms of the GNU Lesser General Public License as published by the
+ * Free Software Foundation; either version 2 or version 3 of the License. See
+ * http://www.gnu.org/copyleft/lgpl.html the full text of the license.
  */
 
 #include <string.h>
@@ -17,7 +17,8 @@
  * @include: snapd-glib/snapd-glib.h
  *
  * A #SnapdConnection contains information about how a #SnapdPlug is connected
- * to a #SnapdSlot. Connections are queried using snapd_client_get_connections_sync().
+ * to a #SnapdSlot. Connections are queried using
+ * snapd_client_get_connections_sync().
  */
 
 /**
@@ -149,16 +150,19 @@ snapd_connection_get_gadget (SnapdConnection *self)
 /**
  * snapd_connection_get_slot_attribute_names:
  * @connection: a #SnapdConnection.
- * @length: (out) (allow-none): location to write number of attributes or %NULL if not required.
+ * @length: (out) (allow-none): location to write number of attributes or %NULL
+ * if not required.
  *
  * Get the names of the attributes the connected slot has.
  *
- * Returns: (transfer full) (array zero-terminated=1): a string array of attribute names. Free with g_strfreev().
+ * Returns: (transfer full) (array zero-terminated=1): a string array of
+ * attribute names. Free with g_strfreev().
  *
  * Since: 1.48
  */
 GStrv
-snapd_connection_get_slot_attribute_names (SnapdConnection *self, guint *length)
+snapd_connection_get_slot_attribute_names (SnapdConnection *self,
+                                           guint *length)
 {
     g_return_val_if_fail (SNAPD_IS_CONNECTION (self), NULL);
 
@@ -202,7 +206,8 @@ snapd_connection_has_slot_attribute (SnapdConnection *self, const gchar *name)
  *
  * Get an attribute for connected slot.
  *
- * Returns: (transfer none) (allow-none): an attribute value or %NULL if not set.
+ * Returns: (transfer none) (allow-none): an attribute value or %NULL if not
+ * set.
  *
  * Since: 1.48
  */
@@ -216,16 +221,19 @@ snapd_connection_get_slot_attribute (SnapdConnection *self, const gchar *name)
 /**
  * snapd_connection_get_plug_attribute_names:
  * @connection: a #SnapdConnection.
- * @length: (out) (allow-none): location to write number of attributes or %NULL if not required.
+ * @length: (out) (allow-none): location to write number of attributes or %NULL
+ * if not required.
  *
  * Get the names of the attributes the connected plug has.
  *
- * Returns: (transfer full) (array zero-terminated=1): a string array of attribute names. Free with g_strfreev().
+ * Returns: (transfer full) (array zero-terminated=1): a string array of
+ * attribute names. Free with g_strfreev().
  *
  * Since: 1.48
  */
 GStrv
-snapd_connection_get_plug_attribute_names (SnapdConnection *self, guint *length)
+snapd_connection_get_plug_attribute_names (SnapdConnection *self,
+                                           guint *length)
 {
     g_return_val_if_fail (SNAPD_IS_CONNECTION (self), NULL);
 
@@ -269,7 +277,8 @@ snapd_connection_has_plug_attribute (SnapdConnection *self, const gchar *name)
  *
  * Get an attribute for connected plug.
  *
- * Returns: (transfer none) (allow-none): an attribute value or %NULL if not set.
+ * Returns: (transfer none) (allow-none): an attribute value or %NULL if not
+ * set.
  *
  * Since: 1.48
  */
@@ -317,7 +326,10 @@ snapd_connection_get_snap (SnapdConnection *self)
 }
 
 static void
-snapd_connection_set_property (GObject *object, guint prop_id, const GValue *value, GParamSpec *pspec)
+snapd_connection_set_property (GObject *object,
+                               guint prop_id,
+                               const GValue *value,
+                               GParamSpec *pspec)
 {
     SnapdConnection *self = SNAPD_CONNECTION (object);
 
@@ -349,12 +361,14 @@ snapd_connection_set_property (GObject *object, guint prop_id, const GValue *val
     case PROP_SLOT_ATTRIBUTES:
         g_clear_pointer (&self->slot_attributes, g_hash_table_unref);
         if (g_value_get_boxed (value) != NULL)
-            self->slot_attributes = g_hash_table_ref (g_value_get_boxed (value));
+            self->slot_attributes
+                = g_hash_table_ref (g_value_get_boxed (value));
         break;
     case PROP_PLUG_ATTRIBUTES:
         g_clear_pointer (&self->plug_attributes, g_hash_table_unref);
         if (g_value_get_boxed (value) != NULL)
-            self->plug_attributes = g_hash_table_ref (g_value_get_boxed (value));
+            self->plug_attributes
+                = g_hash_table_ref (g_value_get_boxed (value));
         break;
     default:
         G_OBJECT_WARN_INVALID_PROPERTY_ID (object, prop_id, pspec);
@@ -363,7 +377,10 @@ snapd_connection_set_property (GObject *object, guint prop_id, const GValue *val
 }
 
 static void
-snapd_connection_get_property (GObject *object, guint prop_id, GValue *value, GParamSpec *pspec)
+snapd_connection_get_property (GObject *object,
+                               guint prop_id,
+                               GValue *value,
+                               GParamSpec *pspec)
 {
     SnapdConnection *self = SNAPD_CONNECTION (object);
 
@@ -426,69 +443,52 @@ snapd_connection_class_init (SnapdConnectionClass *klass)
     gobject_class->get_property = snapd_connection_get_property;
     gobject_class->finalize = snapd_connection_finalize;
 
-    g_object_class_install_property (gobject_class,
-                                     PROP_NAME,
-                                     g_param_spec_string ("name",
-                                                          "name",
-                                                          "Name of connection/plug on snap",
-                                                          NULL,
-                                                          G_PARAM_READWRITE | G_PARAM_CONSTRUCT_ONLY));
-    g_object_class_install_property (gobject_class,
-                                     PROP_SNAP,
-                                     g_param_spec_string ("snap",
-                                                          "snap",
-                                                          "Snap this connection is made to",
-                                                          NULL,
-                                                          G_PARAM_READWRITE | G_PARAM_CONSTRUCT_ONLY));
-    g_object_class_install_property (gobject_class,
-                                     PROP_SLOT,
-                                     g_param_spec_object ("slot",
-                                                          "slot",
-                                                          "Slot this connection is made with",
-                                                          SNAPD_TYPE_SLOT_REF,
-                                                          G_PARAM_READWRITE | G_PARAM_CONSTRUCT_ONLY));
-    g_object_class_install_property (gobject_class,
-                                     PROP_PLUG,
-                                     g_param_spec_object ("plug",
-                                                          "plug",
-                                                          "Plug this connection is made with",
-                                                          SNAPD_TYPE_PLUG_REF,
-                                                          G_PARAM_READWRITE | G_PARAM_CONSTRUCT_ONLY));
-    g_object_class_install_property (gobject_class,
-                                     PROP_INTERFACE,
-                                     g_param_spec_string ("interface",
-                                                          "interface",
-                                                          "Interface this connection uses",
-                                                          NULL,
-                                                          G_PARAM_READWRITE | G_PARAM_CONSTRUCT_ONLY));
-    g_object_class_install_property (gobject_class,
-                                     PROP_MANUAL,
-                                     g_param_spec_boolean ("manual",
-                                                           "manual",
-                                                           "TRUE if connection was made manually",
-                                                           FALSE,
-                                                           G_PARAM_READWRITE | G_PARAM_CONSTRUCT_ONLY));
-    g_object_class_install_property (gobject_class,
-                                     PROP_GADGET,
-                                     g_param_spec_boolean ("gadget",
-                                                           "gadget",
-                                                           "TRUE if connection was made by the gadget snap",
-                                                           FALSE,
-                                                           G_PARAM_READWRITE | G_PARAM_CONSTRUCT_ONLY));
-    g_object_class_install_property (gobject_class,
-                                     PROP_SLOT_ATTRIBUTES,
-                                     g_param_spec_boxed ("slot-attrs",
-                                                         "slot-attrs",
-                                                         "Attributes for connected slot",
-                                                         G_TYPE_HASH_TABLE,
-                                                         G_PARAM_READWRITE | G_PARAM_CONSTRUCT_ONLY));
-    g_object_class_install_property (gobject_class,
-                                     PROP_PLUG_ATTRIBUTES,
-                                     g_param_spec_boxed ("plug-attrs",
-                                                         "plug-attrs",
-                                                         "Attributes for connected plug",
-                                                         G_TYPE_HASH_TABLE,
-                                                         G_PARAM_READWRITE | G_PARAM_CONSTRUCT_ONLY));
+    g_object_class_install_property (
+        gobject_class, PROP_NAME,
+        g_param_spec_string ("name", "name", "Name of connection/plug on snap",
+                             NULL,
+                             G_PARAM_READWRITE | G_PARAM_CONSTRUCT_ONLY));
+    g_object_class_install_property (
+        gobject_class, PROP_SNAP,
+        g_param_spec_string ("snap", "snap", "Snap this connection is made to",
+                             NULL,
+                             G_PARAM_READWRITE | G_PARAM_CONSTRUCT_ONLY));
+    g_object_class_install_property (
+        gobject_class, PROP_SLOT,
+        g_param_spec_object (
+            "slot", "slot", "Slot this connection is made with",
+            SNAPD_TYPE_SLOT_REF, G_PARAM_READWRITE | G_PARAM_CONSTRUCT_ONLY));
+    g_object_class_install_property (
+        gobject_class, PROP_PLUG,
+        g_param_spec_object (
+            "plug", "plug", "Plug this connection is made with",
+            SNAPD_TYPE_PLUG_REF, G_PARAM_READWRITE | G_PARAM_CONSTRUCT_ONLY));
+    g_object_class_install_property (
+        gobject_class, PROP_INTERFACE,
+        g_param_spec_string ("interface", "interface",
+                             "Interface this connection uses", NULL,
+                             G_PARAM_READWRITE | G_PARAM_CONSTRUCT_ONLY));
+    g_object_class_install_property (
+        gobject_class, PROP_MANUAL,
+        g_param_spec_boolean ("manual", "manual",
+                              "TRUE if connection was made manually", FALSE,
+                              G_PARAM_READWRITE | G_PARAM_CONSTRUCT_ONLY));
+    g_object_class_install_property (
+        gobject_class, PROP_GADGET,
+        g_param_spec_boolean ("gadget", "gadget",
+                              "TRUE if connection was made by the gadget snap",
+                              FALSE,
+                              G_PARAM_READWRITE | G_PARAM_CONSTRUCT_ONLY));
+    g_object_class_install_property (
+        gobject_class, PROP_SLOT_ATTRIBUTES,
+        g_param_spec_boxed ("slot-attrs", "slot-attrs",
+                            "Attributes for connected slot", G_TYPE_HASH_TABLE,
+                            G_PARAM_READWRITE | G_PARAM_CONSTRUCT_ONLY));
+    g_object_class_install_property (
+        gobject_class, PROP_PLUG_ATTRIBUTES,
+        g_param_spec_boxed ("plug-attrs", "plug-attrs",
+                            "Attributes for connected plug", G_TYPE_HASH_TABLE,
+                            G_PARAM_READWRITE | G_PARAM_CONSTRUCT_ONLY));
 }
 
 static void

@@ -1,10 +1,10 @@
 /*
  * Copyright (C) 2018 Canonical Ltd.
  *
- * This library is free software; you can redistribute it and/or modify it under
- * the terms of the GNU Lesser General Public License as published by the Free
- * Software Foundation; either version 2 or version 3 of the License.
- * See http://www.gnu.org/copyleft/lgpl.html the full text of the license.
+ * This library is free software; you can redistribute it and/or modify it
+ * under the terms of the GNU Lesser General Public License as published by the
+ * Free Software Foundation; either version 2 or version 3 of the License. See
+ * http://www.gnu.org/copyleft/lgpl.html the full text of the license.
  */
 
 #include "snapd-media.h"
@@ -14,8 +14,8 @@
  * @short_description: Media information
  * @include: snapd-glib/snapd-glib.h
  *
- * A #SnapdMedia represents media (icons, screenshots etc) that are associated with a snap.
- * Snap media can be queried using snapd_snap_get_media().
+ * A #SnapdMedia represents media (icons, screenshots etc) that are associated
+ * with a snap. Snap media can be queried using snapd_snap_get_media().
  */
 
 /**
@@ -122,7 +122,10 @@ snapd_media_get_height (SnapdMedia *self)
 }
 
 static void
-snapd_media_set_property (GObject *object, guint prop_id, const GValue *value, GParamSpec *pspec)
+snapd_media_set_property (GObject *object,
+                          guint prop_id,
+                          const GValue *value,
+                          GParamSpec *pspec)
 {
     SnapdMedia *self = SNAPD_MEDIA (object);
 
@@ -148,7 +151,10 @@ snapd_media_set_property (GObject *object, guint prop_id, const GValue *value, G
 }
 
 static void
-snapd_media_get_property (GObject *object, guint prop_id, GValue *value, GParamSpec *pspec)
+snapd_media_get_property (GObject *object,
+                          guint prop_id,
+                          GValue *value,
+                          GParamSpec *pspec)
 {
     SnapdMedia *self = SNAPD_MEDIA (object);
 
@@ -191,34 +197,24 @@ snapd_media_class_init (SnapdMediaClass *klass)
     gobject_class->get_property = snapd_media_get_property;
     gobject_class->finalize = snapd_media_finalize;
 
-    g_object_class_install_property (gobject_class,
-                                     PROP_TYPE,
-                                     g_param_spec_string ("type",
-                                                          "type",
-                                                          "Type for this media",
-                                                          NULL,
-                                                          G_PARAM_READWRITE | G_PARAM_CONSTRUCT_ONLY));
-    g_object_class_install_property (gobject_class,
-                                     PROP_URL,
-                                     g_param_spec_string ("url",
-                                                          "url",
-                                                          "URL for this media",
-                                                          NULL,
-                                                          G_PARAM_READWRITE | G_PARAM_CONSTRUCT_ONLY));
-    g_object_class_install_property (gobject_class,
-                                     PROP_WIDTH,
-                                     g_param_spec_uint ("width",
-                                                        "width",
-                                                        "Width of media in pixels",
-                                                        0, G_MAXUINT, 0,
-                                                        G_PARAM_READWRITE | G_PARAM_CONSTRUCT_ONLY));
-    g_object_class_install_property (gobject_class,
-                                     PROP_HEIGHT,
-                                     g_param_spec_uint ("height",
-                                                        "height",
-                                                        "Height of media in pixels",
-                                                        0, G_MAXUINT, 0,
-                                                        G_PARAM_READWRITE | G_PARAM_CONSTRUCT_ONLY));
+    g_object_class_install_property (
+        gobject_class, PROP_TYPE,
+        g_param_spec_string ("type", "type", "Type for this media", NULL,
+                             G_PARAM_READWRITE | G_PARAM_CONSTRUCT_ONLY));
+    g_object_class_install_property (
+        gobject_class, PROP_URL,
+        g_param_spec_string ("url", "url", "URL for this media", NULL,
+                             G_PARAM_READWRITE | G_PARAM_CONSTRUCT_ONLY));
+    g_object_class_install_property (
+        gobject_class, PROP_WIDTH,
+        g_param_spec_uint ("width", "width", "Width of media in pixels", 0,
+                           G_MAXUINT, 0,
+                           G_PARAM_READWRITE | G_PARAM_CONSTRUCT_ONLY));
+    g_object_class_install_property (
+        gobject_class, PROP_HEIGHT,
+        g_param_spec_uint ("height", "height", "Height of media in pixels", 0,
+                           G_MAXUINT, 0,
+                           G_PARAM_READWRITE | G_PARAM_CONSTRUCT_ONLY));
 }
 
 static void

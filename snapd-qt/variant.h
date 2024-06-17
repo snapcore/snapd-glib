@@ -1,10 +1,10 @@
 /*
  * Copyright (C) 2019 Canonical Ltd.
  *
- * This library is free software; you can redistribute it and/or modify it under
- * the terms of the GNU Lesser General Public License as published by the Free
- * Software Foundation; either version 2 or version 3 of the License.
- * See http://www.gnu.org/copyleft/lgpl.html the full text of the license.
+ * This library is free software; you can redistribute it and/or modify it
+ * under the terms of the GNU Lesser General Public License as published by the
+ * Free Software Foundation; either version 2 or version 3 of the License. See
+ * http://www.gnu.org/copyleft/lgpl.html the full text of the license.
  */
 
 #ifndef VARIANT_H
@@ -17,9 +17,9 @@ gvariant_to_qvariant (GVariant *variant)
         return QVariant ();
 
     if (g_variant_is_of_type (variant, G_VARIANT_TYPE_BOOLEAN))
-        return QVariant ((bool) g_variant_get_boolean (variant));
+        return QVariant ((bool)g_variant_get_boolean (variant));
     if (g_variant_is_of_type (variant, G_VARIANT_TYPE_INT64))
-        return QVariant ((qlonglong) g_variant_get_int64 (variant));
+        return QVariant ((qlonglong)g_variant_get_int64 (variant));
     if (g_variant_is_of_type (variant, G_VARIANT_TYPE_STRING))
         return QVariant (g_variant_get_string (variant, NULL));
     if (g_variant_is_of_type (variant, G_VARIANT_TYPE_DOUBLE))

@@ -1,10 +1,10 @@
 /*
  * Copyright (C) 2017 Canonical Ltd.
  *
- * This library is free software; you can redistribute it and/or modify it under
- * the terms of the GNU Lesser General Public License as published by the Free
- * Software Foundation; either version 2 or version 3 of the License.
- * See http://www.gnu.org/copyleft/lgpl.html the full text of the license.
+ * This library is free software; you can redistribute it and/or modify it
+ * under the terms of the GNU Lesser General Public License as published by the
+ * Free Software Foundation; either version 2 or version 3 of the License. See
+ * http://www.gnu.org/copyleft/lgpl.html the full text of the license.
  */
 
 #include "snapd-post-snap.h"
@@ -28,17 +28,19 @@ struct _SnapdPostSnap
 G_DEFINE_TYPE (SnapdPostSnap, snapd_post_snap, snapd_request_async_get_type ())
 
 SnapdPostSnap *
-_snapd_post_snap_new (const gchar *name, const gchar *action,
-                      SnapdProgressCallback progress_callback, gpointer progress_callback_data,
-                      GCancellable *cancellable, GAsyncReadyCallback callback, gpointer user_data)
+_snapd_post_snap_new (const gchar *name,
+                      const gchar *action,
+                      SnapdProgressCallback progress_callback,
+                      gpointer progress_callback_data,
+                      GCancellable *cancellable,
+                      GAsyncReadyCallback callback,
+                      gpointer user_data)
 {
-    SnapdPostSnap *self = SNAPD_POST_SNAP (g_object_new (snapd_post_snap_get_type (),
-                                                         "cancellable", cancellable,
-                                                         "ready-callback", callback,
-                                                         "ready-callback-data", user_data,
-                                                         "progress-callback", progress_callback,
-                                                         "progress-callback-data", progress_callback_data,
-                                                         NULL));
+    SnapdPostSnap *self = SNAPD_POST_SNAP (
+        g_object_new (snapd_post_snap_get_type (), "cancellable", cancellable,
+                      "ready-callback", callback, "ready-callback-data",
+                      user_data, "progress-callback", progress_callback,
+                      "progress-callback-data", progress_callback_data, NULL));
     self->name = g_strdup (name);
     self->action = g_strdup (action);
 
@@ -94,11 +96,11 @@ generate_post_snap_request (SnapdRequest *request, GBytes **body)
 {
     SnapdPostSnap *self = SNAPD_POST_SNAP (request);
 
-    g_autoptr(GString) path = g_string_new ("http://snapd/v2/snaps/");
+    g_autoptr (GString) path = g_string_new ("http://snapd/v2/snaps/");
     g_string_append_uri_escaped (path, self->name, NULL, TRUE);
     SoupMessage *message = soup_message_new ("POST", path->str);
 
-    g_autoptr(JsonBuilder) builder = json_builder_new ();
+    g_autoptr (JsonBuilder) builder = json_builder_new ();
     json_builder_begin_object (builder);
     json_builder_set_member_name (builder, "action");
     json_builder_add_string_value (builder, self->action);
@@ -152,11 +154,11 @@ snapd_post_snap_finalize (GObject *object)
 static void
 snapd_post_snap_class_init (SnapdPostSnapClass *klass)
 {
-   SnapdRequestClass *request_class = SNAPD_REQUEST_CLASS (klass);
-   GObjectClass *gobject_class = G_OBJECT_CLASS (klass);
+    SnapdRequestClass *request_class = SNAPD_REQUEST_CLASS (klass);
+    GObjectClass *gobject_class = G_OBJECT_CLASS (klass);
 
-   request_class->generate_request = generate_post_snap_request;
-   gobject_class->finalize = snapd_post_snap_finalize;
+    request_class->generate_request = generate_post_snap_request;
+    gobject_class->finalize = snapd_post_snap_finalize;
 }
 
 static void

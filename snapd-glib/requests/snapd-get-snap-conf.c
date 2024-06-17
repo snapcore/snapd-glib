@@ -1,10 +1,10 @@
 /*
  * Copyright (C) 2019 Canonical Ltd.
  *
- * This library is free software; you can redistribute it and/or modify it under
- * the terms of the GNU Lesser General Public License as published by the Free
- * Software Foundation; either version 2 or version 3 of the License.
- * See http://www.gnu.org/copyleft/lgpl.html the full text of the license.
+ * This library is free software; you can redistribute it and/or modify it
+ * under the terms of the GNU Lesser General Public License as published by the
+ * Free Software Foundation; either version 2 or version 3 of the License. See
+ * http://www.gnu.org/copyleft/lgpl.html the full text of the license.
  */
 
 #include "snapd-get-snap-conf.h"
@@ -19,16 +19,20 @@ struct _SnapdGetSnapConf
     GHashTable *conf;
 };
 
-G_DEFINE_TYPE (SnapdGetSnapConf, snapd_get_snap_conf, snapd_request_get_type ())
+G_DEFINE_TYPE (SnapdGetSnapConf,
+               snapd_get_snap_conf,
+               snapd_request_get_type ())
 
 SnapdGetSnapConf *
-_snapd_get_snap_conf_new (const gchar *name, GStrv keys, GCancellable *cancellable, GAsyncReadyCallback callback, gpointer user_data)
+_snapd_get_snap_conf_new (const gchar *name,
+                          GStrv keys,
+                          GCancellable *cancellable,
+                          GAsyncReadyCallback callback,
+                          gpointer user_data)
 {
-    SnapdGetSnapConf *self = SNAPD_GET_SNAP_CONF (g_object_new (snapd_get_snap_conf_get_type (),
-                                                                "cancellable", cancellable,
-                                                                "ready-callback", callback,
-                                                                "ready-callback-data", user_data,
-                                                                NULL));
+    SnapdGetSnapConf *self = SNAPD_GET_SNAP_CONF (g_object_new (
+        snapd_get_snap_conf_get_type (), "cancellable", cancellable,
+        "ready-callback", callback, "ready-callback-data", user_data, NULL));
     self->name = g_strdup (name);
     if (keys != NULL && keys[0] != NULL)
         self->keys = g_strdupv (keys);
@@ -47,13 +51,15 @@ generate_get_snap_conf_request (SnapdRequest *request, GBytes **body)
 {
     SnapdGetSnapConf *self = SNAPD_GET_SNAP_CONF (request);
 
-    g_autoptr(GPtrArray) query_attributes = g_ptr_array_new_with_free_func (g_free);
+    g_autoptr (GPtrArray) query_attributes
+        = g_ptr_array_new_with_free_func (g_free);
     if (self->keys != NULL) {
         g_autofree gchar *keys_list = g_strjoinv (",", self->keys);
-        g_ptr_array_add (query_attributes, g_strdup_printf ("keys=%s", keys_list));
+        g_ptr_array_add (query_attributes,
+                         g_strdup_printf ("keys=%s", keys_list));
     }
 
-    g_autoptr(GString) path = g_string_new ("http://snapd/v2/snaps/");
+    g_autoptr (GString) path = g_string_new ("http://snapd/v2/snaps/");
     g_string_append_uri_escaped (path, self->name, NULL, TRUE);
     g_string_append (path, "/conf");
     if (query_attributes->len > 0) {
@@ -61,7 +67,7 @@ generate_get_snap_conf_request (SnapdRequest *request, GBytes **body)
         for (guint i = 0; i < query_attributes->len; i++) {
             if (i != 0)
                 g_string_append_c (path, '&');
-            g_string_append (path, (gchar *) query_attributes->pdata[i]);
+            g_string_append (path, (gchar *)query_attributes->pdata[i]);
         }
     }
 
@@ -69,14 +75,21 @@ generate_get_snap_conf_request (SnapdRequest *request, GBytes **body)
 }
 
 static gboolean
-parse_get_snap_conf_response (SnapdRequest *request, guint status_code, const gchar *content_type, GBytes *body, SnapdMaintenance **maintenance, GError **error)
+parse_get_snap_conf_response (SnapdRequest *request,
+                              guint status_code,
+                              const gchar *content_type,
+                              GBytes *body,
+                              SnapdMaintenance **maintenance,
+                              GError **error)
 {
     SnapdGetSnapConf *self = SNAPD_GET_SNAP_CONF (request);
 
-    g_autoptr(JsonObject) response = _snapd_json_parse_response (content_type, body, maintenance, NULL, error);
+    g_autoptr (JsonObject) response = _snapd_json_parse_response (
+        content_type, body, maintenance, NULL, error);
     if (response == NULL)
         return FALSE;
-    g_autoptr(JsonObject) result = _snapd_json_get_sync_result_o (response, error);
+    g_autoptr (JsonObject) result
+        = _snapd_json_get_sync_result_o (response, error);
     if (result == NULL)
         return FALSE;
 
@@ -102,12 +115,12 @@ snapd_get_snap_conf_finalize (GObject *object)
 static void
 snapd_get_snap_conf_class_init (SnapdGetSnapConfClass *klass)
 {
-   SnapdRequestClass *request_class = SNAPD_REQUEST_CLASS (klass);
-   GObjectClass *gobject_class = G_OBJECT_CLASS (klass);
+    SnapdRequestClass *request_class = SNAPD_REQUEST_CLASS (klass);
+    GObjectClass *gobject_class = G_OBJECT_CLASS (klass);
 
-   request_class->generate_request = generate_get_snap_conf_request;
-   request_class->parse_response = parse_get_snap_conf_response;
-   gobject_class->finalize = snapd_get_snap_conf_finalize;
+    request_class->generate_request = generate_get_snap_conf_request;
+    request_class->parse_response = parse_get_snap_conf_response;
+    gobject_class->finalize = snapd_get_snap_conf_finalize;
 }
 
 static void

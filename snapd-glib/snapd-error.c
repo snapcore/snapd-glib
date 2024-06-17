@@ -1,10 +1,10 @@
 /*
  * Copyright (C) 2016 Canonical Ltd.
  *
- * This library is free software; you can redistribute it and/or modify it under
- * the terms of the GNU Lesser General Public License as published by the Free
- * Software Foundation; either version 2 or version 3 of the License.
- * See http://www.gnu.org/copyleft/lgpl.html the full text of the license.
+ * This library is free software; you can redistribute it and/or modify it
+ * under the terms of the GNU Lesser General Public License as published by the
+ * Free Software Foundation; either version 2 or version 3 of the License. See
+ * http://www.gnu.org/copyleft/lgpl.html the full text of the license.
  */
 
 #include "snapd-error.h"
@@ -26,4 +26,4 @@
  *
  * Since: 1.0
  **/
-G_DEFINE_QUARK (snapd-error-quark, snapd_error)
+G_DEFINE_QUARK (snapd - error - quark, snapd_error)

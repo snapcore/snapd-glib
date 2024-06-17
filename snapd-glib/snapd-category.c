@@ -1,10 +1,10 @@
 /*
  * Copyright (C) 2023 Canonical Ltd.
  *
- * This library is free software; you can redistribute it and/or modify it under
- * the terms of the GNU Lesser General Public License as published by the Free
- * Software Foundation; either version 2 or version 3 of the License.
- * See http://www.gnu.org/copyleft/lgpl.html the full text of the license.
+ * This library is free software; you can redistribute it and/or modify it
+ * under the terms of the GNU Lesser General Public License as published by the
+ * Free Software Foundation; either version 2 or version 3 of the License. See
+ * http://www.gnu.org/copyleft/lgpl.html the full text of the license.
  */
 
 #include "snapd-category.h"
@@ -80,7 +80,10 @@ snapd_category_get_name (SnapdCategory *self)
 }
 
 static void
-snapd_category_set_property (GObject *object, guint prop_id, const GValue *value, GParamSpec *pspec)
+snapd_category_set_property (GObject *object,
+                             guint prop_id,
+                             const GValue *value,
+                             GParamSpec *pspec)
 {
     SnapdCategory *self = SNAPD_CATEGORY (object);
 
@@ -99,7 +102,10 @@ snapd_category_set_property (GObject *object, guint prop_id, const GValue *value
 }
 
 static void
-snapd_category_get_property (GObject *object, guint prop_id, GValue *value, GParamSpec *pspec)
+snapd_category_get_property (GObject *object,
+                             guint prop_id,
+                             GValue *value,
+                             GParamSpec *pspec)
 {
     SnapdCategory *self = SNAPD_CATEGORY (object);
 
@@ -135,20 +141,15 @@ snapd_category_class_init (SnapdCategoryClass *klass)
     gobject_class->get_property = snapd_category_get_property;
     gobject_class->finalize = snapd_category_finalize;
 
-    g_object_class_install_property (gobject_class,
-                                     PROP_FEATURED,
-                                     g_param_spec_boolean ("featured",
-                                                           "featured",
-                                                           "TRUE if this category is featured",
-                                                           FALSE,
-                                                           G_PARAM_READWRITE | G_PARAM_CONSTRUCT_ONLY));
-    g_object_class_install_property (gobject_class,
-                                     PROP_NAME,
-                                     g_param_spec_string ("name",
-                                                          "name",
-                                                          "The category name",
-                                                          NULL,
-                                                          G_PARAM_READWRITE | G_PARAM_CONSTRUCT_ONLY));
+    g_object_class_install_property (
+        gobject_class, PROP_FEATURED,
+        g_param_spec_boolean ("featured", "featured",
+                              "TRUE if this category is featured", FALSE,
+                              G_PARAM_READWRITE | G_PARAM_CONSTRUCT_ONLY));
+    g_object_class_install_property (
+        gobject_class, PROP_NAME,
+        g_param_spec_string ("name", "name", "The category name", NULL,
+                             G_PARAM_READWRITE | G_PARAM_CONSTRUCT_ONLY));
 }
 
 static void

@@ -1,17 +1,17 @@
 /*
  * Copyright (C) 2016 Canonical Ltd.
  *
- * This library is free software; you can redistribute it and/or modify it under
- * the terms of the GNU Lesser General Public License as published by the Free
- * Software Foundation; either version 2 or version 3 of the License.
- * See http://www.gnu.org/copyleft/lgpl.html the full text of the license.
+ * This library is free software; you can redistribute it and/or modify it
+ * under the terms of the GNU Lesser General Public License as published by the
+ * Free Software Foundation; either version 2 or version 3 of the License. See
+ * http://www.gnu.org/copyleft/lgpl.html the full text of the license.
  */
 
 #include <string.h>
 
-#include "snapd-slot.h"
 #include "snapd-connection.h"
 #include "snapd-plug-ref.h"
+#include "snapd-slot.h"
 
 /**
  * SECTION: snapd-slot
@@ -113,11 +113,13 @@ snapd_slot_get_interface (SnapdSlot *self)
 /**
  * snapd_slot_get_attribute_names:
  * @slot: a #SnapdSlot.
- * @length: (out) (allow-none): location to write number of attributes or %NULL if not required.
+ * @length: (out) (allow-none): location to write number of attributes or %NULL
+ * if not required.
  *
  * Get the names of the attributes this slot has.
  *
- * Returns: (transfer full) (array zero-terminated=1): a string array of attribute names. Free with g_strfreev().
+ * Returns: (transfer full) (array zero-terminated=1): a string array of
+ * attribute names. Free with g_strfreev().
  *
  * Since: 1.3
  */
@@ -167,7 +169,8 @@ snapd_slot_has_attribute (SnapdSlot *self, const gchar *name)
  *
  * Get an attribute for this interface.
  *
- * Returns: (transfer none) (allow-none): an attribute value or %NULL if not set.
+ * Returns: (transfer none) (allow-none): an attribute value or %NULL if not
+ * set.
  *
  * Since: 1.3
  */
@@ -201,7 +204,8 @@ snapd_slot_get_label (SnapdSlot *self)
  *
  * Get the connections being made with this slot.
  *
- * Returns: (transfer none) (element-type SnapdConnection): an array of #SnapdConnection.
+ * Returns: (transfer none) (element-type SnapdConnection): an array of
+ * #SnapdConnection.
  *
  * Since: 1.0
  * Deprecated: 1.48: Use snapd_slot_get_connected_plugs()
@@ -218,10 +222,9 @@ snapd_slot_get_connections (SnapdSlot *self)
     for (int i = 0; i < self->connections->len; i++) {
         SnapdPlugRef *plug_ref = g_ptr_array_index (self->connections, i);
 
-        SnapdConnection *connection = g_object_new (SNAPD_TYPE_CONNECTION,
-                                                    "name", snapd_plug_ref_get_plug (plug_ref),
-                                                    "snap", snapd_plug_ref_get_snap (plug_ref),
-                                                    NULL);
+        SnapdConnection *connection = g_object_new (
+            SNAPD_TYPE_CONNECTION, "name", snapd_plug_ref_get_plug (plug_ref),
+            "snap", snapd_plug_ref_get_snap (plug_ref), NULL);
         g_ptr_array_add (self->legacy_connections, connection);
     }
 
@@ -234,7 +237,8 @@ snapd_slot_get_connections (SnapdSlot *self)
  *
  * Get the plugs connected to this slot.
  *
- * Returns: (transfer none) (element-type SnapdPlugRef): an array of #SnapdPlugRef.
+ * Returns: (transfer none) (element-type SnapdPlugRef): an array of
+ * #SnapdPlugRef.
  *
  * Since: 1.48
  */
@@ -246,7 +250,10 @@ snapd_slot_get_connected_plugs (SnapdSlot *self)
 }
 
 static void
-snapd_slot_set_property (GObject *object, guint prop_id, const GValue *value, GParamSpec *pspec)
+snapd_slot_set_property (GObject *object,
+                         guint prop_id,
+                         const GValue *value,
+                         GParamSpec *pspec)
 {
     SnapdSlot *self = SNAPD_SLOT (object);
 
@@ -284,7 +291,10 @@ snapd_slot_set_property (GObject *object, guint prop_id, const GValue *value, GP
 }
 
 static void
-snapd_slot_get_property (GObject *object, guint prop_id, GValue *value, GParamSpec *pspec)
+snapd_slot_get_property (GObject *object,
+                         guint prop_id,
+                         GValue *value,
+                         GParamSpec *pspec)
 {
     SnapdSlot *self = SNAPD_SLOT (object);
 
@@ -338,52 +348,39 @@ snapd_slot_class_init (SnapdSlotClass *klass)
     gobject_class->get_property = snapd_slot_get_property;
     gobject_class->finalize = snapd_slot_finalize;
 
-    g_object_class_install_property (gobject_class,
-                                     PROP_NAME,
-                                     g_param_spec_string ("name",
-                                                          "name",
-                                                          "Slot name",
-                                                          NULL,
-                                                          G_PARAM_READWRITE | G_PARAM_CONSTRUCT_ONLY));
-    g_object_class_install_property (gobject_class,
-                                     PROP_SNAP,
-                                     g_param_spec_string ("snap",
-                                                          "snap",
-                                                          "Snap this slot is on",
-                                                          NULL,
-                                                          G_PARAM_READWRITE | G_PARAM_CONSTRUCT_ONLY));
-    g_object_class_install_property (gobject_class,
-                                     PROP_INTERFACE,
-                                     g_param_spec_string ("interface",
-                                                          "interface",
-                                                          "Interface this slot consumes",
-                                                          NULL,
-                                                          G_PARAM_READWRITE | G_PARAM_CONSTRUCT_ONLY));
-    g_object_class_install_property (gobject_class,
-                                     PROP_LABEL,
-                                     g_param_spec_string ("label",
-                                                          "label",
-                                                          "Short description of this slot",
-                                                          NULL,
-                                                          G_PARAM_READWRITE | G_PARAM_CONSTRUCT_ONLY));
-    g_object_class_install_property (gobject_class,
-                                     PROP_CONNECTIONS,
-                                     g_param_spec_boxed ("connections",
-                                                         "connections",
-                                                         "Connections with this slot",
-                                                         G_TYPE_PTR_ARRAY,
-                                                         G_PARAM_READWRITE | G_PARAM_CONSTRUCT_ONLY));
-    g_object_class_install_property (gobject_class,
-                                     PROP_ATTRIBUTES,
-                                     g_param_spec_boxed ("attributes",
-                                                         "attributes",
-                                                         "Attributes for this slot",
-                                                         G_TYPE_HASH_TABLE,
-                                                         G_PARAM_READWRITE | G_PARAM_CONSTRUCT_ONLY));
+    g_object_class_install_property (
+        gobject_class, PROP_NAME,
+        g_param_spec_string ("name", "name", "Slot name", NULL,
+                             G_PARAM_READWRITE | G_PARAM_CONSTRUCT_ONLY));
+    g_object_class_install_property (
+        gobject_class, PROP_SNAP,
+        g_param_spec_string ("snap", "snap", "Snap this slot is on", NULL,
+                             G_PARAM_READWRITE | G_PARAM_CONSTRUCT_ONLY));
+    g_object_class_install_property (
+        gobject_class, PROP_INTERFACE,
+        g_param_spec_string ("interface", "interface",
+                             "Interface this slot consumes", NULL,
+                             G_PARAM_READWRITE | G_PARAM_CONSTRUCT_ONLY));
+    g_object_class_install_property (
+        gobject_class, PROP_LABEL,
+        g_param_spec_string ("label", "label",
+                             "Short description of this slot", NULL,
+                             G_PARAM_READWRITE | G_PARAM_CONSTRUCT_ONLY));
+    g_object_class_install_property (
+        gobject_class, PROP_CONNECTIONS,
+        g_param_spec_boxed ("connections", "connections",
+                            "Connections with this slot", G_TYPE_PTR_ARRAY,
+                            G_PARAM_READWRITE | G_PARAM_CONSTRUCT_ONLY));
+    g_object_class_install_property (
+        gobject_class, PROP_ATTRIBUTES,
+        g_param_spec_boxed ("attributes", "attributes",
+                            "Attributes for this slot", G_TYPE_HASH_TABLE,
+                            G_PARAM_READWRITE | G_PARAM_CONSTRUCT_ONLY));
 }
 
 static void
 snapd_slot_init (SnapdSlot *self)
 {
-    self->attributes = g_hash_table_new_full (g_str_hash, g_str_equal, g_free, (GDestroyNotify) g_variant_unref);
+    self->attributes = g_hash_table_new_full (g_str_hash, g_str_equal, g_free,
+                                              (GDestroyNotify)g_variant_unref);
 }

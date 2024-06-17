@@ -1,10 +1,10 @@
 /*
  * Copyright (C) 2016 Canonical Ltd.
  *
- * This library is free software; you can redistribute it and/or modify it under
- * the terms of the GNU Lesser General Public License as published by the Free
- * Software Foundation; either version 2 or version 3 of the License.
- * See http://www.gnu.org/copyleft/lgpl.html the full text of the license.
+ * This library is free software; you can redistribute it and/or modify it
+ * under the terms of the GNU Lesser General Public License as published by the
+ * Free Software Foundation; either version 2 or version 3 of the License. See
+ * http://www.gnu.org/copyleft/lgpl.html the full text of the license.
  */
 
 #ifndef __SNAPD_USER_INFORMATION_H__
@@ -20,19 +20,27 @@
 
 G_BEGIN_DECLS
 
-#define SNAPD_TYPE_USER_INFORMATION  (snapd_user_information_get_type ())
+#define SNAPD_TYPE_USER_INFORMATION (snapd_user_information_get_type ())
 
-G_DECLARE_FINAL_TYPE (SnapdUserInformation, snapd_user_information, SNAPD, USER_INFORMATION, GObject)
+G_DECLARE_FINAL_TYPE (SnapdUserInformation,
+                      snapd_user_information,
+                      SNAPD,
+                      USER_INFORMATION,
+                      GObject)
 
-gint64         snapd_user_information_get_id        (SnapdUserInformation *user_information);
+gint64 snapd_user_information_get_id (SnapdUserInformation *user_information);
 
-const gchar   *snapd_user_information_get_username  (SnapdUserInformation *user_information);
+const gchar *
+snapd_user_information_get_username (SnapdUserInformation *user_information);
 
-const gchar   *snapd_user_information_get_email     (SnapdUserInformation *user_information);
+const gchar *
+snapd_user_information_get_email (SnapdUserInformation *user_information);
 
-GStrv          snapd_user_information_get_ssh_keys  (SnapdUserInformation *user_information);
+GStrv
+snapd_user_information_get_ssh_keys (SnapdUserInformation *user_information);
 
-SnapdAuthData *snapd_user_information_get_auth_data (SnapdUserInformation *user_information);
+SnapdAuthData *
+snapd_user_information_get_auth_data (SnapdUserInformation *user_information);
 
 G_END_DECLS
 

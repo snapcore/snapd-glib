@@ -1,10 +1,10 @@
 /*
  * Copyright (C) 2016 Canonical Ltd.
  *
- * This library is free software; you can redistribute it and/or modify it under
- * the terms of the GNU Lesser General Public License as published by the Free
- * Software Foundation; either version 2 or version 3 of the License.
- * See http://www.gnu.org/copyleft/lgpl.html the full text of the license.
+ * This library is free software; you can redistribute it and/or modify it
+ * under the terms of the GNU Lesser General Public License as published by the
+ * Free Software Foundation; either version 2 or version 3 of the License. See
+ * http://www.gnu.org/copyleft/lgpl.html the full text of the license.
  */
 
 #include "snapd-screenshot.h"
@@ -103,7 +103,10 @@ snapd_screenshot_get_height (SnapdScreenshot *self)
 }
 
 static void
-snapd_screenshot_set_property (GObject *object, guint prop_id, const GValue *value, GParamSpec *pspec)
+snapd_screenshot_set_property (GObject *object,
+                               guint prop_id,
+                               const GValue *value,
+                               GParamSpec *pspec)
 {
     SnapdScreenshot *self = SNAPD_SCREENSHOT (object);
 
@@ -125,7 +128,10 @@ snapd_screenshot_set_property (GObject *object, guint prop_id, const GValue *val
 }
 
 static void
-snapd_screenshot_get_property (GObject *object, guint prop_id, GValue *value, GParamSpec *pspec)
+snapd_screenshot_get_property (GObject *object,
+                               guint prop_id,
+                               GValue *value,
+                               GParamSpec *pspec)
 {
     SnapdScreenshot *self = SNAPD_SCREENSHOT (object);
 
@@ -164,27 +170,20 @@ snapd_screenshot_class_init (SnapdScreenshotClass *klass)
     gobject_class->get_property = snapd_screenshot_get_property;
     gobject_class->finalize = snapd_screenshot_finalize;
 
-    g_object_class_install_property (gobject_class,
-                                     PROP_URL,
-                                     g_param_spec_string ("url",
-                                                          "url",
-                                                          "URL for this screenshot",
-                                                          NULL,
-                                                          G_PARAM_READWRITE | G_PARAM_CONSTRUCT_ONLY));
-    g_object_class_install_property (gobject_class,
-                                     PROP_WIDTH,
-                                     g_param_spec_uint ("width",
-                                                        "width",
-                                                        "Width of screenshot in pixels",
-                                                        0, G_MAXUINT, 0,
-                                                        G_PARAM_READWRITE | G_PARAM_CONSTRUCT_ONLY));
-    g_object_class_install_property (gobject_class,
-                                     PROP_HEIGHT,
-                                     g_param_spec_uint ("height",
-                                                        "height",
-                                                        "Height of screenshot in pixels",
-                                                        0, G_MAXUINT, 0,
-                                                        G_PARAM_READWRITE | G_PARAM_CONSTRUCT_ONLY));
+    g_object_class_install_property (
+        gobject_class, PROP_URL,
+        g_param_spec_string ("url", "url", "URL for this screenshot", NULL,
+                             G_PARAM_READWRITE | G_PARAM_CONSTRUCT_ONLY));
+    g_object_class_install_property (
+        gobject_class, PROP_WIDTH,
+        g_param_spec_uint ("width", "width", "Width of screenshot in pixels",
+                           0, G_MAXUINT, 0,
+                           G_PARAM_READWRITE | G_PARAM_CONSTRUCT_ONLY));
+    g_object_class_install_property (
+        gobject_class, PROP_HEIGHT,
+        g_param_spec_uint ("height", "height",
+                           "Height of screenshot in pixels", 0, G_MAXUINT, 0,
+                           G_PARAM_READWRITE | G_PARAM_CONSTRUCT_ONLY));
 }
 
 static void
