@@ -1,10 +1,10 @@
 /*
  * Copyright (C) 2016 Canonical Ltd.
  *
- * This library is free software; you can redistribute it and/or modify it under
- * the terms of the GNU Lesser General Public License as published by the Free
- * Software Foundation; either version 2 or version 3 of the License.
- * See http://www.gnu.org/copyleft/lgpl.html the full text of the license.
+ * This library is free software; you can redistribute it and/or modify it
+ * under the terms of the GNU Lesser General Public License as published by the
+ * Free Software Foundation; either version 2 or version 3 of the License. See
+ * http://www.gnu.org/copyleft/lgpl.html the full text of the license.
  */
 
 #include "snapd-auth-data.h"
@@ -29,7 +29,8 @@
  *
  * #SnapdAuthData contains authorization data used to communicate with snapd.
  *
- * The authorization data is in the form of a [Macaroon](https://research.google.com/pubs/pub41892.html).
+ * The authorization data is in the form of a
+ * [Macaroon](https://research.google.com/pubs/pub41892.html).
  *
  * Since: 1.0
  */
@@ -66,10 +67,8 @@ SnapdAuthData *
 snapd_auth_data_new (const gchar *macaroon, GStrv discharges)
 {
     g_return_val_if_fail (macaroon != NULL, NULL);
-    return g_object_new (SNAPD_TYPE_AUTH_DATA,
-                         "macaroon", macaroon,
-                         "discharges", discharges,
-                         NULL);
+    return g_object_new (SNAPD_TYPE_AUTH_DATA, "macaroon", macaroon,
+                         "discharges", discharges, NULL);
 }
 
 /**
@@ -95,7 +94,8 @@ snapd_auth_data_get_macaroon (SnapdAuthData *self)
  *
  * Get the discharges that this authorization uses.
  *
- * Returns: (transfer none) (array zero-terminated=1): the discharges as serialized strings.
+ * Returns: (transfer none) (array zero-terminated=1): the discharges as
+ * serialized strings.
  *
  * Since: 1.0
  */
@@ -107,7 +107,10 @@ snapd_auth_data_get_discharges (SnapdAuthData *self)
 }
 
 static void
-snapd_auth_data_set_property (GObject *object, guint prop_id, const GValue *value, GParamSpec *pspec)
+snapd_auth_data_set_property (GObject *object,
+                              guint prop_id,
+                              const GValue *value,
+                              GParamSpec *pspec)
 {
     SnapdAuthData *self = SNAPD_AUTH_DATA (object);
 
@@ -127,7 +130,10 @@ snapd_auth_data_set_property (GObject *object, guint prop_id, const GValue *valu
 }
 
 static void
-snapd_auth_data_get_property (GObject *object, guint prop_id, GValue *value, GParamSpec *pspec)
+snapd_auth_data_get_property (GObject *object,
+                              guint prop_id,
+                              GValue *value,
+                              GParamSpec *pspec)
 {
     SnapdAuthData *self = SNAPD_AUTH_DATA (object);
 
@@ -164,20 +170,15 @@ snapd_auth_data_class_init (SnapdAuthDataClass *klass)
     gobject_class->get_property = snapd_auth_data_get_property;
     gobject_class->finalize = snapd_auth_data_finalize;
 
-    g_object_class_install_property (gobject_class,
-                                     PROP_MACAROON,
-                                     g_param_spec_string ("macaroon",
-                                                          "macaroon",
-                                                          "Serialized macaroon",
-                                                          NULL,
-                                                          G_PARAM_READWRITE));
-    g_object_class_install_property (gobject_class,
-                                     PROP_DISCHARGES,
-                                     g_param_spec_boxed ("discharges",
-                                                         "discharges",
-                                                         "Serialized discharges",
-                                                         G_TYPE_STRV,
-                                                         G_PARAM_READWRITE));
+    g_object_class_install_property (
+        gobject_class, PROP_MACAROON,
+        g_param_spec_string ("macaroon", "macaroon", "Serialized macaroon",
+                             NULL, G_PARAM_READWRITE));
+    g_object_class_install_property (
+        gobject_class, PROP_DISCHARGES,
+        g_param_spec_boxed ("discharges", "discharges",
+                            "Serialized discharges", G_TYPE_STRV,
+                            G_PARAM_READWRITE));
 }
 
 static void

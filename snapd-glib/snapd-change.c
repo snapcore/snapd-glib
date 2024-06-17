@@ -1,10 +1,10 @@
 /*
  * Copyright (C) 2017 Canonical Ltd.
  *
- * This library is free software; you can redistribute it and/or modify it under
- * the terms of the GNU Lesser General Public License as published by the Free
- * Software Foundation; either version 2 or version 3 of the License.
- * See http://www.gnu.org/copyleft/lgpl.html the full text of the license.
+ * This library is free software; you can redistribute it and/or modify it
+ * under the terms of the GNU Lesser General Public License as published by the
+ * Free Software Foundation; either version 2 or version 3 of the License. See
+ * http://www.gnu.org/copyleft/lgpl.html the full text of the license.
  */
 
 #include <string.h>
@@ -16,8 +16,8 @@
  * @short_description: Change progress
  * @include: snapd-glib/snapd-glib.h
  *
- * A #SnapdChange contains information on how a request is progressing. Progress
- * information is returned in a #SnapdProgressCallback.
+ * A #SnapdChange contains information on how a request is progressing.
+ * Progress information is returned in a #SnapdProgressCallback.
  */
 
 /**
@@ -152,7 +152,8 @@ snapd_change_get_tasks (SnapdChange *self)
  *
  * Get the data field for this change.
  *
- * Returns: (transfer none): a #SnapdChangeData object with all the data, or NULL if the field isn't defined
+ * Returns: (transfer none): a #SnapdChangeData object with all the data, or
+ * NULL if the field isn't defined
  *
  * Since: 1.65
  */
@@ -232,7 +233,10 @@ snapd_change_get_error (SnapdChange *self)
 }
 
 static void
-snapd_change_set_property (GObject *object, guint prop_id, const GValue *value, GParamSpec *pspec)
+snapd_change_set_property (GObject *object,
+                           guint prop_id,
+                           const GValue *value,
+                           GParamSpec *pspec)
 {
     SnapdChange *self = SNAPD_CHANGE (object);
 
@@ -287,7 +291,10 @@ snapd_change_set_property (GObject *object, guint prop_id, const GValue *value, 
 }
 
 static void
-snapd_change_get_property (GObject *object, guint prop_id, GValue *value, GParamSpec *pspec)
+snapd_change_get_property (GObject *object,
+                           guint prop_id,
+                           GValue *value,
+                           GParamSpec *pspec)
 {
     SnapdChange *self = SNAPD_CHANGE (object);
 
@@ -355,76 +362,52 @@ snapd_change_class_init (SnapdChangeClass *klass)
     gobject_class->get_property = snapd_change_get_property;
     gobject_class->finalize = snapd_change_finalize;
 
-    g_object_class_install_property (gobject_class,
-                                     PROP_ID,
-                                     g_param_spec_string ("id",
-                                                          "id",
-                                                          "ID of change",
-                                                          NULL,
-                                                          G_PARAM_READWRITE | G_PARAM_CONSTRUCT_ONLY));
-    g_object_class_install_property (gobject_class,
-                                     PROP_KIND,
-                                     g_param_spec_string ("kind",
-                                                          "kind",
-                                                          "Kind of change",
-                                                          NULL,
-                                                          G_PARAM_READWRITE | G_PARAM_CONSTRUCT_ONLY));
-    g_object_class_install_property (gobject_class,
-                                     PROP_SUMMARY,
-                                     g_param_spec_string ("summary",
-                                                          "summary",
-                                                          "Summary of change",
-                                                          NULL,
-                                                          G_PARAM_READWRITE | G_PARAM_CONSTRUCT_ONLY));
-    g_object_class_install_property (gobject_class,
-                                     PROP_STATUS,
-                                     g_param_spec_string ("status",
-                                                          "status",
-                                                          "Status of change",
-                                                          NULL,
-                                                          G_PARAM_READWRITE | G_PARAM_CONSTRUCT_ONLY));
-    g_object_class_install_property (gobject_class,
-                                     PROP_TASKS,
-                                     g_param_spec_boxed ("tasks",
-                                                         "tasks",
-                                                         "Tasks in this change",
-                                                         G_TYPE_PTR_ARRAY,
-                                                         G_PARAM_READWRITE | G_PARAM_CONSTRUCT_ONLY));
-    g_object_class_install_property (gobject_class,
-                                     PROP_READY,
-                                     g_param_spec_boolean ("ready",
-                                                           "ready",
-                                                           "TRUE when change complete",
-                                                           FALSE,
-                                                           G_PARAM_READWRITE | G_PARAM_CONSTRUCT_ONLY));
-    g_object_class_install_property (gobject_class,
-                                     PROP_SPAWN_TIME,
-                                     g_param_spec_boxed ("spawn-time",
-                                                         "spawn-time",
-                                                         "Time this change started",
-                                                         G_TYPE_DATE_TIME,
-                                                         G_PARAM_READWRITE | G_PARAM_CONSTRUCT_ONLY));
-    g_object_class_install_property (gobject_class,
-                                     PROP_READY_TIME,
-                                     g_param_spec_boxed ("ready-time",
-                                                         "ready-time",
-                                                         "Time this change completed",
-                                                         G_TYPE_DATE_TIME,
-                                                         G_PARAM_READWRITE | G_PARAM_CONSTRUCT_ONLY));
-    g_object_class_install_property (gobject_class,
-                                     PROP_ERROR,
-                                     g_param_spec_string ("error",
-                                                          "error",
-                                                          "Error associated with change",
-                                                          NULL,
-                                                          G_PARAM_READWRITE | G_PARAM_CONSTRUCT_ONLY));
-    g_object_class_install_property (gobject_class,
-                                     PROP_DATA,
-                                     g_param_spec_object ("data",
-                                                          "data",
-                                                          "Data field",
-                                                          SNAPD_TYPE_CHANGE_DATA,
-                                                          G_PARAM_READWRITE | G_PARAM_CONSTRUCT_ONLY));
+    g_object_class_install_property (
+        gobject_class, PROP_ID,
+        g_param_spec_string ("id", "id", "ID of change", NULL,
+                             G_PARAM_READWRITE | G_PARAM_CONSTRUCT_ONLY));
+    g_object_class_install_property (
+        gobject_class, PROP_KIND,
+        g_param_spec_string ("kind", "kind", "Kind of change", NULL,
+                             G_PARAM_READWRITE | G_PARAM_CONSTRUCT_ONLY));
+    g_object_class_install_property (
+        gobject_class, PROP_SUMMARY,
+        g_param_spec_string ("summary", "summary", "Summary of change", NULL,
+                             G_PARAM_READWRITE | G_PARAM_CONSTRUCT_ONLY));
+    g_object_class_install_property (
+        gobject_class, PROP_STATUS,
+        g_param_spec_string ("status", "status", "Status of change", NULL,
+                             G_PARAM_READWRITE | G_PARAM_CONSTRUCT_ONLY));
+    g_object_class_install_property (
+        gobject_class, PROP_TASKS,
+        g_param_spec_boxed ("tasks", "tasks", "Tasks in this change",
+                            G_TYPE_PTR_ARRAY,
+                            G_PARAM_READWRITE | G_PARAM_CONSTRUCT_ONLY));
+    g_object_class_install_property (
+        gobject_class, PROP_READY,
+        g_param_spec_boolean ("ready", "ready", "TRUE when change complete",
+                              FALSE,
+                              G_PARAM_READWRITE | G_PARAM_CONSTRUCT_ONLY));
+    g_object_class_install_property (
+        gobject_class, PROP_SPAWN_TIME,
+        g_param_spec_boxed ("spawn-time", "spawn-time",
+                            "Time this change started", G_TYPE_DATE_TIME,
+                            G_PARAM_READWRITE | G_PARAM_CONSTRUCT_ONLY));
+    g_object_class_install_property (
+        gobject_class, PROP_READY_TIME,
+        g_param_spec_boxed ("ready-time", "ready-time",
+                            "Time this change completed", G_TYPE_DATE_TIME,
+                            G_PARAM_READWRITE | G_PARAM_CONSTRUCT_ONLY));
+    g_object_class_install_property (
+        gobject_class, PROP_ERROR,
+        g_param_spec_string ("error", "error", "Error associated with change",
+                             NULL,
+                             G_PARAM_READWRITE | G_PARAM_CONSTRUCT_ONLY));
+    g_object_class_install_property (
+        gobject_class, PROP_DATA,
+        g_param_spec_object ("data", "data", "Data field",
+                             SNAPD_TYPE_CHANGE_DATA,
+                             G_PARAM_READWRITE | G_PARAM_CONSTRUCT_ONLY));
 }
 
 static void

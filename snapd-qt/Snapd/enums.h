@@ -1,10 +1,10 @@
 /*
  * Copyright (C) 2017 Canonical Ltd.
  *
- * This library is free software; you can redistribute it and/or modify it under
- * the terms of the GNU Lesser General Public License as published by the Free
- * Software Foundation; either version 2 or version 3 of the License.
- * See http://www.gnu.org/copyleft/lgpl.html the full text of the license.
+ * This library is free software; you can redistribute it and/or modify it
+ * under the terms of the GNU Lesser General Public License as published by the
+ * Free Software Foundation; either version 2 or version 3 of the License. See
+ * http://www.gnu.org/copyleft/lgpl.html the full text of the license.
  */
 
 #ifndef SNAPD_ENUMS_H
@@ -12,11 +12,10 @@
 
 #include <QtCore/QObject>
 
-class Q_DECL_EXPORT QSnapdEnums : public QObject
-{
+class Q_DECL_EXPORT QSnapdEnums : public QObject {
     Q_OBJECT
 
-public:
+  public:
     enum AliasStatus
     {
         AliasStatusUnknown,
@@ -26,7 +25,7 @@ public:
         AliasStatusAuto,
         AliasStatusManual
     };
-    Q_ENUM(AliasStatus)
+    Q_ENUM (AliasStatus)
 
     enum DaemonType
     {
@@ -38,7 +37,7 @@ public:
         DaemonTypeDbus,
         DaemonTypeNotify
     };
-    Q_ENUM(DaemonType)
+    Q_ENUM (DaemonType)
 
     enum SnapConfinement
     {
@@ -47,7 +46,7 @@ public:
         SnapConfinementDevmode,
         SnapConfinementClassic
     };
-    Q_ENUM(SnapConfinement)
+    Q_ENUM (SnapConfinement)
 
     enum SnapType
     {
@@ -60,7 +59,7 @@ public:
         SnapTypeBase,
         SnapTypeSnapd
     };
-    Q_ENUM(SnapType)
+    Q_ENUM (SnapType)
 
     enum SnapStatus
     {
@@ -70,7 +69,7 @@ public:
         SnapStatusInstalled,
         SnapStatusActive
     };
-    Q_ENUM(SnapStatus)
+    Q_ENUM (SnapStatus)
 
     enum SystemConfinement
     {
@@ -78,7 +77,7 @@ public:
         SystemConfinementStrict,
         SystemConfinementPartial
     };
-    Q_ENUM(SystemConfinement)
+    Q_ENUM (SystemConfinement)
 
     enum PublisherValidation
     {
@@ -87,7 +86,7 @@ public:
         PublisherValidationVerified,
         PublisherValidationStarred
     };
-    Q_ENUM(PublisherValidation)
+    Q_ENUM (PublisherValidation)
 
     enum MaintenanceKind
     {
@@ -95,7 +94,7 @@ public:
         MaintenanceKindDaemonRestart,
         MaintenanceKindSystemRestart
     };
-    Q_ENUM(MaintenanceKind)
+    Q_ENUM (MaintenanceKind)
 
     enum SnapNoticeType
     {
@@ -104,7 +103,7 @@ public:
         SnapNoticeTypeRefreshInhibit,
         SnapNoticeTypeSnapRunInhibit
     };
-    Q_ENUM(SnapNoticeType)
+    Q_ENUM (SnapNoticeType)
 };
 
 #endif

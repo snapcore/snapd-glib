@@ -1,15 +1,15 @@
 /*
  * Copyright (C) 2017 Canonical Ltd.
  *
- * This library is free software; you can redistribute it and/or modify it under
- * the terms of the GNU Lesser General Public License as published by the Free
- * Software Foundation; either version 2 or version 3 of the License.
- * See http://www.gnu.org/copyleft/lgpl.html the full text of the license.
+ * This library is free software; you can redistribute it and/or modify it
+ * under the terms of the GNU Lesser General Public License as published by the
+ * Free Software Foundation; either version 2 or version 3 of the License. See
+ * http://www.gnu.org/copyleft/lgpl.html the full text of the license.
  */
 
+#include <ctype.h>
 #include <stdlib.h>
 #include <string.h>
-#include <ctype.h>
 
 #include "snapd-assertion.h"
 
@@ -71,12 +71,18 @@ snapd_assertion_new (const gchar *content)
 }
 
 static gboolean
-get_header (const gchar *content, gsize *offset, gsize *name_start, gsize *name_length, gsize *value_start, gsize *value_length)
+get_header (const gchar *content,
+            gsize *offset,
+            gsize *name_start,
+            gsize *name_length,
+            gsize *value_start,
+            gsize *value_length)
 {
     /* Name separated from value by colon */
     if (name_start != NULL)
         *name_start = *offset;
-    while (content[*offset] && content[*offset] != ':' && content[*offset] != '\n')
+    while (content[*offset] && content[*offset] != ':'
+           && content[*offset] != '\n')
         (*offset)++;
     if (content[*offset] == '\0' || content[*offset] != ':')
         return FALSE;
@@ -85,7 +91,8 @@ get_header (const gchar *content, gsize *offset, gsize *name_start, gsize *name_
     (*offset)++;
 
     /* Value terminated by newline */
-    while (content[*offset] && content[*offset] != '\n' && isspace (content[*offset]))
+    while (content[*offset] && content[*offset] != '\n'
+           && isspace (content[*offset]))
         (*offset)++;
     if (value_start != NULL)
         *value_start = *offset;
@@ -98,7 +105,7 @@ get_header (const gchar *content, gsize *offset, gsize *name_start, gsize *name_
     /* Value continued by lines starting with spaces */
     while (content[*offset] && content[*offset] == ' ') {
         while (content[*offset]) {
-           if (content[*offset] == '\n') {
+            if (content[*offset] == '\n') {
                 (*offset)++;
                 break;
             }
@@ -127,16 +134,17 @@ snapd_assertion_get_headers (SnapdAssertion *self)
     g_return_val_if_fail (SNAPD_IS_ASSERTION (self), NULL);
 
     gsize offset = 0;
-    g_autoptr(GPtrArray) headers = g_ptr_array_new ();
+    g_autoptr (GPtrArray) headers = g_ptr_array_new ();
     while (TRUE) {
         /* Headers terminated by double newline or EOF */
         gsize name_start, name_length;
-        if (self->content[offset] == '\0' ||
-            self->content[offset] == '\n' ||
-            !get_header (self->content, &offset, &name_start, &name_length, NULL, NULL))
+        if (self->content[offset] == '\0' || self->content[offset] == '\n'
+            || !get_header (self->content, &offset, &name_start, &name_length,
+                            NULL, NULL))
             break;
 
-        g_ptr_array_add (headers, g_strndup (self->content + name_start, name_length));
+        g_ptr_array_add (headers,
+                         g_strndup (self->content + name_start, name_length));
     }
     g_ptr_array_add (headers, NULL);
 
@@ -167,7 +175,8 @@ snapd_assertion_get_header (SnapdAssertion *self, const gchar *name)
             return NULL;
 
         gsize name_start, name_length, value_start, value_length;
-        if (!get_header (self->content, &offset, &name_start, &name_length, &value_start, &value_length))
+        if (!get_header (self->content, &offset, &name_start, &name_length,
+                         &value_start, &value_length))
             return NULL;
 
         /* Return value if header we're looking for */
@@ -192,7 +201,8 @@ get_headers_length (SnapdAssertion *self)
 static gsize
 get_body_length (SnapdAssertion *self)
 {
-    g_autofree gchar *body_length_header = snapd_assertion_get_header (self, "body-length");
+    g_autofree gchar *body_length_header
+        = snapd_assertion_get_header (self, "body-length");
     if (body_length_header == NULL)
         return 0;
 
@@ -218,7 +228,8 @@ snapd_assertion_get_body (SnapdAssertion *self)
     if (body_length == 0)
         return NULL;
 
-    return g_strndup (self->content + get_headers_length (self) + 2, body_length);
+    return g_strndup (self->content + get_headers_length (self) + 2,
+                      body_length);
 }
 
 /**
@@ -238,13 +249,17 @@ snapd_assertion_get_signature (SnapdAssertion *self)
 
     gsize body_length = get_body_length (self);
     if (body_length > 0)
-        return g_strdup (self->content + get_headers_length (self) + 2 + body_length + 2);
+        return g_strdup (self->content + get_headers_length (self) + 2
+                         + body_length + 2);
     else
         return g_strdup (self->content + get_headers_length (self) + 2);
 }
 
 static void
-snapd_assertion_set_property (GObject *object, guint prop_id, const GValue *value, GParamSpec *pspec)
+snapd_assertion_set_property (GObject *object,
+                              guint prop_id,
+                              const GValue *value,
+                              GParamSpec *pspec)
 {
     SnapdAssertion *self = SNAPD_ASSERTION (object);
 
@@ -260,7 +275,10 @@ snapd_assertion_set_property (GObject *object, guint prop_id, const GValue *valu
 }
 
 static void
-snapd_assertion_get_property (GObject *object, guint prop_id, GValue *value, GParamSpec *pspec)
+snapd_assertion_get_property (GObject *object,
+                              guint prop_id,
+                              GValue *value,
+                              GParamSpec *pspec)
 {
     SnapdAssertion *self = SNAPD_ASSERTION (object);
 
@@ -293,13 +311,10 @@ snapd_assertion_class_init (SnapdAssertionClass *klass)
     gobject_class->get_property = snapd_assertion_get_property;
     gobject_class->finalize = snapd_assertion_finalize;
 
-    g_object_class_install_property (gobject_class,
-                                     PROP_CONTENT,
-                                     g_param_spec_string ("content",
-                                                          "content",
-                                                          "Assertion content",
-                                                          NULL,
-                                                          G_PARAM_READWRITE | G_PARAM_CONSTRUCT_ONLY));
+    g_object_class_install_property (
+        gobject_class, PROP_CONTENT,
+        g_param_spec_string ("content", "content", "Assertion content", NULL,
+                             G_PARAM_READWRITE | G_PARAM_CONSTRUCT_ONLY));
 }
 
 static void

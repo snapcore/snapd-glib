@@ -1,10 +1,10 @@
 /*
  * Copyright (C) 2017 Canonical Ltd.
  *
- * This library is free software; you can redistribute it and/or modify it under
- * the terms of the GNU Lesser General Public License as published by the Free
- * Software Foundation; either version 2 or version 3 of the License.
- * See http://www.gnu.org/copyleft/lgpl.html the full text of the license.
+ * This library is free software; you can redistribute it and/or modify it
+ * under the terms of the GNU Lesser General Public License as published by the
+ * Free Software Foundation; either version 2 or version 3 of the License. See
+ * http://www.gnu.org/copyleft/lgpl.html the full text of the license.
  */
 
 #include "snapd-channel.h"
@@ -117,10 +117,10 @@ snapd_channel_get_epoch (SnapdChannel *self)
  *
  * Channel names are in the form `track/risk/branch`
  *
- * `track` is the name of the feature track. Defaults to `latest` and is implied
- *         if the track is not present.
- * `risk` is the risk of the channel, one of `stable`, `candidate`, `beta` or `edge`.
- * `branch` is an optional branch name.
+ * `track` is the name of the feature track. Defaults to `latest` and is
+ * implied if the track is not present. `risk` is the risk of the channel, one
+ * of `stable`, `candidate`, `beta` or `edge`. `branch` is an optional branch
+ * name.
  *
  * Example names:
  * `beta` (alias to `latest/beta`)
@@ -142,7 +142,8 @@ snapd_channel_get_name (SnapdChannel *self)
  * snapd_channel_get_released_at:
  * @channel: a #SnapdChannel.
  *
- * Get the date this revision was released into the channel or %NULL if unknown.
+ * Get the date this revision was released into the channel or %NULL if
+ * unknown.
  *
  * Returns: (transfer none) (allow-none): a #GDateTime.
  *
@@ -177,7 +178,8 @@ snapd_channel_get_revision (SnapdChannel *self)
  * snapd_channel_get_risk:
  * @channel: a #SnapdChannel.
  *
- * Get the risk this channel is on, one of `stable`, `candidate`, `beta` or `edge`.
+ * Get the risk this channel is on, one of `stable`, `candidate`, `beta` or
+ * `edge`.
  *
  * Returns: a risk name.
  *
@@ -245,7 +247,9 @@ snapd_channel_get_version (SnapdChannel *self)
 static gboolean
 is_risk (const gchar *risk)
 {
-    return g_strcmp0 (risk, "stable") == 0 || g_strcmp0 (risk, "candidate") == 0 || g_strcmp0 (risk, "beta") == 0 || g_strcmp0 (risk, "edge") == 0;
+    return g_strcmp0 (risk, "stable") == 0
+           || g_strcmp0 (risk, "candidate") == 0
+           || g_strcmp0 (risk, "beta") == 0 || g_strcmp0 (risk, "edge") == 0;
 }
 
 static void
@@ -258,14 +262,13 @@ set_name (SnapdChannel *self, const gchar *name)
     g_clear_pointer (&self->risk, g_free);
     g_clear_pointer (&self->branch, g_free);
 
-    g_auto(GStrv) tokens = g_strsplit (name, "/", -1);
+    g_auto (GStrv) tokens = g_strsplit (name, "/", -1);
     switch (g_strv_length (tokens)) {
     case 1:
         if (is_risk (tokens[0])) {
             self->track = g_strdup ("latest");
             self->risk = g_strdup (tokens[0]);
-        }
-        else {
+        } else {
             self->track = g_strdup (tokens[0]);
             self->risk = g_strdup ("stable");
         }
@@ -275,8 +278,7 @@ set_name (SnapdChannel *self, const gchar *name)
             self->track = g_strdup ("latest");
             self->risk = g_strdup (tokens[0]);
             self->branch = g_strdup (tokens[1]);
-        }
-        else {
+        } else {
             self->track = g_strdup (tokens[0]);
             self->risk = g_strdup (tokens[1]);
         }
@@ -292,7 +294,10 @@ set_name (SnapdChannel *self, const gchar *name)
 }
 
 static void
-snapd_channel_set_property (GObject *object, guint prop_id, const GValue *value, GParamSpec *pspec)
+snapd_channel_set_property (GObject *object,
+                            guint prop_id,
+                            const GValue *value,
+                            GParamSpec *pspec)
 {
     SnapdChannel *self = SNAPD_CHANNEL (object);
 
@@ -330,7 +335,10 @@ snapd_channel_set_property (GObject *object, guint prop_id, const GValue *value,
 }
 
 static void
-snapd_channel_get_property (GObject *object, guint prop_id, GValue *value, GParamSpec *pspec)
+snapd_channel_get_property (GObject *object,
+                            guint prop_id,
+                            GValue *value,
+                            GParamSpec *pspec)
 {
     SnapdChannel *self = SNAPD_CHANNEL (object);
 
@@ -388,55 +396,40 @@ snapd_channel_class_init (SnapdChannelClass *klass)
     gobject_class->get_property = snapd_channel_get_property;
     gobject_class->finalize = snapd_channel_finalize;
 
-    g_object_class_install_property (gobject_class,
-                                     PROP_CONFINEMENT,
-                                     g_param_spec_enum ("confinement",
-                                                        "confinement",
-                                                        "Confinement requested by the snap",
-                                                        SNAPD_TYPE_CONFINEMENT, SNAPD_CONFINEMENT_UNKNOWN,
-                                                        G_PARAM_READWRITE | G_PARAM_CONSTRUCT_ONLY));
-    g_object_class_install_property (gobject_class,
-                                     PROP_EPOCH,
-                                     g_param_spec_string ("epoch",
-                                                          "epoch",
-                                                          "Epoch of this snap",
-                                                          NULL,
-                                                          G_PARAM_READWRITE | G_PARAM_CONSTRUCT_ONLY));
-    g_object_class_install_property (gobject_class,
-                                     PROP_NAME,
-                                     g_param_spec_string ("name",
-                                                          "name",
-                                                          "The channel name",
-                                                          NULL,
-                                                          G_PARAM_READWRITE | G_PARAM_CONSTRUCT_ONLY));
-    g_object_class_install_property (gobject_class,
-                                     PROP_REVISION,
-                                     g_param_spec_string ("revision",
-                                                          "revision",
-                                                          "Revision of this snap",
-                                                          NULL,
-                                                          G_PARAM_READWRITE | G_PARAM_CONSTRUCT_ONLY));
-    g_object_class_install_property (gobject_class,
-                                     PROP_RELEASED_AT,
-                                     g_param_spec_boxed ("released-at",
-                                                         "released-at",
-                                                         "Date revision was released into channel",
-                                                         G_TYPE_DATE_TIME,
-                                                         G_PARAM_READWRITE | G_PARAM_CONSTRUCT_ONLY));
-    g_object_class_install_property (gobject_class,
-                                     PROP_SIZE,
-                                     g_param_spec_int64 ("size",
-                                                         "size",
-                                                         "Download size in bytes",
-                                                         G_MININT64, G_MAXINT64, 0,
-                                                         G_PARAM_READWRITE | G_PARAM_CONSTRUCT_ONLY));
-    g_object_class_install_property (gobject_class,
-                                     PROP_VERSION,
-                                     g_param_spec_string ("version",
-                                                          "version",
-                                                          "Snap version",
-                                                          NULL,
-                                                          G_PARAM_READWRITE | G_PARAM_CONSTRUCT_ONLY));
+    g_object_class_install_property (
+        gobject_class, PROP_CONFINEMENT,
+        g_param_spec_enum ("confinement", "confinement",
+                           "Confinement requested by the snap",
+                           SNAPD_TYPE_CONFINEMENT, SNAPD_CONFINEMENT_UNKNOWN,
+                           G_PARAM_READWRITE | G_PARAM_CONSTRUCT_ONLY));
+    g_object_class_install_property (
+        gobject_class, PROP_EPOCH,
+        g_param_spec_string ("epoch", "epoch", "Epoch of this snap", NULL,
+                             G_PARAM_READWRITE | G_PARAM_CONSTRUCT_ONLY));
+    g_object_class_install_property (
+        gobject_class, PROP_NAME,
+        g_param_spec_string ("name", "name", "The channel name", NULL,
+                             G_PARAM_READWRITE | G_PARAM_CONSTRUCT_ONLY));
+    g_object_class_install_property (
+        gobject_class, PROP_REVISION,
+        g_param_spec_string ("revision", "revision", "Revision of this snap",
+                             NULL,
+                             G_PARAM_READWRITE | G_PARAM_CONSTRUCT_ONLY));
+    g_object_class_install_property (
+        gobject_class, PROP_RELEASED_AT,
+        g_param_spec_boxed ("released-at", "released-at",
+                            "Date revision was released into channel",
+                            G_TYPE_DATE_TIME,
+                            G_PARAM_READWRITE | G_PARAM_CONSTRUCT_ONLY));
+    g_object_class_install_property (
+        gobject_class, PROP_SIZE,
+        g_param_spec_int64 ("size", "size", "Download size in bytes",
+                            G_MININT64, G_MAXINT64, 0,
+                            G_PARAM_READWRITE | G_PARAM_CONSTRUCT_ONLY));
+    g_object_class_install_property (
+        gobject_class, PROP_VERSION,
+        g_param_spec_string ("version", "version", "Snap version", NULL,
+                             G_PARAM_READWRITE | G_PARAM_CONSTRUCT_ONLY));
 }
 
 static void

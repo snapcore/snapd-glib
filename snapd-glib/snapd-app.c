@@ -1,10 +1,10 @@
 /*
  * Copyright (C) 2016 Canonical Ltd.
  *
- * This library is free software; you can redistribute it and/or modify it under
- * the terms of the GNU Lesser General Public License as published by the Free
- * Software Foundation; either version 2 or version 3 of the License.
- * See http://www.gnu.org/copyleft/lgpl.html the full text of the license.
+ * This library is free software; you can redistribute it and/or modify it
+ * under the terms of the GNU Lesser General Public License as published by the
+ * Free Software Foundation; either version 2 or version 3 of the License. See
+ * http://www.gnu.org/copyleft/lgpl.html the full text of the license.
  */
 
 #include <string.h>
@@ -196,7 +196,10 @@ snapd_app_get_snap (SnapdApp *self)
 }
 
 static void
-snapd_app_set_property (GObject *object, guint prop_id, const GValue *value, GParamSpec *pspec)
+snapd_app_set_property (GObject *object,
+                        guint prop_id,
+                        const GValue *value,
+                        GParamSpec *pspec)
 {
     SnapdApp *self = SNAPD_APP (object);
 
@@ -235,7 +238,10 @@ snapd_app_set_property (GObject *object, guint prop_id, const GValue *value, GPa
 }
 
 static void
-snapd_app_get_property (GObject *object, guint prop_id, GValue *value, GParamSpec *pspec)
+snapd_app_get_property (GObject *object,
+                        guint prop_id,
+                        GValue *value,
+                        GParamSpec *pspec)
 {
     SnapdApp *self = SNAPD_APP (object);
 
@@ -292,62 +298,40 @@ snapd_app_class_init (SnapdAppClass *klass)
     gobject_class->get_property = snapd_app_get_property;
     gobject_class->finalize = snapd_app_finalize;
 
-    g_object_class_install_property (gobject_class,
-                                     PROP_NAME,
-                                     g_param_spec_string ("name",
-                                                          "name",
-                                                          "App name",
-                                                          NULL,
-                                                          G_PARAM_READWRITE | G_PARAM_CONSTRUCT_ONLY));
-    g_object_class_install_property (gobject_class,
-                                     PROP_ALIASES,
-                                     g_param_spec_boxed ("aliases",
-                                                         "aliases",
-                                                         "App aliases",
-                                                         G_TYPE_STRV,
-                                                         G_PARAM_READWRITE | G_PARAM_CONSTRUCT_ONLY));
-    g_object_class_install_property (gobject_class,
-                                     PROP_COMMON_ID,
-                                     g_param_spec_string ("common-id",
-                                                          "common-id",
-                                                          "Common ID",
-                                                          NULL,
-                                                          G_PARAM_READWRITE | G_PARAM_CONSTRUCT_ONLY));
-    g_object_class_install_property (gobject_class,
-                                     PROP_DAEMON_TYPE,
-                                     g_param_spec_enum ("daemon-type",
-                                                        "daemon-type",
-                                                        "Daemon type",
-                                                        SNAPD_TYPE_DAEMON_TYPE, SNAPD_DAEMON_TYPE_UNKNOWN,
-                                                        G_PARAM_READWRITE | G_PARAM_CONSTRUCT_ONLY));
-    g_object_class_install_property (gobject_class,
-                                     PROP_DESKTOP_FILE,
-                                     g_param_spec_string ("desktop-file",
-                                                          "desktop-file",
-                                                          "App desktop file path",
-                                                          NULL,
-                                                          G_PARAM_READWRITE | G_PARAM_CONSTRUCT_ONLY));
-    g_object_class_install_property (gobject_class,
-                                     PROP_SNAP,
-                                     g_param_spec_string ("snap",
-                                                          "snap",
-                                                          "Snap name",
-                                                          NULL,
-                                                          G_PARAM_READWRITE | G_PARAM_CONSTRUCT_ONLY));
-    g_object_class_install_property (gobject_class,
-                                     PROP_ACTIVE,
-                                     g_param_spec_boolean ("active",
-                                                           "active",
-                                                           "TRUE if active",
-                                                           FALSE,
-                                                           G_PARAM_READWRITE | G_PARAM_CONSTRUCT_ONLY));
-    g_object_class_install_property (gobject_class,
-                                     PROP_ENABLED,
-                                     g_param_spec_boolean ("enabled",
-                                                           "enabled",
-                                                           "TRUE if enabled",
-                                                           FALSE,
-                                                           G_PARAM_READWRITE | G_PARAM_CONSTRUCT_ONLY));
+    g_object_class_install_property (
+        gobject_class, PROP_NAME,
+        g_param_spec_string ("name", "name", "App name", NULL,
+                             G_PARAM_READWRITE | G_PARAM_CONSTRUCT_ONLY));
+    g_object_class_install_property (
+        gobject_class, PROP_ALIASES,
+        g_param_spec_boxed ("aliases", "aliases", "App aliases", G_TYPE_STRV,
+                            G_PARAM_READWRITE | G_PARAM_CONSTRUCT_ONLY));
+    g_object_class_install_property (
+        gobject_class, PROP_COMMON_ID,
+        g_param_spec_string ("common-id", "common-id", "Common ID", NULL,
+                             G_PARAM_READWRITE | G_PARAM_CONSTRUCT_ONLY));
+    g_object_class_install_property (
+        gobject_class, PROP_DAEMON_TYPE,
+        g_param_spec_enum ("daemon-type", "daemon-type", "Daemon type",
+                           SNAPD_TYPE_DAEMON_TYPE, SNAPD_DAEMON_TYPE_UNKNOWN,
+                           G_PARAM_READWRITE | G_PARAM_CONSTRUCT_ONLY));
+    g_object_class_install_property (
+        gobject_class, PROP_DESKTOP_FILE,
+        g_param_spec_string ("desktop-file", "desktop-file",
+                             "App desktop file path", NULL,
+                             G_PARAM_READWRITE | G_PARAM_CONSTRUCT_ONLY));
+    g_object_class_install_property (
+        gobject_class, PROP_SNAP,
+        g_param_spec_string ("snap", "snap", "Snap name", NULL,
+                             G_PARAM_READWRITE | G_PARAM_CONSTRUCT_ONLY));
+    g_object_class_install_property (
+        gobject_class, PROP_ACTIVE,
+        g_param_spec_boolean ("active", "active", "TRUE if active", FALSE,
+                              G_PARAM_READWRITE | G_PARAM_CONSTRUCT_ONLY));
+    g_object_class_install_property (
+        gobject_class, PROP_ENABLED,
+        g_param_spec_boolean ("enabled", "enabled", "TRUE if enabled", FALSE,
+                              G_PARAM_READWRITE | G_PARAM_CONSTRUCT_ONLY));
 }
 
 static void

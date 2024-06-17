@@ -1,24 +1,25 @@
 /*
  * Copyright (C) 2019 Canonical Ltd.
  *
- * This library is free software; you can redistribute it and/or modify it under
- * the terms of the GNU Lesser General Public License as published by the Free
- * Software Foundation; either version 2 or version 3 of the License.
- * See http://www.gnu.org/copyleft/lgpl.html the full text of the license.
+ * This library is free software; you can redistribute it and/or modify it
+ * under the terms of the GNU Lesser General Public License as published by the
+ * Free Software Foundation; either version 2 or version 3 of the License. See
+ * http://www.gnu.org/copyleft/lgpl.html the full text of the license.
  */
 
 #include <ctype.h>
 #include <string.h>
 
-#include "snapd-markdown-parser.h"
 #include "snapd-markdown-node.h"
+#include "snapd-markdown-parser.h"
 
 /**
  * SECTION:snapd-markdown-parser
  * @short_description: Snap markdown text parser
  * @include: snapd-glib/snapd-glib.h
  *
- * A #SnapdMarkdownParser parses text formatted in markdown; for example the text returned by snapd_snap_get_description ().
+ * A #SnapdMarkdownParser parses text formatted in markdown; for example the
+ * text returned by snapd_snap_get_description ().
  *
  * Snap supports the following subset of CommonMark (https://commonmark.org):
  * - Indented Code Blocks
@@ -74,7 +75,10 @@ parse_paragraph (const gchar *line, gchar **text)
 }
 
 static gboolean
-parse_bullet_list_item (const gchar *line, int *offset, gchar *symbol, gchar **bullet_text)
+parse_bullet_list_item (const gchar *line,
+                        int *offset,
+                        gchar *symbol,
+                        gchar **bullet_text)
 {
     int i = 0;
     while (isspace (line[i]))
@@ -97,7 +101,7 @@ parse_bullet_list_item (const gchar *line, int *offset, gchar *symbol, gchar **b
 
     /* Blank lines start one place after marker */
     if (line[offset_] == '\0')
-       offset_ = marker_offset + 1;
+        offset_ = marker_offset + 1;
 
     if (offset != NULL)
         *offset = offset_;
@@ -165,7 +169,8 @@ is_left_flanking_delimiter_run (const gchar *text, int index)
     if (!is_punctuation_character (text[index + run_length]))
         return TRUE;
 
-    /* 2b) Followed by punctuation and preceeded by whitespace or punctuation */
+    /* 2b) Followed by punctuation and preceeded by whitespace or punctuation
+     */
     if (index == 0 || isspace (text[index - 1]))
         return TRUE;
     if (is_punctuation_character (text[index - 1]))
@@ -192,7 +197,8 @@ is_right_flanking_delimiter_run (const gchar *text, int index)
     if (!is_punctuation_character (text[index - 1]))
         return TRUE;
 
-    /* 2b) Preceeded by punctuation and followed by whitespace or punctuation */
+    /* 2b) Preceeded by punctuation and followed by whitespace or punctuation
+     */
     if (text[index + run_length] == '\0' || isspace (text[index + run_length]))
         return TRUE;
     if (is_punctuation_character (text[index + run_length]))
@@ -204,7 +210,7 @@ is_right_flanking_delimiter_run (const gchar *text, int index)
 static gchar *
 strip_text (const gchar *text)
 {
-    g_autoptr(GString) stripped_text = g_string_new ("");
+    g_autoptr (GString) stripped_text = g_string_new ("");
 
     /* Strip leading whitespace */
     int i = 0;
@@ -254,33 +260,31 @@ make_text_node (const gchar *text, int length)
 {
     if (length > 0) {
         g_autofree gchar *subtext = g_strndup (text, length);
-        return g_object_new (SNAPD_TYPE_MARKDOWN_NODE,
-                             "node-type", SNAPD_MARKDOWN_NODE_TYPE_TEXT,
-                             "text", subtext,
+        return g_object_new (SNAPD_TYPE_MARKDOWN_NODE, "node-type",
+                             SNAPD_MARKDOWN_NODE_TYPE_TEXT, "text", subtext,
                              NULL);
-    }
-    else
-        return g_object_new (SNAPD_TYPE_MARKDOWN_NODE,
-                             "node-type", SNAPD_MARKDOWN_NODE_TYPE_TEXT,
-                             "text", text,
+    } else
+        return g_object_new (SNAPD_TYPE_MARKDOWN_NODE, "node-type",
+                             SNAPD_MARKDOWN_NODE_TYPE_TEXT, "text", text,
                              NULL);
 }
 
 SnapdMarkdownNode *
-make_paragraph_text_node (SnapdMarkdownParser *self, const gchar *text, int length)
+make_paragraph_text_node (SnapdMarkdownParser *self,
+                          const gchar *text,
+                          int length)
 {
     if (self->preserve_whitespace)
         return make_text_node (text, length);
 
-    g_autoptr(GString) result = g_string_new ("");
+    g_autoptr (GString) result = g_string_new ("");
     gchar last_c = '\0';
     for (int i = 0; text[i] != '\0' && (length == -1 || i < length); i++) {
         gchar c = text[i];
         if (isspace (c)) {
             if (!isspace (last_c))
                 g_string_append_c (result, ' ');
-        }
-        else
+        } else
             g_string_append_c (result, c);
         last_c = c;
     }
@@ -296,21 +300,18 @@ make_delimiter_node (EmphasisInfo *info)
         text[i] = info->character;
     text[info->length] = '\0';
 
-    return g_object_new (SNAPD_TYPE_MARKDOWN_NODE,
-                         "node-type", SNAPD_MARKDOWN_NODE_TYPE_TEXT,
-                         "text", text,
-                         NULL);
+    return g_object_new (SNAPD_TYPE_MARKDOWN_NODE, "node-type",
+                         SNAPD_MARKDOWN_NODE_TYPE_TEXT, "text", text, NULL);
 }
 
 SnapdMarkdownNode *
 make_code_node (SnapdMarkdownNodeType type, const gchar *text)
 {
-    g_autoptr(GPtrArray) children = g_ptr_array_new_with_free_func (g_object_unref);
+    g_autoptr (GPtrArray) children
+        = g_ptr_array_new_with_free_func (g_object_unref);
     g_ptr_array_add (children, make_text_node (text, -1));
-    return g_object_new (SNAPD_TYPE_MARKDOWN_NODE,
-                         "node-type", type,
-                         "children", children,
-                         NULL);
+    return g_object_new (SNAPD_TYPE_MARKDOWN_NODE, "node-type", type,
+                         "children", children, NULL);
 }
 
 static void
@@ -329,16 +330,16 @@ find_emphasis (GPtrArray *nodes, GHashTable *emphasis_info)
         for (start_index = end_index - 1; start_index >= 0; start_index--) {
             start_node = g_ptr_array_index (nodes, start_index);
             start_info = g_hash_table_lookup (emphasis_info, start_node);
-            if (start_info != NULL && start_info->can_open_emphasis &&
-                start_info->character == end_info->character)
+            if (start_info != NULL && start_info->can_open_emphasis
+                && start_info->character == end_info->character)
                 break;
         }
         if (start_index < 0)
             continue;
 
         // FIXME: Can do if both a multiple of three
-        if ((start_info->can_open_emphasis && start_info->can_close_emphasis) ||
-            (end_info->can_open_emphasis && end_info->can_close_emphasis)) {
+        if ((start_info->can_open_emphasis && start_info->can_close_emphasis)
+            || (end_info->can_open_emphasis && end_info->can_close_emphasis)) {
             if ((start_info->length + end_info->length) % 3 == 0)
                 continue;
         }
@@ -351,40 +352,38 @@ find_emphasis (GPtrArray *nodes, GHashTable *emphasis_info)
             node_type = SNAPD_MARKDOWN_NODE_TYPE_STRONG_EMPHASIS;
             start_info->length -= 2;
             end_info->length -= 2;
-        }
-        else {
+        } else {
             node_type = SNAPD_MARKDOWN_NODE_TYPE_EMPHASIS;
             start_info->length--;
             end_info->length--;
         }
 
         /* Replace nodes */
-        g_autoptr(GPtrArray) children = g_ptr_array_new_with_free_func (g_object_unref);
+        g_autoptr (GPtrArray) children
+            = g_ptr_array_new_with_free_func (g_object_unref);
         for (int i = start_index + 1; i < end_index; i++) {
             SnapdMarkdownNode *node = g_ptr_array_index (nodes, i);
             g_ptr_array_add (children, g_object_ref (node));
         }
-        g_ptr_array_remove_range (nodes, start_index, end_index - start_index + 1);
+        g_ptr_array_remove_range (nodes, start_index,
+                                  end_index - start_index + 1);
         g_ptr_array_insert (nodes, start_index,
                             g_object_new (SNAPD_TYPE_MARKDOWN_NODE,
-                                          "node-type", node_type,
-                                          "children", children,
-                                          NULL));
+                                          "node-type", node_type, "children",
+                                          children, NULL));
         g_hash_table_steal (emphasis_info, start_node);
         g_hash_table_steal (emphasis_info, end_node);
         if (end_info->length > 0) {
             SnapdMarkdownNode *node = make_delimiter_node (end_info);
             g_hash_table_insert (emphasis_info, node, end_info);
             g_ptr_array_insert (nodes, start_index + 1, node);
-        }
-        else
+        } else
             emphasis_info_free (end_info);
         if (start_info->length > 0) {
             SnapdMarkdownNode *node = make_delimiter_node (start_info);
             g_hash_table_insert (emphasis_info, node, start_info);
             g_ptr_array_insert (nodes, start_index, node);
-        }
-        else
+        } else
             emphasis_info_free (start_info);
         end_index = start_index;
     }
@@ -409,14 +408,16 @@ combine_text_nodes (GPtrArray *nodes)
         if (children != NULL)
             combine_text_nodes (children);
 
-        if (snapd_markdown_node_get_node_type (node) != SNAPD_MARKDOWN_NODE_TYPE_TEXT)
+        if (snapd_markdown_node_get_node_type (node)
+            != SNAPD_MARKDOWN_NODE_TYPE_TEXT)
             continue;
 
         int node_count = 1;
-        g_autoptr(GString) text = NULL;
+        g_autoptr (GString) text = NULL;
         while (i + node_count < nodes->len) {
             SnapdMarkdownNode *n = g_ptr_array_index (nodes, i + node_count);
-            if (snapd_markdown_node_get_node_type (n) != SNAPD_MARKDOWN_NODE_TYPE_TEXT)
+            if (snapd_markdown_node_get_node_type (n)
+                != SNAPD_MARKDOWN_NODE_TYPE_TEXT)
                 break;
             if (text == NULL)
                 text = g_string_new (snapd_markdown_node_get_text (node));
@@ -445,7 +446,7 @@ is_valid_url_char (gchar c)
         return TRUE;
     /* "Safe" characters */
     if (strchr ("$-_.+", c) != NULL)
-         return TRUE;
+        return TRUE;
     /* "Reserved" characters */
     if (strchr (";/?:@&=", c) != NULL)
         return TRUE;
@@ -496,19 +497,19 @@ static int
 find_url (const gchar *text, int *url_length)
 {
     for (int offset = 0; text[offset] != '\0'; offset++)
-         if (is_url (text + offset, url_length))
-             return offset;
+        if (is_url (text + offset, url_length))
+            return offset;
     return -1;
 }
 
 SnapdMarkdownNode *
 make_url_node (const gchar *text, int length)
 {
-    g_autoptr(GPtrArray) children = g_ptr_array_new_with_free_func (g_object_unref);
+    g_autoptr (GPtrArray) children
+        = g_ptr_array_new_with_free_func (g_object_unref);
     g_ptr_array_add (children, make_text_node (text, length));
-    return g_object_new (SNAPD_TYPE_MARKDOWN_NODE,
-                         "node-type", SNAPD_MARKDOWN_NODE_TYPE_URL,
-                         "children", children,
+    return g_object_new (SNAPD_TYPE_MARKDOWN_NODE, "node-type",
+                         SNAPD_MARKDOWN_NODE_TYPE_URL, "children", children,
                          NULL);
 }
 
@@ -522,20 +523,27 @@ extract_urls (GPtrArray *nodes)
         int url_offset, url_length;
 
         children = snapd_markdown_node_get_children (node);
-        if (snapd_markdown_node_get_node_type (node) != SNAPD_MARKDOWN_NODE_TYPE_URL && children != NULL)
+        if (snapd_markdown_node_get_node_type (node)
+                != SNAPD_MARKDOWN_NODE_TYPE_URL
+            && children != NULL)
             extract_urls (children);
 
-        if (snapd_markdown_node_get_node_type (node) != SNAPD_MARKDOWN_NODE_TYPE_TEXT)
+        if (snapd_markdown_node_get_node_type (node)
+            != SNAPD_MARKDOWN_NODE_TYPE_TEXT)
             continue;
 
         text = snapd_markdown_node_get_text (node);
         url_offset = find_url (text, &url_length);
         if (url_offset >= 0) {
             if (text[url_offset + url_length] != '\0')
-                g_ptr_array_insert (nodes, i + 1, make_text_node (text + url_offset + url_length, -1));
-            g_ptr_array_insert (nodes, i + 1, make_url_node (text + url_offset, url_length));
+                g_ptr_array_insert (
+                    nodes, i + 1,
+                    make_text_node (text + url_offset + url_length, -1));
+            g_ptr_array_insert (nodes, i + 1,
+                                make_url_node (text + url_offset, url_length));
             if (url_offset > 0)
-                g_ptr_array_insert (nodes, i + 1, make_text_node (text, url_offset));
+                g_ptr_array_insert (nodes, i + 1,
+                                    make_text_node (text, url_offset));
             g_ptr_array_remove_index (nodes, i);
         }
     }
@@ -545,8 +553,11 @@ static GPtrArray *
 markup_inline (SnapdMarkdownParser *self, const gchar *text)
 {
     /* Split into nodes */
-    g_autoptr(GPtrArray) nodes = g_ptr_array_new_with_free_func (g_object_unref);
-    g_autoptr(GHashTable) emphasis_info = g_hash_table_new_full (g_direct_hash, g_direct_equal, NULL, (GDestroyNotify) emphasis_info_free);
+    g_autoptr (GPtrArray) nodes
+        = g_ptr_array_new_with_free_func (g_object_unref);
+    g_autoptr (GHashTable) emphasis_info
+        = g_hash_table_new_full (g_direct_hash, g_direct_equal, NULL,
+                                 (GDestroyNotify)emphasis_info_free);
     for (int i = 0; text[i] != '\0';) {
         int start = i;
 
@@ -555,33 +566,37 @@ markup_inline (SnapdMarkdownParser *self, const gchar *text)
             int size = backtick_count (text + start);
             int end = start + size;
             while (text[end] != '\0') {
-                 int s = backtick_count (text + end);
-                 if (s == size)
-                     break;
-                 else if (s == 0)
-                     end++;
-                 else
-                     end += s;
+                int s = backtick_count (text + end);
+                if (s == size)
+                    break;
+                else if (s == 0)
+                    end++;
+                else
+                    end += s;
             }
             if (text[end] != '\0') {
-                 g_autofree gchar *code_text = g_strndup (text + start + size, end - start - size);
-                 g_autofree gchar *stripped_code_text = strip_text (code_text);
-                 g_ptr_array_add (nodes, make_code_node (SNAPD_MARKDOWN_NODE_TYPE_CODE_SPAN, stripped_code_text));
-                 i = end + size;
-            }
-            else {
-                 g_ptr_array_add (nodes, make_paragraph_text_node (self, text + start, size));
-                 i = start + size;
+                g_autofree gchar *code_text
+                    = g_strndup (text + start + size, end - start - size);
+                g_autofree gchar *stripped_code_text = strip_text (code_text);
+                g_ptr_array_add (
+                    nodes, make_code_node (SNAPD_MARKDOWN_NODE_TYPE_CODE_SPAN,
+                                           stripped_code_text));
+                i = end + size;
+            } else {
+                g_ptr_array_add (nodes, make_paragraph_text_node (
+                                            self, text + start, size));
+                i = start + size;
             }
 
             continue;
         }
 
         /* Escaped characters */
-        if (text[start] == '\\' && is_punctuation_character (text[start + 1])) {
-             g_ptr_array_add (nodes, make_text_node (text + start + 1, 1));
-             i = start + 2;
-             continue;
+        if (text[start] == '\\'
+            && is_punctuation_character (text[start + 1])) {
+            g_ptr_array_add (nodes, make_text_node (text + start + 1, 1));
+            i = start + 2;
+            continue;
         }
 
         /* Extract emphasis delimiters (we determine later if they are used) */
@@ -589,21 +604,30 @@ markup_inline (SnapdMarkdownParser *self, const gchar *text)
             while (text[i] == text[start])
                 i++;
 
-            gboolean is_left_flanking = is_left_flanking_delimiter_run (text, start);
-            gboolean is_right_flanking = is_right_flanking_delimiter_run (text, start);
+            gboolean is_left_flanking
+                = is_left_flanking_delimiter_run (text, start);
+            gboolean is_right_flanking
+                = is_right_flanking_delimiter_run (text, start);
 
-            g_autoptr(EmphasisInfo) info = emphasis_info_new ();
+            g_autoptr (EmphasisInfo) info = emphasis_info_new ();
             info->character = text[start];
             info->length = i - start;
             if (text[start] == '_') {
-                info->can_open_emphasis = is_left_flanking && (!is_right_flanking || (start > 0 && is_punctuation_character (text[start - 1])));
-                info->can_close_emphasis = is_right_flanking && (!is_left_flanking || is_punctuation_character (text[i]));
-            }
-            else if (text[start] == '*') {
+                info->can_open_emphasis
+                    = is_left_flanking
+                      && (!is_right_flanking
+                          || (start > 0
+                              && is_punctuation_character (text[start - 1])));
+                info->can_close_emphasis
+                    = is_right_flanking
+                      && (!is_left_flanking
+                          || is_punctuation_character (text[i]));
+            } else if (text[start] == '*') {
                 info->can_open_emphasis = is_left_flanking;
                 info->can_close_emphasis = is_right_flanking;
             }
-            SnapdMarkdownNode *node = make_paragraph_text_node (self, text + start, i - start);
+            SnapdMarkdownNode *node
+                = make_paragraph_text_node (self, text + start, i - start);
             g_ptr_array_add (nodes, node);
             g_hash_table_insert (emphasis_info, node, g_steal_pointer (&info));
             continue;
@@ -619,7 +643,8 @@ markup_inline (SnapdMarkdownParser *self, const gchar *text)
 
             i++;
         }
-        g_ptr_array_add (nodes, make_paragraph_text_node (self, text + start, i - start));
+        g_ptr_array_add (
+            nodes, make_paragraph_text_node (self, text + start, i - start));
     }
 
     /* Convert nodes into emphasis */
@@ -637,7 +662,8 @@ markup_inline (SnapdMarkdownParser *self, const gchar *text)
 static GPtrArray *
 markdown_to_markup (SnapdMarkdownParser *self, const gchar *text)
 {
-    /* Snap supports the following subset of CommonMark (https://commonmark.org/):
+    /* Snap supports the following subset of CommonMark
+     * (https://commonmark.org/):
      *
      * Indented code blocks
      * Paragraphs
@@ -652,24 +678,26 @@ markdown_to_markup (SnapdMarkdownParser *self, const gchar *text)
      */
 
     /* 1. Split into lines */
-    g_autoptr(GPtrArray) line_array = g_ptr_array_new_with_free_func (g_free);
+    g_autoptr (GPtrArray) line_array = g_ptr_array_new_with_free_func (g_free);
     int line_start = 0;
     for (int i = 0; text[i] != '\0'; i++) {
         if (text[i] == '\n' || text[i] == '\r') {
             if (text[i] == '\r' && text[i + 1] == '\n')
                 i++;
-            g_ptr_array_add (line_array, g_strndup (text + line_start, i - line_start + 1));
+            g_ptr_array_add (
+                line_array, g_strndup (text + line_start, i - line_start + 1));
             line_start = i + 1;
         }
     }
     if (text[line_start] != '\0')
         g_ptr_array_add (line_array, g_strdup (text + line_start));
     g_ptr_array_add (line_array, NULL);
-    GStrv lines = (GStrv) line_array->pdata;
+    GStrv lines = (GStrv)line_array->pdata;
 
     /* 2. Split lines into blocks (paragraphs, lists, code) */
     int line_number = 0;
-    g_autoptr(GPtrArray) nodes = g_ptr_array_new_with_free_func (g_object_unref);
+    g_autoptr (GPtrArray) nodes
+        = g_ptr_array_new_with_free_func (g_object_unref);
     while (lines[line_number] != NULL) {
         /* Skip empty lines */
         if (parse_empty_line (lines[line_number])) {
@@ -683,7 +711,7 @@ markdown_to_markup (SnapdMarkdownParser *self, const gchar *text)
         g_autofree gchar *bullet_text = NULL;
         /* Indented code blocks */
         if (parse_indented_code_block (lines[line_number], &block_text)) {
-            g_autoptr(GString) code_text = g_string_new ("");
+            g_autoptr (GString) code_text = g_string_new ("");
             g_string_append (code_text, block_text);
 
             while (TRUE) {
@@ -695,8 +723,7 @@ markdown_to_markup (SnapdMarkdownParser *self, const gchar *text)
                 g_autofree gchar *text = NULL;
                 if (parse_indented_code_block (lines[line_number], &text)) {
                     g_string_append (code_text, text);
-                }
-                else if (parse_empty_line (lines[line_number]))
+                } else if (parse_empty_line (lines[line_number]))
                     g_string_append_c (code_text, '\n');
                 else
                     break;
@@ -706,12 +733,16 @@ markdown_to_markup (SnapdMarkdownParser *self, const gchar *text)
             while (g_str_has_suffix (code_text->str, "\n\n"))
                 g_string_truncate (code_text, code_text->len - 1);
 
-            g_ptr_array_add (nodes, make_code_node (SNAPD_MARKDOWN_NODE_TYPE_CODE_BLOCK, code_text->str));
+            g_ptr_array_add (
+                nodes, make_code_node (SNAPD_MARKDOWN_NODE_TYPE_CODE_BLOCK,
+                                       code_text->str));
         }
         /* Bullet lists */
-        else if (parse_bullet_list_item (lines[line_number], &bullet_offset, &bullet_symbol, &bullet_text)) {
-            g_autoptr(GPtrArray) list_items = g_ptr_array_new_with_free_func (g_object_unref);
-            g_autoptr(GString) list_data = g_string_new (bullet_text);
+        else if (parse_bullet_list_item (lines[line_number], &bullet_offset,
+                                         &bullet_symbol, &bullet_text)) {
+            g_autoptr (GPtrArray) list_items
+                = g_ptr_array_new_with_free_func (g_object_unref);
+            g_autoptr (GString) list_data = g_string_new (bullet_text);
             gboolean starts_with_empty_line = bullet_text[0] == '\0';
             gboolean have_item = TRUE;
             while (TRUE) {
@@ -728,18 +759,21 @@ markdown_to_markup (SnapdMarkdownParser *self, const gchar *text)
                 }
                 starts_with_empty_line = FALSE;
                 g_autofree gchar *line_text = NULL;
-                if (parse_list_item_line (lines[line_number], bullet_offset, &line_text)) {
+                if (parse_list_item_line (lines[line_number], bullet_offset,
+                                          &line_text)) {
                     g_string_append (list_data, line_text);
                     have_item = TRUE;
                     continue;
                 }
 
                 if (have_item) {
-                    g_autoptr(GPtrArray) children = markdown_to_markup (self, list_data->str);
-                    g_ptr_array_add (list_items, g_object_new (SNAPD_TYPE_MARKDOWN_NODE,
-                                                               "node-type", SNAPD_MARKDOWN_NODE_TYPE_LIST_ITEM,
-                                                               "children", children,
-                                                               NULL));
+                    g_autoptr (GPtrArray) children
+                        = markdown_to_markup (self, list_data->str);
+                    g_ptr_array_add (
+                        list_items,
+                        g_object_new (SNAPD_TYPE_MARKDOWN_NODE, "node-type",
+                                      SNAPD_MARKDOWN_NODE_TYPE_LIST_ITEM,
+                                      "children", children, NULL));
                     g_string_assign (list_data, "");
                     have_item = FALSE;
                 }
@@ -747,7 +781,8 @@ markdown_to_markup (SnapdMarkdownParser *self, const gchar *text)
                 // FIXME: Check matching offset
                 g_autofree gchar *text = NULL;
                 gchar symbol;
-                if (!parse_bullet_list_item (lines[line_number], &bullet_offset, &symbol, &text))
+                if (!parse_bullet_list_item (lines[line_number],
+                                             &bullet_offset, &symbol, &text))
                     break;
                 if (symbol != bullet_symbol)
                     break;
@@ -756,21 +791,23 @@ markdown_to_markup (SnapdMarkdownParser *self, const gchar *text)
             }
 
             if (have_item) {
-                g_autoptr(GPtrArray) children = markdown_to_markup (self, list_data->str);
-                g_ptr_array_add (list_items, g_object_new (SNAPD_TYPE_MARKDOWN_NODE,
-                                                           "node-type", SNAPD_MARKDOWN_NODE_TYPE_LIST_ITEM,
-                                                           "children", children,
-                                                           NULL));
+                g_autoptr (GPtrArray) children
+                    = markdown_to_markup (self, list_data->str);
+                g_ptr_array_add (
+                    list_items,
+                    g_object_new (SNAPD_TYPE_MARKDOWN_NODE, "node-type",
+                                  SNAPD_MARKDOWN_NODE_TYPE_LIST_ITEM,
+                                  "children", children, NULL));
             }
 
-            g_ptr_array_add (nodes, g_object_new (SNAPD_TYPE_MARKDOWN_NODE,
-                                                  "node-type", SNAPD_MARKDOWN_NODE_TYPE_UNORDERED_LIST,
-                                                  "children", list_items,
-                                                  NULL));
+            g_ptr_array_add (
+                nodes, g_object_new (SNAPD_TYPE_MARKDOWN_NODE, "node-type",
+                                     SNAPD_MARKDOWN_NODE_TYPE_UNORDERED_LIST,
+                                     "children", list_items, NULL));
         }
         /* Paragraphs */
         else {
-            g_autoptr(GString) paragraph_text = g_string_new ("");
+            g_autoptr (GString) paragraph_text = g_string_new ("");
             while (TRUE) {
                 g_autofree gchar *text = NULL;
                 parse_paragraph (lines[line_number], &text);
@@ -789,7 +826,8 @@ markdown_to_markup (SnapdMarkdownParser *self, const gchar *text)
 
                 /* Break on non-empty list items */
                 g_autofree gchar *bullet_text = NULL;
-                if (parse_bullet_list_item (lines[line_number], NULL, NULL, &bullet_text)) {
+                if (parse_bullet_list_item (lines[line_number], NULL, NULL,
+                                            &bullet_text)) {
                     if (bullet_text[0] != '\0')
                         break;
                 }
@@ -804,13 +842,15 @@ markdown_to_markup (SnapdMarkdownParser *self, const gchar *text)
                 length--;
             if (offset + length > paragraph_text->len)
                 length = 0;
-            g_autofree gchar *stripped_text = g_strndup (paragraph_text->str + offset, length);
+            g_autofree gchar *stripped_text
+                = g_strndup (paragraph_text->str + offset, length);
 
-            g_autoptr(GPtrArray) children = markup_inline (self, stripped_text);
-            g_ptr_array_add (nodes, g_object_new (SNAPD_TYPE_MARKDOWN_NODE,
-                                                  "node-type", SNAPD_MARKDOWN_NODE_TYPE_PARAGRAPH,
-                                                  "children", children,
-                                                  NULL));
+            g_autoptr (GPtrArray) children
+                = markup_inline (self, stripped_text);
+            g_ptr_array_add (
+                nodes, g_object_new (SNAPD_TYPE_MARKDOWN_NODE, "node-type",
+                                     SNAPD_MARKDOWN_NODE_TYPE_PARAGRAPH,
+                                     "children", children, NULL));
         }
     }
 
@@ -836,7 +876,8 @@ snapd_markdown_parser_new (SnapdMarkdownVersion version)
 /**
  * snapd_markdown_parser_set_preserve_whitespace:
  * @parser: a #SnapdMarkdownParser.
- * @preserve_whitespace: %TRUE if the parse should keep paragraph whitespace intact.
+ * @preserve_whitespace: %TRUE if the parse should keep paragraph whitespace
+ * intact.
  *
  * Consecutive paragraph whitespace (space, tabs, newlines) is automatically
  * combined into a single space character. This renders the paragraphs in the
@@ -846,7 +887,8 @@ snapd_markdown_parser_new (SnapdMarkdownVersion version)
  * Since: 1.48
  */
 void
-snapd_markdown_parser_set_preserve_whitespace (SnapdMarkdownParser *self, gboolean preserve_whitespace)
+snapd_markdown_parser_set_preserve_whitespace (SnapdMarkdownParser *self,
+                                               gboolean preserve_whitespace)
 {
     g_return_if_fail (SNAPD_IS_MARKDOWN_PARSER (self));
     self->preserve_whitespace = preserve_whitespace;
@@ -876,7 +918,8 @@ snapd_markdown_parser_get_preserve_whitespace (SnapdMarkdownParser *self)
  *
  * Convert text in snapd markdown format to markup.
  *
- * Returns: (transfer container) (element-type SnapdMarkdownNode): Text split into blocks.
+ * Returns: (transfer container) (element-type SnapdMarkdownNode): Text split
+ * into blocks.
  *
  * Since: 1.48
  */

@@ -1,10 +1,10 @@
 /*
  * Copyright (C) 2016 Canonical Ltd.
  *
- * This library is free software; you can redistribute it and/or modify it under
- * the terms of the GNU Lesser General Public License as published by the Free
- * Software Foundation; either version 2 or version 3 of the License.
- * See http://www.gnu.org/copyleft/lgpl.html the full text of the license.
+ * This library is free software; you can redistribute it and/or modify it
+ * under the terms of the GNU Lesser General Public License as published by the
+ * Free Software Foundation; either version 2 or version 3 of the License. See
+ * http://www.gnu.org/copyleft/lgpl.html the full text of the license.
  */
 
 #include "snapd-snap.h"
@@ -181,7 +181,8 @@ snapd_snap_get_broken (SnapdSnap *self)
  *
  * Gets the categories this snap belongs to.
  *
- * Returns: (transfer none) (element-type SnapdCategory): an array of #SnapdCategory.
+ * Returns: (transfer none) (element-type SnapdCategory): an array of
+ * #SnapdCategory.
  *
  * Since: 1.64
  */
@@ -215,7 +216,8 @@ snapd_snap_get_channel (SnapdSnap *self)
  *
  * Gets the available channels for this snap.
  *
- * Returns: (transfer none) (element-type SnapdChannel): an array of #SnapdChannel.
+ * Returns: (transfer none) (element-type SnapdChannel): an array of
+ * #SnapdChannel.
  *
  * Since: 1.22
  */
@@ -259,17 +261,20 @@ snapd_snap_match_channel (SnapdSnap *self, const gchar *name)
     g_return_val_if_fail (SNAPD_IS_SNAP (self), NULL);
     g_return_val_if_fail (name != NULL, NULL);
 
-    g_autoptr(SnapdChannel) c = g_object_new (SNAPD_TYPE_CHANNEL,
-                                              "name", name,
-                                              NULL);
+    g_autoptr (SnapdChannel) c
+        = g_object_new (SNAPD_TYPE_CHANNEL, "name", name, NULL);
     SnapdChannel *matched_channel = NULL;
     int matched_risk = -1;
     for (guint i = 0; i < self->channels->len; i++) {
         SnapdChannel *channel = self->channels->pdata[i];
 
         /* Must be same track and branch */
-        if (g_strcmp0 (snapd_channel_get_track (channel), snapd_channel_get_track (c)) != 0 ||
-            g_strcmp0 (snapd_channel_get_branch (channel), snapd_channel_get_branch (c)) != 0)
+        if (g_strcmp0 (snapd_channel_get_track (channel),
+                       snapd_channel_get_track (c))
+                != 0
+            || g_strcmp0 (snapd_channel_get_branch (channel),
+                          snapd_channel_get_branch (c))
+                   != 0)
             continue;
 
         /* Must be no riskier than requested */
@@ -325,7 +330,8 @@ snapd_snap_get_confinement (SnapdSnap *self)
  * snapd_snap_get_contact:
  * @snap: a #SnapdSnap.
  *
- * Get the means of contacting the snap developer, e.g. "mailto:developer@example.com".
+ * Get the means of contacting the snap developer, e.g.
+ * "mailto:developer@example.com".
  *
  * Returns: a contact URL.
  *
@@ -342,8 +348,8 @@ snapd_snap_get_contact (SnapdSnap *self)
  * snapd_snap_get_description:
  * @snap: a #SnapdSnap.
  *
- * Get a multi-line description of this snap. The description is formatted using
- * a subset of Markdown. To parse this use a #SnapdMarkdownParser.
+ * Get a multi-line description of this snap. The description is formatted
+ * using a subset of Markdown. To parse this use a #SnapdMarkdownParser.
  *
  * Returns: description text.
  *
@@ -412,7 +418,8 @@ snapd_snap_get_download_size (SnapdSnap *self)
  * snapd_snap_get_hold:
  * @snap: a #SnapdSnap.
  *
- * Get the date this snap will re-enable automatic refreshing or %NULL if no hold is present.
+ * Get the date this snap will re-enable automatic refreshing or %NULL if no
+ * hold is present.
  *
  * Returns: (transfer none) (allow-none): a #GDateTime or %NULL.
  *
@@ -429,9 +436,10 @@ snapd_snap_get_hold (SnapdSnap *self)
  * snapd_snap_get_proceed_time:
  * @snap: a @SnapdSnap
  *
- * Returns the date and time after which a refresh is forced for this running snap
- * in the next auto-refresh. By substracting the current date and time it's possible
- * to know how many time remains before the snap is forced to be refreshed.
+ * Returns the date and time after which a refresh is forced for this running
+ * snap in the next auto-refresh. By substracting the current date and time
+ * it's possible to know how many time remains before the snap is forced to be
+ * refreshed.
  *
  * Returns: (transfer none) (allow-none): a #GDateTime or %NULL.
  *
@@ -706,7 +714,8 @@ snapd_snap_get_publisher_username (SnapdSnap *self)
  * snapd_snap_get_publisher_validation:
  * @snap: a #SnapdSnap.
  *
- * Get the validation for the snap publisher, e.g. %SNAPD_PUBLISHER_VALIDATION_VERIFIED
+ * Get the validation for the snap publisher, e.g.
+ * %SNAPD_PUBLISHER_VALIDATION_VERIFIED
  *
  * Returns: a #SnapdPublisherValidation.
  *
@@ -715,7 +724,8 @@ snapd_snap_get_publisher_username (SnapdSnap *self)
 SnapdPublisherValidation
 snapd_snap_get_publisher_validation (SnapdSnap *self)
 {
-    g_return_val_if_fail (SNAPD_IS_SNAP (self), SNAPD_PUBLISHER_VALIDATION_UNKNOWN);
+    g_return_val_if_fail (SNAPD_IS_SNAP (self),
+                          SNAPD_PUBLISHER_VALIDATION_UNKNOWN);
     return self->publisher_validation;
 }
 
@@ -743,7 +753,8 @@ snapd_snap_get_revision (SnapdSnap *self)
  *
  * Get the screenshots that are available for this snap.
  *
- * Returns: (transfer none) (element-type SnapdScreenshot): an array of #SnapdScreenshot.
+ * Returns: (transfer none) (element-type SnapdScreenshot): an array of
+ * #SnapdScreenshot.
  *
  * Since: 1.0
  * Deprecated: 1.45: Use snapd_snap_get_media()
@@ -846,7 +857,8 @@ snapd_snap_get_tracking_channel (SnapdSnap *self)
  *
  * Get the tracks that are available.
  *
- * Returns: (transfer none) (array zero-terminated=1): an ordered array of track names.
+ * Returns: (transfer none) (array zero-terminated=1): an ordered array of
+ * track names.
  *
  * Since: 1.22
  */
@@ -911,7 +923,10 @@ snapd_snap_get_website (SnapdSnap *self)
 }
 
 static void
-snapd_snap_set_property (GObject *object, guint prop_id, const GValue *value, GParamSpec *pspec)
+snapd_snap_set_property (GObject *object,
+                         guint prop_id,
+                         const GValue *value,
+                         GParamSpec *pspec)
 {
     SnapdSnap *self = SNAPD_SNAP (object);
 
@@ -1087,7 +1102,10 @@ snapd_snap_set_property (GObject *object, guint prop_id, const GValue *value, GP
 }
 
 static void
-snapd_snap_get_property (GObject *object, guint prop_id, GValue *value, GParamSpec *pspec)
+snapd_snap_get_property (GObject *object,
+                         guint prop_id,
+                         GValue *value,
+                         GParamSpec *pspec)
 {
     SnapdSnap *self = SNAPD_SNAP (object);
 
@@ -1271,300 +1289,218 @@ snapd_snap_class_init (SnapdSnapClass *klass)
     gobject_class->get_property = snapd_snap_get_property;
     gobject_class->finalize = snapd_snap_finalize;
 
-    g_object_class_install_property (gobject_class,
-                                     PROP_APPS,
-                                     g_param_spec_boxed ("apps",
-                                                         "apps",
-                                                         "Apps this snap contains",
-                                                         G_TYPE_PTR_ARRAY,
-                                                         G_PARAM_READWRITE | G_PARAM_CONSTRUCT_ONLY));
-    g_object_class_install_property (gobject_class,
-                                     PROP_CATEGORIES,
-                                     g_param_spec_boxed ("categories",
-                                                         "categories",
-                                                         "Categories this snap belongs to",
-                                                         G_TYPE_PTR_ARRAY,
-                                                         G_PARAM_READWRITE | G_PARAM_CONSTRUCT_ONLY));
-    g_object_class_install_property (gobject_class,
-                                     PROP_BASE,
-                                     g_param_spec_string ("base",
-                                                          "base",
-                                                          "Base snap this snap uses",
-                                                          NULL,
-                                                          G_PARAM_READWRITE | G_PARAM_CONSTRUCT_ONLY));
-    g_object_class_install_property (gobject_class,
-                                     PROP_BROKEN,
-                                     g_param_spec_string ("broken",
-                                                          "broken",
-                                                          "Error string if snap is broken",
-                                                          NULL,
-                                                          G_PARAM_READWRITE | G_PARAM_CONSTRUCT_ONLY));
-    g_object_class_install_property (gobject_class,
-                                     PROP_CHANNEL,
-                                     g_param_spec_string ("channel",
-                                                          "channel",
-                                                          "Channel the snap is from",
-                                                          NULL,
-                                                          G_PARAM_READWRITE | G_PARAM_CONSTRUCT_ONLY));
-    g_object_class_install_property (gobject_class,
-                                     PROP_CHANNELS,
-                                     g_param_spec_boxed ("channels",
-                                                         "channels",
-                                                         "Channels this snap is available on",
-                                                         G_TYPE_PTR_ARRAY,
-                                                         G_PARAM_READWRITE | G_PARAM_CONSTRUCT_ONLY));
-    g_object_class_install_property (gobject_class,
-                                     PROP_COMMON_IDS,
-                                     g_param_spec_boxed ("common-ids",
-                                                         "common-ids",
-                                                         "Common IDs",
-                                                         G_TYPE_STRV,
-                                                         G_PARAM_READWRITE | G_PARAM_CONSTRUCT_ONLY));
-    g_object_class_install_property (gobject_class,
-                                     PROP_CONFINEMENT,
-                                     g_param_spec_enum ("confinement",
-                                                        "confinement",
-                                                        "Confinement requested by the snap",
-                                                        SNAPD_TYPE_CONFINEMENT, SNAPD_CONFINEMENT_UNKNOWN,
-                                                        G_PARAM_READWRITE | G_PARAM_CONSTRUCT_ONLY));
-    g_object_class_install_property (gobject_class,
-                                     PROP_CONTACT,
-                                     g_param_spec_string ("contact",
-                                                          "contact",
-                                                          "Method of contacting developer",
-                                                          NULL,
-                                                          G_PARAM_READWRITE | G_PARAM_CONSTRUCT_ONLY));
-    g_object_class_install_property (gobject_class,
-                                     PROP_DESCRIPTION,
-                                     g_param_spec_string ("description",
-                                                          "description",
-                                                          "Description of the snap",
-                                                          NULL,
-                                                          G_PARAM_READWRITE | G_PARAM_CONSTRUCT_ONLY));
-    g_object_class_install_property (gobject_class,
-                                     PROP_DEVELOPER,
-                                     g_param_spec_string ("developer",
-                                                          "developer",
-                                                          "Developer who created the snap",
-                                                          NULL,
-                                                          G_PARAM_READWRITE | G_PARAM_CONSTRUCT_ONLY | G_PARAM_DEPRECATED));
-    g_object_class_install_property (gobject_class,
-                                     PROP_DEVMODE,
-                                     g_param_spec_boolean ("devmode",
-                                                           "devmode",
-                                                           "TRUE if the snap is currently installed in devmode",
-                                                           FALSE,
-                                                           G_PARAM_READWRITE | G_PARAM_CONSTRUCT_ONLY));
-    g_object_class_install_property (gobject_class,
-                                     PROP_DOWNLOAD_SIZE,
-                                     g_param_spec_int64 ("download-size",
-                                                         "download-size",
-                                                         "Download size in bytes",
-                                                         G_MININT64, G_MAXINT64, 0,
-                                                         G_PARAM_READWRITE | G_PARAM_CONSTRUCT_ONLY));
-    g_object_class_install_property (gobject_class,
-                                     PROP_HOLD,
-                                     g_param_spec_boxed ("hold",
-                                                         "hold",
-                                                         "Date this snap will re-enable automatic refreshing",
-                                                         G_TYPE_DATE_TIME,
-                                                         G_PARAM_READWRITE | G_PARAM_CONSTRUCT_ONLY));
-    g_object_class_install_property (gobject_class,
-                                     PROP_PROCEED_TIME,
-                                     g_param_spec_boxed ("proceed-time",
-                                                         "proceed-time",
-                                                         "Describes time after which a refresh is forced for a running snap in the next auto-refresh.",
-                                                         G_TYPE_DATE_TIME,
-                                                         G_PARAM_READWRITE | G_PARAM_CONSTRUCT_ONLY));
-    g_object_class_install_property (gobject_class,
-                                     PROP_ICON,
-                                     g_param_spec_string ("icon",
-                                                          "icon",
-                                                          "URL to the snap icon",
-                                                          NULL,
-                                                          G_PARAM_READWRITE | G_PARAM_CONSTRUCT_ONLY));
-    g_object_class_install_property (gobject_class,
-                                     PROP_ID,
-                                     g_param_spec_string ("id",
-                                                          "id",
-                                                          "Unique ID for this snap",
-                                                          NULL,
-                                                          G_PARAM_READWRITE | G_PARAM_CONSTRUCT_ONLY));
-    g_object_class_install_property (gobject_class,
-                                     PROP_INSTALL_DATE,
-                                     g_param_spec_boxed ("install-date",
-                                                         "install-date",
-                                                         "Date this snap was installed",
-                                                         G_TYPE_DATE_TIME,
-                                                         G_PARAM_READWRITE | G_PARAM_CONSTRUCT_ONLY));
-    g_object_class_install_property (gobject_class,
-                                     PROP_INSTALLED_SIZE,
-                                     g_param_spec_int64 ("installed-size",
-                                                         "installed-size",
-                                                         "Installed size in bytes",
-                                                         G_MININT64, G_MAXINT64, 0,
-                                                         G_PARAM_READWRITE | G_PARAM_CONSTRUCT_ONLY));
-    g_object_class_install_property (gobject_class,
-                                     PROP_JAILMODE,
-                                     g_param_spec_boolean ("jailmode",
-                                                           "jailmode",
-                                                           "TRUE if the snap is currently installed in jailmode",
-                                                           FALSE,
-                                                           G_PARAM_READWRITE | G_PARAM_CONSTRUCT_ONLY));
-    g_object_class_install_property (gobject_class,
-                                     PROP_LICENSE,
-                                     g_param_spec_string ("license",
-                                                          "license",
-                                                          "The snap license as an SPDX expression",
-                                                          NULL,
-                                                          G_PARAM_READWRITE | G_PARAM_CONSTRUCT_ONLY));
-    g_object_class_install_property (gobject_class,
-                                     PROP_MEDIA,
-                                     g_param_spec_boxed ("media",
-                                                         "media",
-                                                         "Media associated with this snap",
-                                                         G_TYPE_PTR_ARRAY,
-                                                         G_PARAM_READWRITE | G_PARAM_CONSTRUCT_ONLY));
-    g_object_class_install_property (gobject_class,
-                                     PROP_MOUNTED_FROM,
-                                     g_param_spec_string ("mounted-from",
-                                                          "mounted-from",
-                                                          "Path snap is mounted from",
-                                                          NULL,
-                                                          G_PARAM_READWRITE | G_PARAM_CONSTRUCT_ONLY));
-    g_object_class_install_property (gobject_class,
-                                     PROP_NAME,
-                                     g_param_spec_string ("name",
-                                                          "name",
-                                                          "The snap name",
-                                                          NULL,
-                                                          G_PARAM_READWRITE | G_PARAM_CONSTRUCT_ONLY));
-    g_object_class_install_property (gobject_class,
-                                     PROP_PRICES,
-                                     g_param_spec_boxed ("prices",
-                                                         "prices",
-                                                         "Prices this snap can be purchased for",
-                                                         G_TYPE_PTR_ARRAY,
-                                                         G_PARAM_READWRITE | G_PARAM_CONSTRUCT_ONLY));
-    g_object_class_install_property (gobject_class,
-                                     PROP_PRIVATE,
-                                     g_param_spec_boolean ("private",
-                                                           "private",
-                                                           "TRUE if this snap is only available to its author",
-                                                           FALSE,
-                                                           G_PARAM_READWRITE | G_PARAM_CONSTRUCT_ONLY));
-    g_object_class_install_property (gobject_class,
-                                     PROP_PUBLISHER_DISPLAY_NAME,
-                                     g_param_spec_string ("publisher-display-name",
-                                                          "publisher-display-name",
-                                                          "Display name for snap publisher",
-                                                          NULL,
-                                                          G_PARAM_READWRITE | G_PARAM_CONSTRUCT_ONLY));
-    g_object_class_install_property (gobject_class,
-                                     PROP_PUBLISHER_ID,
-                                     g_param_spec_string ("publisher-id",
-                                                          "publisher-id",
-                                                          "ID for snap publisher",
-                                                          NULL,
-                                                          G_PARAM_READWRITE | G_PARAM_CONSTRUCT_ONLY));
-    g_object_class_install_property (gobject_class,
-                                     PROP_PUBLISHER_USERNAME,
-                                     g_param_spec_string ("publisher-username",
-                                                          "publisher-username",
-                                                          "Username for snap publisher",
-                                                          NULL,
-                                                          G_PARAM_READWRITE | G_PARAM_CONSTRUCT_ONLY));
-    g_object_class_install_property (gobject_class,
-                                     PROP_PUBLISHER_VALIDATION,
-                                     g_param_spec_enum ("publisher-validation",
-                                                        "publisher-validation",
-                                                        "Validation for snap publisher",
-                                                        SNAPD_TYPE_PUBLISHER_VALIDATION, SNAPD_PUBLISHER_VALIDATION_UNKNOWN,
-                                                        G_PARAM_READWRITE | G_PARAM_CONSTRUCT_ONLY));
-    g_object_class_install_property (gobject_class,
-                                     PROP_REVISION,
-                                     g_param_spec_string ("revision",
-                                                          "revision",
-                                                          "Revision of this snap",
-                                                          NULL,
-                                                          G_PARAM_READWRITE | G_PARAM_CONSTRUCT_ONLY));
-    g_object_class_install_property (gobject_class,
-                                     PROP_SCREENSHOTS,
-                                     g_param_spec_boxed ("screenshots",
-                                                         "screenshots",
-                                                         "Screenshots of this snap",
-                                                         G_TYPE_PTR_ARRAY,
-                                                         G_PARAM_READWRITE | G_PARAM_CONSTRUCT_ONLY));
-    g_object_class_install_property (gobject_class,
-                                     PROP_STATUS,
-                                     g_param_spec_enum ("status",
-                                                        "status",
-                                                        "State of this snap",
-                                                        SNAPD_TYPE_SNAP_STATUS, SNAPD_SNAP_STATUS_UNKNOWN,
-                                                        G_PARAM_READWRITE | G_PARAM_CONSTRUCT_ONLY));
-    g_object_class_install_property (gobject_class,
-                                     PROP_SUMMARY,
-                                     g_param_spec_string ("summary",
-                                                          "summary",
-                                                          "One line description",
-                                                          NULL,
-                                                          G_PARAM_READWRITE | G_PARAM_CONSTRUCT_ONLY));
-    g_object_class_install_property (gobject_class,
-                                     PROP_STORE_URL,
-                                     g_param_spec_string ("store-url",
-                                                          "store-url",
-                                                          "Web store URL",
-                                                          NULL,
-                                                          G_PARAM_READWRITE | G_PARAM_CONSTRUCT_ONLY));
-    g_object_class_install_property (gobject_class,
-                                     PROP_TITLE,
-                                     g_param_spec_string ("title",
-                                                          "title",
-                                                          "The snap title",
-                                                          NULL,
-                                                          G_PARAM_READWRITE | G_PARAM_CONSTRUCT_ONLY));
-    g_object_class_install_property (gobject_class,
-                                     PROP_TRACKING_CHANNEL,
-                                     g_param_spec_string ("tracking-channel",
-                                                          "tracking-channel",
-                                                          "Channel the snap is currently tracking",
-                                                          NULL,
-                                                          G_PARAM_READWRITE | G_PARAM_CONSTRUCT_ONLY));
-    g_object_class_install_property (gobject_class,
-                                     PROP_TRACKS,
-                                     g_param_spec_boxed ("tracks",
-                                                         "tracks",
-                                                         "Track names",
-                                                         G_TYPE_STRV,
-                                                         G_PARAM_READWRITE | G_PARAM_CONSTRUCT_ONLY));
-    g_object_class_install_property (gobject_class,
-                                     PROP_TRYMODE,
-                                     g_param_spec_boolean ("trymode",
-                                                           "trymode",
-                                                           "TRUE if this snap is installed in try mode",
-                                                           FALSE,
-                                                           G_PARAM_READWRITE | G_PARAM_CONSTRUCT_ONLY));
-    g_object_class_install_property (gobject_class,
-                                     PROP_SNAP_TYPE,
-                                     g_param_spec_enum ("snap-type",
-                                                        "snap-type",
-                                                        "Snap type",
-                                                        SNAPD_TYPE_SNAP_TYPE, SNAPD_SNAP_TYPE_UNKNOWN,
-                                                        G_PARAM_READWRITE | G_PARAM_CONSTRUCT_ONLY));
-    g_object_class_install_property (gobject_class,
-                                     PROP_VERSION,
-                                     g_param_spec_string ("version",
-                                                          "version",
-                                                          "Snap version",
-                                                          NULL,
-                                                          G_PARAM_READWRITE | G_PARAM_CONSTRUCT_ONLY));
-    g_object_class_install_property (gobject_class,
-                                     PROP_WEBSITE,
-                                     g_param_spec_string ("website",
-                                                          "website",
-                                                          "Website of developer",
-                                                          NULL,
-                                                          G_PARAM_READWRITE | G_PARAM_CONSTRUCT_ONLY));
+    g_object_class_install_property (
+        gobject_class, PROP_APPS,
+        g_param_spec_boxed ("apps", "apps", "Apps this snap contains",
+                            G_TYPE_PTR_ARRAY,
+                            G_PARAM_READWRITE | G_PARAM_CONSTRUCT_ONLY));
+    g_object_class_install_property (
+        gobject_class, PROP_CATEGORIES,
+        g_param_spec_boxed (
+            "categories", "categories", "Categories this snap belongs to",
+            G_TYPE_PTR_ARRAY, G_PARAM_READWRITE | G_PARAM_CONSTRUCT_ONLY));
+    g_object_class_install_property (
+        gobject_class, PROP_BASE,
+        g_param_spec_string ("base", "base", "Base snap this snap uses", NULL,
+                             G_PARAM_READWRITE | G_PARAM_CONSTRUCT_ONLY));
+    g_object_class_install_property (
+        gobject_class, PROP_BROKEN,
+        g_param_spec_string ("broken", "broken",
+                             "Error string if snap is broken", NULL,
+                             G_PARAM_READWRITE | G_PARAM_CONSTRUCT_ONLY));
+    g_object_class_install_property (
+        gobject_class, PROP_CHANNEL,
+        g_param_spec_string ("channel", "channel", "Channel the snap is from",
+                             NULL,
+                             G_PARAM_READWRITE | G_PARAM_CONSTRUCT_ONLY));
+    g_object_class_install_property (
+        gobject_class, PROP_CHANNELS,
+        g_param_spec_boxed (
+            "channels", "channels", "Channels this snap is available on",
+            G_TYPE_PTR_ARRAY, G_PARAM_READWRITE | G_PARAM_CONSTRUCT_ONLY));
+    g_object_class_install_property (
+        gobject_class, PROP_COMMON_IDS,
+        g_param_spec_boxed ("common-ids", "common-ids", "Common IDs",
+                            G_TYPE_STRV,
+                            G_PARAM_READWRITE | G_PARAM_CONSTRUCT_ONLY));
+    g_object_class_install_property (
+        gobject_class, PROP_CONFINEMENT,
+        g_param_spec_enum ("confinement", "confinement",
+                           "Confinement requested by the snap",
+                           SNAPD_TYPE_CONFINEMENT, SNAPD_CONFINEMENT_UNKNOWN,
+                           G_PARAM_READWRITE | G_PARAM_CONSTRUCT_ONLY));
+    g_object_class_install_property (
+        gobject_class, PROP_CONTACT,
+        g_param_spec_string ("contact", "contact",
+                             "Method of contacting developer", NULL,
+                             G_PARAM_READWRITE | G_PARAM_CONSTRUCT_ONLY));
+    g_object_class_install_property (
+        gobject_class, PROP_DESCRIPTION,
+        g_param_spec_string ("description", "description",
+                             "Description of the snap", NULL,
+                             G_PARAM_READWRITE | G_PARAM_CONSTRUCT_ONLY));
+    g_object_class_install_property (
+        gobject_class, PROP_DEVELOPER,
+        g_param_spec_string (
+            "developer", "developer", "Developer who created the snap", NULL,
+            G_PARAM_READWRITE | G_PARAM_CONSTRUCT_ONLY | G_PARAM_DEPRECATED));
+    g_object_class_install_property (
+        gobject_class, PROP_DEVMODE,
+        g_param_spec_boolean (
+            "devmode", "devmode",
+            "TRUE if the snap is currently installed in devmode", FALSE,
+            G_PARAM_READWRITE | G_PARAM_CONSTRUCT_ONLY));
+    g_object_class_install_property (
+        gobject_class, PROP_DOWNLOAD_SIZE,
+        g_param_spec_int64 ("download-size", "download-size",
+                            "Download size in bytes", G_MININT64, G_MAXINT64,
+                            0, G_PARAM_READWRITE | G_PARAM_CONSTRUCT_ONLY));
+    g_object_class_install_property (
+        gobject_class, PROP_HOLD,
+        g_param_spec_boxed (
+            "hold", "hold",
+            "Date this snap will re-enable automatic refreshing",
+            G_TYPE_DATE_TIME, G_PARAM_READWRITE | G_PARAM_CONSTRUCT_ONLY));
+    g_object_class_install_property (
+        gobject_class, PROP_PROCEED_TIME,
+        g_param_spec_boxed ("proceed-time", "proceed-time",
+                            "Describes time after which a refresh is forced "
+                            "for a running snap in the next auto-refresh.",
+                            G_TYPE_DATE_TIME,
+                            G_PARAM_READWRITE | G_PARAM_CONSTRUCT_ONLY));
+    g_object_class_install_property (
+        gobject_class, PROP_ICON,
+        g_param_spec_string ("icon", "icon", "URL to the snap icon", NULL,
+                             G_PARAM_READWRITE | G_PARAM_CONSTRUCT_ONLY));
+    g_object_class_install_property (
+        gobject_class, PROP_ID,
+        g_param_spec_string ("id", "id", "Unique ID for this snap", NULL,
+                             G_PARAM_READWRITE | G_PARAM_CONSTRUCT_ONLY));
+    g_object_class_install_property (
+        gobject_class, PROP_INSTALL_DATE,
+        g_param_spec_boxed ("install-date", "install-date",
+                            "Date this snap was installed", G_TYPE_DATE_TIME,
+                            G_PARAM_READWRITE | G_PARAM_CONSTRUCT_ONLY));
+    g_object_class_install_property (
+        gobject_class, PROP_INSTALLED_SIZE,
+        g_param_spec_int64 ("installed-size", "installed-size",
+                            "Installed size in bytes", G_MININT64, G_MAXINT64,
+                            0, G_PARAM_READWRITE | G_PARAM_CONSTRUCT_ONLY));
+    g_object_class_install_property (
+        gobject_class, PROP_JAILMODE,
+        g_param_spec_boolean (
+            "jailmode", "jailmode",
+            "TRUE if the snap is currently installed in jailmode", FALSE,
+            G_PARAM_READWRITE | G_PARAM_CONSTRUCT_ONLY));
+    g_object_class_install_property (
+        gobject_class, PROP_LICENSE,
+        g_param_spec_string ("license", "license",
+                             "The snap license as an SPDX expression", NULL,
+                             G_PARAM_READWRITE | G_PARAM_CONSTRUCT_ONLY));
+    g_object_class_install_property (
+        gobject_class, PROP_MEDIA,
+        g_param_spec_boxed (
+            "media", "media", "Media associated with this snap",
+            G_TYPE_PTR_ARRAY, G_PARAM_READWRITE | G_PARAM_CONSTRUCT_ONLY));
+    g_object_class_install_property (
+        gobject_class, PROP_MOUNTED_FROM,
+        g_param_spec_string ("mounted-from", "mounted-from",
+                             "Path snap is mounted from", NULL,
+                             G_PARAM_READWRITE | G_PARAM_CONSTRUCT_ONLY));
+    g_object_class_install_property (
+        gobject_class, PROP_NAME,
+        g_param_spec_string ("name", "name", "The snap name", NULL,
+                             G_PARAM_READWRITE | G_PARAM_CONSTRUCT_ONLY));
+    g_object_class_install_property (
+        gobject_class, PROP_PRICES,
+        g_param_spec_boxed (
+            "prices", "prices", "Prices this snap can be purchased for",
+            G_TYPE_PTR_ARRAY, G_PARAM_READWRITE | G_PARAM_CONSTRUCT_ONLY));
+    g_object_class_install_property (
+        gobject_class, PROP_PRIVATE,
+        g_param_spec_boolean (
+            "private", "private",
+            "TRUE if this snap is only available to its author", FALSE,
+            G_PARAM_READWRITE | G_PARAM_CONSTRUCT_ONLY));
+    g_object_class_install_property (
+        gobject_class, PROP_PUBLISHER_DISPLAY_NAME,
+        g_param_spec_string ("publisher-display-name",
+                             "publisher-display-name",
+                             "Display name for snap publisher", NULL,
+                             G_PARAM_READWRITE | G_PARAM_CONSTRUCT_ONLY));
+    g_object_class_install_property (
+        gobject_class, PROP_PUBLISHER_ID,
+        g_param_spec_string ("publisher-id", "publisher-id",
+                             "ID for snap publisher", NULL,
+                             G_PARAM_READWRITE | G_PARAM_CONSTRUCT_ONLY));
+    g_object_class_install_property (
+        gobject_class, PROP_PUBLISHER_USERNAME,
+        g_param_spec_string ("publisher-username", "publisher-username",
+                             "Username for snap publisher", NULL,
+                             G_PARAM_READWRITE | G_PARAM_CONSTRUCT_ONLY));
+    g_object_class_install_property (
+        gobject_class, PROP_PUBLISHER_VALIDATION,
+        g_param_spec_enum ("publisher-validation", "publisher-validation",
+                           "Validation for snap publisher",
+                           SNAPD_TYPE_PUBLISHER_VALIDATION,
+                           SNAPD_PUBLISHER_VALIDATION_UNKNOWN,
+                           G_PARAM_READWRITE | G_PARAM_CONSTRUCT_ONLY));
+    g_object_class_install_property (
+        gobject_class, PROP_REVISION,
+        g_param_spec_string ("revision", "revision", "Revision of this snap",
+                             NULL,
+                             G_PARAM_READWRITE | G_PARAM_CONSTRUCT_ONLY));
+    g_object_class_install_property (
+        gobject_class, PROP_SCREENSHOTS,
+        g_param_spec_boxed ("screenshots", "screenshots",
+                            "Screenshots of this snap", G_TYPE_PTR_ARRAY,
+                            G_PARAM_READWRITE | G_PARAM_CONSTRUCT_ONLY));
+    g_object_class_install_property (
+        gobject_class, PROP_STATUS,
+        g_param_spec_enum ("status", "status", "State of this snap",
+                           SNAPD_TYPE_SNAP_STATUS, SNAPD_SNAP_STATUS_UNKNOWN,
+                           G_PARAM_READWRITE | G_PARAM_CONSTRUCT_ONLY));
+    g_object_class_install_property (
+        gobject_class, PROP_SUMMARY,
+        g_param_spec_string ("summary", "summary", "One line description",
+                             NULL,
+                             G_PARAM_READWRITE | G_PARAM_CONSTRUCT_ONLY));
+    g_object_class_install_property (
+        gobject_class, PROP_STORE_URL,
+        g_param_spec_string ("store-url", "store-url", "Web store URL", NULL,
+                             G_PARAM_READWRITE | G_PARAM_CONSTRUCT_ONLY));
+    g_object_class_install_property (
+        gobject_class, PROP_TITLE,
+        g_param_spec_string ("title", "title", "The snap title", NULL,
+                             G_PARAM_READWRITE | G_PARAM_CONSTRUCT_ONLY));
+    g_object_class_install_property (
+        gobject_class, PROP_TRACKING_CHANNEL,
+        g_param_spec_string ("tracking-channel", "tracking-channel",
+                             "Channel the snap is currently tracking", NULL,
+                             G_PARAM_READWRITE | G_PARAM_CONSTRUCT_ONLY));
+    g_object_class_install_property (
+        gobject_class, PROP_TRACKS,
+        g_param_spec_boxed ("tracks", "tracks", "Track names", G_TYPE_STRV,
+                            G_PARAM_READWRITE | G_PARAM_CONSTRUCT_ONLY));
+    g_object_class_install_property (
+        gobject_class, PROP_TRYMODE,
+        g_param_spec_boolean (
+            "trymode", "trymode", "TRUE if this snap is installed in try mode",
+            FALSE, G_PARAM_READWRITE | G_PARAM_CONSTRUCT_ONLY));
+    g_object_class_install_property (
+        gobject_class, PROP_SNAP_TYPE,
+        g_param_spec_enum ("snap-type", "snap-type", "Snap type",
+                           SNAPD_TYPE_SNAP_TYPE, SNAPD_SNAP_TYPE_UNKNOWN,
+                           G_PARAM_READWRITE | G_PARAM_CONSTRUCT_ONLY));
+    g_object_class_install_property (
+        gobject_class, PROP_VERSION,
+        g_param_spec_string ("version", "version", "Snap version", NULL,
+                             G_PARAM_READWRITE | G_PARAM_CONSTRUCT_ONLY));
+    g_object_class_install_property (
+        gobject_class, PROP_WEBSITE,
+        g_param_spec_string ("website", "website", "Website of developer",
+                             NULL,
+                             G_PARAM_READWRITE | G_PARAM_CONSTRUCT_ONLY));
 }
 
 static void

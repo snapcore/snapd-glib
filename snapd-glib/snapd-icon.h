@@ -1,10 +1,10 @@
 /*
  * Copyright (C) 2016 Canonical Ltd.
  *
- * This library is free software; you can redistribute it and/or modify it under
- * the terms of the GNU Lesser General Public License as published by the Free
- * Software Foundation; either version 2 or version 3 of the License.
- * See http://www.gnu.org/copyleft/lgpl.html the full text of the license.
+ * This library is free software; you can redistribute it and/or modify it
+ * under the terms of the GNU Lesser General Public License as published by the
+ * Free Software Foundation; either version 2 or version 3 of the License. See
+ * http://www.gnu.org/copyleft/lgpl.html the full text of the license.
  */
 
 #ifndef __SNAPD_ICON_H__
@@ -22,9 +22,9 @@ G_BEGIN_DECLS
 
 G_DECLARE_FINAL_TYPE (SnapdIcon, snapd_icon, SNAPD, ICON, GObject)
 
-const gchar  *snapd_icon_get_mime_type   (SnapdIcon *icon);
+const gchar *snapd_icon_get_mime_type (SnapdIcon *icon);
 
-GBytes       *snapd_icon_get_data        (SnapdIcon *icon);
+GBytes *snapd_icon_get_data (SnapdIcon *icon);
 
 G_END_DECLS
 

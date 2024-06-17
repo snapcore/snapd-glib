@@ -1,10 +1,10 @@
 /*
  * Copyright (C) 2019 Canonical Ltd.
  *
- * This library is free software; you can redistribute it and/or modify it under
- * the terms of the GNU Lesser General Public License as published by the Free
- * Software Foundation; either version 2 or version 3 of the License.
- * See http://www.gnu.org/copyleft/lgpl.html the full text of the license.
+ * This library is free software; you can redistribute it and/or modify it
+ * under the terms of the GNU Lesser General Public License as published by the
+ * Free Software Foundation; either version 2 or version 3 of the License. See
+ * http://www.gnu.org/copyleft/lgpl.html the full text of the license.
  */
 
 #include <string.h>
@@ -79,7 +79,10 @@ snapd_plug_ref_get_snap (SnapdPlugRef *self)
 }
 
 static void
-snapd_plug_ref_set_property (GObject *object, guint prop_id, const GValue *value, GParamSpec *pspec)
+snapd_plug_ref_set_property (GObject *object,
+                             guint prop_id,
+                             const GValue *value,
+                             GParamSpec *pspec)
 {
     SnapdPlugRef *self = SNAPD_PLUG_REF (object);
 
@@ -99,7 +102,10 @@ snapd_plug_ref_set_property (GObject *object, guint prop_id, const GValue *value
 }
 
 static void
-snapd_plug_ref_get_property (GObject *object, guint prop_id, GValue *value, GParamSpec *pspec)
+snapd_plug_ref_get_property (GObject *object,
+                             guint prop_id,
+                             GValue *value,
+                             GParamSpec *pspec)
 {
     SnapdPlugRef *self = SNAPD_PLUG_REF (object);
 
@@ -136,20 +142,14 @@ snapd_plug_ref_class_init (SnapdPlugRefClass *klass)
     gobject_class->get_property = snapd_plug_ref_get_property;
     gobject_class->finalize = snapd_plug_ref_finalize;
 
-    g_object_class_install_property (gobject_class,
-                                     PROP_PLUG,
-                                     g_param_spec_string ("plug",
-                                                          "plug",
-                                                          "Name of plug",
-                                                          NULL,
-                                                          G_PARAM_READWRITE | G_PARAM_CONSTRUCT_ONLY));
-    g_object_class_install_property (gobject_class,
-                                     PROP_SNAP,
-                                     g_param_spec_string ("snap",
-                                                          "snap",
-                                                          "Snap this plug is on",
-                                                          NULL,
-                                                          G_PARAM_READWRITE | G_PARAM_CONSTRUCT_ONLY));
+    g_object_class_install_property (
+        gobject_class, PROP_PLUG,
+        g_param_spec_string ("plug", "plug", "Name of plug", NULL,
+                             G_PARAM_READWRITE | G_PARAM_CONSTRUCT_ONLY));
+    g_object_class_install_property (
+        gobject_class, PROP_SNAP,
+        g_param_spec_string ("snap", "snap", "Snap this plug is on", NULL,
+                             G_PARAM_READWRITE | G_PARAM_CONSTRUCT_ONLY));
 }
 
 static void

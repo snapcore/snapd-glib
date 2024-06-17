@@ -1,10 +1,10 @@
 /*
  * Copyright (C) 2017 Canonical Ltd.
  *
- * This library is free software; you can redistribute it and/or modify it under
- * the terms of the GNU Lesser General Public License as published by the Free
- * Software Foundation; either version 2 or version 3 of the License.
- * See http://www.gnu.org/copyleft/lgpl.html the full text of the license.
+ * This library is free software; you can redistribute it and/or modify it
+ * under the terms of the GNU Lesser General Public License as published by the
+ * Free Software Foundation; either version 2 or version 3 of the License. See
+ * http://www.gnu.org/copyleft/lgpl.html the full text of the license.
  */
 
 #include <string.h>
@@ -20,16 +20,18 @@ struct _SnapdGetSystemInfo
     SnapdSystemInformation *system_information;
 };
 
-G_DEFINE_TYPE (SnapdGetSystemInfo, snapd_get_system_info, snapd_request_get_type ())
+G_DEFINE_TYPE (SnapdGetSystemInfo,
+               snapd_get_system_info,
+               snapd_request_get_type ())
 
 SnapdGetSystemInfo *
-_snapd_get_system_info_new (GCancellable *cancellable, GAsyncReadyCallback callback, gpointer user_data)
+_snapd_get_system_info_new (GCancellable *cancellable,
+                            GAsyncReadyCallback callback,
+                            gpointer user_data)
 {
-    return SNAPD_GET_SYSTEM_INFO (g_object_new (snapd_get_system_info_get_type (),
-                                                "cancellable", cancellable,
-                                                "ready-callback", callback,
-                                                "ready-callback-data", user_data,
-                                                NULL));
+    return SNAPD_GET_SYSTEM_INFO (g_object_new (
+        snapd_get_system_info_get_type (), "cancellable", cancellable,
+        "ready-callback", callback, "ready-callback-data", user_data, NULL));
 }
 
 SnapdSystemInformation *
@@ -45,11 +47,17 @@ generate_get_system_info_request (SnapdRequest *request, GBytes **body)
 }
 
 static gboolean
-parse_get_system_info_response (SnapdRequest *request, guint status_code, const gchar *content_type, GBytes *body, SnapdMaintenance **maintenance, GError **error)
+parse_get_system_info_response (SnapdRequest *request,
+                                guint status_code,
+                                const gchar *content_type,
+                                GBytes *body,
+                                SnapdMaintenance **maintenance,
+                                GError **error)
 {
     SnapdGetSystemInfo *self = SNAPD_GET_SYSTEM_INFO (request);
 
-    g_autoptr(JsonObject) response = _snapd_json_parse_response (content_type, body, maintenance, NULL, error);
+    g_autoptr (JsonObject) response = _snapd_json_parse_response (
+        content_type, body, maintenance, NULL, error);
     if (response == NULL)
         return FALSE;
     /* FIXME: Needs json-glib to be fixed to use json_node_unref */
@@ -58,7 +66,8 @@ parse_get_system_info_response (SnapdRequest *request, guint status_code, const 
     if (result == NULL)
         return FALSE;
 
-    g_autoptr(SnapdSystemInformation) system_information = _snapd_json_parse_system_information (result, error);
+    g_autoptr (SnapdSystemInformation) system_information
+        = _snapd_json_parse_system_information (result, error);
     json_node_unref (result);
     if (system_information == NULL)
         return FALSE;
@@ -81,12 +90,12 @@ snapd_get_system_info_finalize (GObject *object)
 static void
 snapd_get_system_info_class_init (SnapdGetSystemInfoClass *klass)
 {
-   SnapdRequestClass *request_class = SNAPD_REQUEST_CLASS (klass);
-   GObjectClass *gobject_class = G_OBJECT_CLASS (klass);
+    SnapdRequestClass *request_class = SNAPD_REQUEST_CLASS (klass);
+    GObjectClass *gobject_class = G_OBJECT_CLASS (klass);
 
-   request_class->generate_request = generate_get_system_info_request;
-   request_class->parse_response = parse_get_system_info_response;
-   gobject_class->finalize = snapd_get_system_info_finalize;
+    request_class->generate_request = generate_get_system_info_request;
+    request_class->parse_response = parse_get_system_info_response;
+    gobject_class->finalize = snapd_get_system_info_finalize;
 }
 
 static void

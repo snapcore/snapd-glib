@@ -1,0 +1,20 @@
+BasedOnStyle: GNU
+IndentWidth: 4
+
+AlignAfterOpenBracket: Align
+AllowShortBlocksOnASingleLine: Empty
+AllowShortCaseLabelsOnASingleLine: false
+AllowShortFunctionsOnASingleLine: Empty
+AllowShortIfStatementsOnASingleLine: Never
+AllowShortLambdasOnASingleLine: Empty
+AllowShortLoopsOnASingleLine: false
+BinPackParameters: false
+BraceWrapping:
+  AfterCaseLabel: false
+  AfterEnum: true
+  AfterStruct: true
+  AfterFunction: true
+BreakBeforeBraces: Custom
+IndentCaseBlocks: false
+IndentCaseLabels: false
+SpaceAfterCStyleCast: false

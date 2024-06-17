@@ -1,10 +1,10 @@
 /*
  * Copyright (C) 2017 Canonical Ltd.
  *
- * This library is free software; you can redistribute it and/or modify it under
- * the terms of the GNU Lesser General Public License as published by the Free
- * Software Foundation; either version 2 or version 3 of the License.
- * See http://www.gnu.org/copyleft/lgpl.html the full text of the license.
+ * This library is free software; you can redistribute it and/or modify it
+ * under the terms of the GNU Lesser General Public License as published by the
+ * Free Software Foundation; either version 2 or version 3 of the License. See
+ * http://www.gnu.org/copyleft/lgpl.html the full text of the license.
  */
 
 #include "snapd-alias.h"
@@ -65,7 +65,8 @@ G_DEFINE_TYPE (SnapdAlias, snapd_alias, G_TYPE_OBJECT)
  * Returns: (allow-none): an app name or %NULL.
  *
  * Since: 1.8
- * Deprecated: 1.25: Use snapd_alias_get_app_manual() or snapd_alias_get_app_auto().
+ * Deprecated: 1.25: Use snapd_alias_get_app_manual() or
+ * snapd_alias_get_app_auto().
  */
 const gchar *
 snapd_alias_get_app (SnapdAlias *self)
@@ -78,8 +79,9 @@ snapd_alias_get_app (SnapdAlias *self)
  * snapd_alias_get_app_auto:
  * @alias: a #SnapdAlias.
  *
- * Get the app this alias has been automatically set to (status is %SNAPD_ALIAS_STATUS_AUTO).
- * Can be overridden when status is %SNAPD_ALIAS_STATUS_MANUAL.
+ * Get the app this alias has been automatically set to (status is
+ * %SNAPD_ALIAS_STATUS_AUTO). Can be overridden when status is
+ * %SNAPD_ALIAS_STATUS_MANUAL.
  *
  * Returns: (allow-none): an app name or %NULL.
  *
@@ -96,8 +98,9 @@ snapd_alias_get_app_auto (SnapdAlias *self)
  * snapd_alias_get_app_manual:
  * @alias: a #SnapdAlias.
  *
- * Get the app this alias has been manually set to (status is %SNAPD_ALIAS_STATUS_MANUAL).
- * This overrides the app from snapd_alias_get_app_auto().
+ * Get the app this alias has been manually set to (status is
+ * %SNAPD_ALIAS_STATUS_MANUAL). This overrides the app from
+ * snapd_alias_get_app_auto().
  *
  * Returns: (allow-none): an app name or %NULL.
  *
@@ -179,7 +182,10 @@ snapd_alias_get_status (SnapdAlias *self)
 }
 
 static void
-snapd_alias_set_property (GObject *object, guint prop_id, const GValue *value, GParamSpec *pspec)
+snapd_alias_set_property (GObject *object,
+                          guint prop_id,
+                          const GValue *value,
+                          GParamSpec *pspec)
 {
     SnapdAlias *self = SNAPD_ALIAS (object);
 
@@ -214,7 +220,10 @@ snapd_alias_set_property (GObject *object, guint prop_id, const GValue *value, G
 }
 
 static void
-snapd_alias_get_property (GObject *object, guint prop_id, GValue *value, GParamSpec *pspec)
+snapd_alias_get_property (GObject *object,
+                          guint prop_id,
+                          GValue *value,
+                          GParamSpec *pspec)
 {
     SnapdAlias *self = SNAPD_ALIAS (object);
 
@@ -266,53 +275,41 @@ snapd_alias_class_init (SnapdAliasClass *klass)
     gobject_class->get_property = snapd_alias_get_property;
     gobject_class->finalize = snapd_alias_finalize;
 
-    g_object_class_install_property (gobject_class,
-                                     PROP_APP_AUTO,
-                                     g_param_spec_string ("app-auto",
-                                                          "app-auto",
-                                                          "App this alias is for (when status is SNAPD_ALIAS_STATUS_AUTO)",
-                                                          NULL,
-                                                          G_PARAM_READWRITE | G_PARAM_CONSTRUCT_ONLY));
+    g_object_class_install_property (
+        gobject_class, PROP_APP_AUTO,
+        g_param_spec_string (
+            "app-auto", "app-auto",
+            "App this alias is for (when status is SNAPD_ALIAS_STATUS_AUTO)",
+            NULL, G_PARAM_READWRITE | G_PARAM_CONSTRUCT_ONLY));
 
-    g_object_class_install_property (gobject_class,
-                                     PROP_APP_MANUAL,
-                                     g_param_spec_string ("app-manual",
-                                                          "app-manual",
-                                                          "App this alias is for (when status is SNAPD_ALIAS_STATUS_MANUAL)",
-                                                          NULL,
-                                                          G_PARAM_READWRITE | G_PARAM_CONSTRUCT_ONLY));
+    g_object_class_install_property (
+        gobject_class, PROP_APP_MANUAL,
+        g_param_spec_string (
+            "app-manual", "app-manual",
+            "App this alias is for (when status is SNAPD_ALIAS_STATUS_MANUAL)",
+            NULL, G_PARAM_READWRITE | G_PARAM_CONSTRUCT_ONLY));
 
-    g_object_class_install_property (gobject_class,
-                                     PROP_COMMAND,
-                                     g_param_spec_string ("command",
-                                                          "command",
-                                                          "Command this alias runs",
-                                                          NULL,
-                                                          G_PARAM_READWRITE | G_PARAM_CONSTRUCT_ONLY));
+    g_object_class_install_property (
+        gobject_class, PROP_COMMAND,
+        g_param_spec_string ("command", "command", "Command this alias runs",
+                             NULL,
+                             G_PARAM_READWRITE | G_PARAM_CONSTRUCT_ONLY));
 
-    g_object_class_install_property (gobject_class,
-                                     PROP_NAME,
-                                     g_param_spec_string ("name",
-                                                          "name",
-                                                          "Name of alias",
-                                                          NULL,
-                                                          G_PARAM_READWRITE | G_PARAM_CONSTRUCT_ONLY));
+    g_object_class_install_property (
+        gobject_class, PROP_NAME,
+        g_param_spec_string ("name", "name", "Name of alias", NULL,
+                             G_PARAM_READWRITE | G_PARAM_CONSTRUCT_ONLY));
 
-    g_object_class_install_property (gobject_class,
-                                     PROP_SNAP,
-                                     g_param_spec_string ("snap",
-                                                          "snap",
-                                                          "Snap this alias is for",
-                                                          NULL,
-                                                          G_PARAM_READWRITE | G_PARAM_CONSTRUCT_ONLY));
+    g_object_class_install_property (
+        gobject_class, PROP_SNAP,
+        g_param_spec_string ("snap", "snap", "Snap this alias is for", NULL,
+                             G_PARAM_READWRITE | G_PARAM_CONSTRUCT_ONLY));
 
-    g_object_class_install_property (gobject_class,
-                                     PROP_STATUS,
-                                     g_param_spec_enum ("status",
-                                                        "status",
-                                                        "Alias status",
-                                                        SNAPD_TYPE_ALIAS_STATUS, SNAPD_ALIAS_STATUS_UNKNOWN,
-                                                        G_PARAM_READWRITE | G_PARAM_CONSTRUCT_ONLY));
+    g_object_class_install_property (
+        gobject_class, PROP_STATUS,
+        g_param_spec_enum ("status", "status", "Alias status",
+                           SNAPD_TYPE_ALIAS_STATUS, SNAPD_ALIAS_STATUS_UNKNOWN,
+                           G_PARAM_READWRITE | G_PARAM_CONSTRUCT_ONLY));
 }
 
 static void

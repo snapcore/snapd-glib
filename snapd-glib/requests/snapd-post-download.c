@@ -1,10 +1,10 @@
 /*
  * Copyright (C) 2019 Canonical Ltd.
  *
- * This library is free software; you can redistribute it and/or modify it under
- * the terms of the GNU Lesser General Public License as published by the Free
- * Software Foundation; either version 2 or version 3 of the License.
- * See http://www.gnu.org/copyleft/lgpl.html the full text of the license.
+ * This library is free software; you can redistribute it and/or modify it
+ * under the terms of the GNU Lesser General Public License as published by the
+ * Free Software Foundation; either version 2 or version 3 of the License. See
+ * http://www.gnu.org/copyleft/lgpl.html the full text of the license.
  */
 
 #include "snapd-post-download.h"
@@ -21,17 +21,21 @@ struct _SnapdPostDownload
     GBytes *data;
 };
 
-G_DEFINE_TYPE (SnapdPostDownload, snapd_post_download, snapd_request_get_type ())
+G_DEFINE_TYPE (SnapdPostDownload,
+               snapd_post_download,
+               snapd_request_get_type ())
 
 SnapdPostDownload *
-_snapd_post_download_new (const gchar *name, const gchar *channel, const gchar *revision,
-                          GCancellable *cancellable, GAsyncReadyCallback callback, gpointer user_data)
+_snapd_post_download_new (const gchar *name,
+                          const gchar *channel,
+                          const gchar *revision,
+                          GCancellable *cancellable,
+                          GAsyncReadyCallback callback,
+                          gpointer user_data)
 {
-    SnapdPostDownload *self = SNAPD_POST_DOWNLOAD (g_object_new (snapd_post_download_get_type (),
-                                                                 "cancellable", cancellable,
-                                                                 "ready-callback", callback,
-                                                                 "ready-callback-data", user_data,
-                                                                 NULL));
+    SnapdPostDownload *self = SNAPD_POST_DOWNLOAD (g_object_new (
+        snapd_post_download_get_type (), "cancellable", cancellable,
+        "ready-callback", callback, "ready-callback-data", user_data, NULL));
     self->name = g_strdup (name);
     self->channel = g_strdup (channel);
     self->revision = g_strdup (revision);
@@ -44,9 +48,10 @@ generate_post_download_request (SnapdRequest *request, GBytes **body)
 {
     SnapdPostDownload *self = SNAPD_POST_DOWNLOAD (request);
 
-    SoupMessage *message = soup_message_new ("POST", "http://snapd/v2/download");
+    SoupMessage *message
+        = soup_message_new ("POST", "http://snapd/v2/download");
 
-    g_autoptr(JsonBuilder) builder = json_builder_new ();
+    g_autoptr (JsonBuilder) builder = json_builder_new ();
     json_builder_begin_object (builder);
     json_builder_set_member_name (builder, "snap-name");
     json_builder_add_string_value (builder, self->name);
@@ -65,14 +70,17 @@ generate_post_download_request (SnapdRequest *request, GBytes **body)
 }
 
 static gboolean
-parse_post_download_response (SnapdRequest *request, guint status_code, const gchar *content_type, GBytes *body, SnapdMaintenance **maintenance, GError **error)
+parse_post_download_response (SnapdRequest *request,
+                              guint status_code,
+                              const gchar *content_type,
+                              GBytes *body,
+                              SnapdMaintenance **maintenance,
+                              GError **error)
 {
     SnapdPostDownload *self = SNAPD_POST_DOWNLOAD (request);
 
     if (g_strcmp0 (content_type, "application/octet-stream") != 0) {
-        g_set_error (error,
-                     SNAPD_ERROR,
-                     SNAPD_ERROR_READ_FAILED,
+        g_set_error (error, SNAPD_ERROR, SNAPD_ERROR_READ_FAILED,
                      "Unknown response");
         return FALSE;
     }

@@ -1,19 +1,19 @@
 /*
  * Copyright (C) 2019 Canonical Ltd.
  *
- * This library is free software; you can redistribute it and/or modify it under
- * the terms of the GNU Lesser General Public License as published by the Free
- * Software Foundation; either version 2 or version 3 of the License.
- * See http://www.gnu.org/copyleft/lgpl.html the full text of the license.
+ * This library is free software; you can redistribute it and/or modify it
+ * under the terms of the GNU Lesser General Public License as published by the
+ * Free Software Foundation; either version 2 or version 3 of the License. See
+ * http://www.gnu.org/copyleft/lgpl.html the full text of the license.
  */
 
-#include <string.h>
 #include <snapd-glib/snapd-glib.h>
+#include <string.h>
 
 static gchar *
 escape_text (const gchar *text)
 {
-    g_autoptr(GString) escaped_text = g_string_new ("");
+    g_autoptr (GString) escaped_text = g_string_new ("");
 
     for (const gchar *c = text; *c != '\0'; c++) {
         if (*c == '&')
@@ -36,7 +36,7 @@ static gchar *serialize_node (SnapdMarkdownNode *node);
 static gchar *
 serialize_nodes (GPtrArray *nodes)
 {
-    g_autoptr(GString) text = g_string_new ("");
+    g_autoptr (GString) text = g_string_new ("");
 
     for (int i = 0; i < nodes->len; i++) {
         SnapdMarkdownNode *node = g_ptr_array_index (nodes, i);
@@ -50,65 +50,68 @@ serialize_nodes (GPtrArray *nodes)
 static gchar *
 serialize_node (SnapdMarkdownNode *node)
 {
-   GPtrArray *children = snapd_markdown_node_get_children (node);
+    GPtrArray *children = snapd_markdown_node_get_children (node);
 
-   g_autofree gchar *contents = NULL;
-   switch (snapd_markdown_node_get_node_type (node)) {
-   case SNAPD_MARKDOWN_NODE_TYPE_TEXT:
-       return escape_text (snapd_markdown_node_get_text (node));
+    g_autofree gchar *contents = NULL;
+    switch (snapd_markdown_node_get_node_type (node)) {
+    case SNAPD_MARKDOWN_NODE_TYPE_TEXT:
+        return escape_text (snapd_markdown_node_get_text (node));
 
-   case SNAPD_MARKDOWN_NODE_TYPE_PARAGRAPH:
-       contents = serialize_nodes (children);
-       return g_strdup_printf ("<p>%s</p>\n", contents);
+    case SNAPD_MARKDOWN_NODE_TYPE_PARAGRAPH:
+        contents = serialize_nodes (children);
+        return g_strdup_printf ("<p>%s</p>\n", contents);
 
-   case SNAPD_MARKDOWN_NODE_TYPE_UNORDERED_LIST:
-       contents = serialize_nodes (children);
-       return g_strdup_printf ("<ul>\n%s</ul>\n", contents);
+    case SNAPD_MARKDOWN_NODE_TYPE_UNORDERED_LIST:
+        contents = serialize_nodes (children);
+        return g_strdup_printf ("<ul>\n%s</ul>\n", contents);
 
-   case SNAPD_MARKDOWN_NODE_TYPE_LIST_ITEM:
-       if (children->len == 0)
-           return g_strdup ("<li></li>\n");
-       if (children->len == 1) {
-           SnapdMarkdownNode *child = g_ptr_array_index (children, 0);
-           if (snapd_markdown_node_get_node_type (child) == SNAPD_MARKDOWN_NODE_TYPE_PARAGRAPH) {
-               contents = serialize_nodes (snapd_markdown_node_get_children (child));
-               return g_strdup_printf ("<li>%s</li>\n", contents);
-           }
-       }
-       contents = serialize_nodes (children);
-       return g_strdup_printf ("<li>\n%s</li>\n", contents);
+    case SNAPD_MARKDOWN_NODE_TYPE_LIST_ITEM:
+        if (children->len == 0)
+            return g_strdup ("<li></li>\n");
+        if (children->len == 1) {
+            SnapdMarkdownNode *child = g_ptr_array_index (children, 0);
+            if (snapd_markdown_node_get_node_type (child)
+                == SNAPD_MARKDOWN_NODE_TYPE_PARAGRAPH) {
+                contents = serialize_nodes (
+                    snapd_markdown_node_get_children (child));
+                return g_strdup_printf ("<li>%s</li>\n", contents);
+            }
+        }
+        contents = serialize_nodes (children);
+        return g_strdup_printf ("<li>\n%s</li>\n", contents);
 
-   case SNAPD_MARKDOWN_NODE_TYPE_CODE_BLOCK:
-       contents = serialize_nodes (children);
-       return g_strdup_printf ("<pre><code>%s</code></pre>\n", contents);
+    case SNAPD_MARKDOWN_NODE_TYPE_CODE_BLOCK:
+        contents = serialize_nodes (children);
+        return g_strdup_printf ("<pre><code>%s</code></pre>\n", contents);
 
-   case SNAPD_MARKDOWN_NODE_TYPE_CODE_SPAN:
-       contents = serialize_nodes (children);
-       return g_strdup_printf ("<code>%s</code>", contents);
+    case SNAPD_MARKDOWN_NODE_TYPE_CODE_SPAN:
+        contents = serialize_nodes (children);
+        return g_strdup_printf ("<code>%s</code>", contents);
 
-   case SNAPD_MARKDOWN_NODE_TYPE_EMPHASIS:
-       contents = serialize_nodes (children);
-       return g_strdup_printf ("<em>%s</em>", contents);
+    case SNAPD_MARKDOWN_NODE_TYPE_EMPHASIS:
+        contents = serialize_nodes (children);
+        return g_strdup_printf ("<em>%s</em>", contents);
 
-   case SNAPD_MARKDOWN_NODE_TYPE_STRONG_EMPHASIS:
-       contents = serialize_nodes (children);
-       return g_strdup_printf ("<strong>%s</strong>", contents);
+    case SNAPD_MARKDOWN_NODE_TYPE_STRONG_EMPHASIS:
+        contents = serialize_nodes (children);
+        return g_strdup_printf ("<strong>%s</strong>", contents);
 
-   case SNAPD_MARKDOWN_NODE_TYPE_URL:
-       return serialize_nodes (children);
+    case SNAPD_MARKDOWN_NODE_TYPE_URL:
+        return serialize_nodes (children);
 
-   default:
-       g_assert_not_reached ();
-       return g_strdup ("");
-   }
+    default:
+        g_assert_not_reached ();
+        return g_strdup ("");
+    }
 }
 
 static gchar *
 parse (const gchar *text)
 {
-    g_autoptr(SnapdMarkdownParser) parser = snapd_markdown_parser_new (SNAPD_MARKDOWN_VERSION_0);
+    g_autoptr (SnapdMarkdownParser) parser
+        = snapd_markdown_parser_new (SNAPD_MARKDOWN_VERSION_0);
     snapd_markdown_parser_set_preserve_whitespace (parser, TRUE);
-    g_autoptr(GPtrArray) nodes = snapd_markdown_parser_parse (parser, text);
+    g_autoptr (GPtrArray) nodes = snapd_markdown_parser_parse (parser, text);
     return serialize_nodes (nodes);
 }
 
@@ -126,42 +129,55 @@ test_markdown_single_character (void)
     g_assert_cmpstr (markup, ==, "<p>a</p>\n");
 }
 
-/* The following tests are a subset of those in the CommonMark spec (https://spec.commonmark.org/0.28).
- * Some tests are modified to match the expected snap behaviour */
+/* The following tests are a subset of those in the CommonMark spec
+ * (https://spec.commonmark.org/0.28). Some tests are modified to match the
+ * expected snap behaviour */
 
 static void
 test_markdown_precedence (void)
 {
     g_autofree gchar *example12 = parse ("- `one\n- two`\n");
-    g_assert_cmpstr (example12, ==, "<ul>\n<li>`one</li>\n<li>two`</li>\n</ul>\n");
+    g_assert_cmpstr (example12, ==,
+                     "<ul>\n<li>`one</li>\n<li>two`</li>\n</ul>\n");
 }
 
 static void
 test_markdown_indented_code (void)
 {
-    g_autofree gchar *example76 = parse ("    a simple\n      indented code block\n");
-    g_assert_cmpstr (example76, ==, "<pre><code>a simple\n  indented code block\n</code></pre>\n");
+    g_autofree gchar *example76
+        = parse ("    a simple\n      indented code block\n");
+    g_assert_cmpstr (
+        example76, ==,
+        "<pre><code>a simple\n  indented code block\n</code></pre>\n");
 
     g_autofree gchar *example77 = parse ("  - foo\n\n    bar\n");
-    g_assert_cmpstr (example77, ==, "<ul>\n<li>\n<p>foo</p>\n<p>bar</p>\n</li>\n</ul>\n");
+    g_assert_cmpstr (example77, ==,
+                     "<ul>\n<li>\n<p>foo</p>\n<p>bar</p>\n</li>\n</ul>\n");
 
     g_autofree gchar *example79 = parse ("    <a/>\n    *hi*\n\n    - one\n");
-    g_assert_cmpstr (example79, ==, "<pre><code>&lt;a/&gt;\n*hi*\n\n- one\n</code></pre>\n");
+    g_assert_cmpstr (example79, ==,
+                     "<pre><code>&lt;a/&gt;\n*hi*\n\n- one\n</code></pre>\n");
 
-    g_autofree gchar *example80 = parse ("    chunk1\n\n    chunk2\n  \n \n \n    chunk3\n");
-    g_assert_cmpstr (example80, ==, "<pre><code>chunk1\n\nchunk2\n\n\n\nchunk3\n</code></pre>\n");
+    g_autofree gchar *example80
+        = parse ("    chunk1\n\n    chunk2\n  \n \n \n    chunk3\n");
+    g_assert_cmpstr (
+        example80, ==,
+        "<pre><code>chunk1\n\nchunk2\n\n\n\nchunk3\n</code></pre>\n");
 
     g_autofree gchar *example81 = parse ("    chunk1\n      \n      chunk2\n");
-    g_assert_cmpstr (example81, ==, "<pre><code>chunk1\n  \n  chunk2\n</code></pre>\n");
+    g_assert_cmpstr (example81, ==,
+                     "<pre><code>chunk1\n  \n  chunk2\n</code></pre>\n");
 
     g_autofree gchar *example82 = parse ("Foo\n    bar\n\n");
     g_assert_cmpstr (example82, ==, "<p>Foo\nbar</p>\n");
 
     g_autofree gchar *example83 = parse ("    foo\nbar\n");
-    g_assert_cmpstr (example83, ==, "<pre><code>foo\n</code></pre>\n<p>bar</p>\n");
+    g_assert_cmpstr (example83, ==,
+                     "<pre><code>foo\n</code></pre>\n<p>bar</p>\n");
 
     g_autofree gchar *example85 = parse ("        foo\n    bar\n");
-    g_assert_cmpstr (example85, ==, "<pre><code>    foo\nbar\n</code></pre>\n");
+    g_assert_cmpstr (example85, ==,
+                     "<pre><code>    foo\nbar\n</code></pre>\n");
 
     g_autofree gchar *example86 = parse ("\n    \n    foo\n    \n\n");
     g_assert_cmpstr (example86, ==, "<pre><code>foo\n</code></pre>\n");
@@ -185,39 +201,50 @@ test_markdown_paragraphs (void)
     g_autofree gchar *example185 = parse ("  aaa\n bbb\n");
     g_assert_cmpstr (example185, ==, "<p>aaa\nbbb</p>\n");
 
-    g_autofree gchar *example186 = parse ("aaa\n             bbb\n                                       ccc\n");
+    g_autofree gchar *example186 = parse (
+        "aaa\n             bbb\n                                       ccc\n");
     g_assert_cmpstr (example186, ==, "<p>aaa\nbbb\nccc</p>\n");
 
     g_autofree gchar *example187 = parse ("   aaa\nbbb\n");
     g_assert_cmpstr (example187, ==, "<p>aaa\nbbb</p>\n");
 
     g_autofree gchar *example188 = parse ("    aaa\nbbb\n");
-    g_assert_cmpstr (example188, ==, "<pre><code>aaa\n</code></pre>\n<p>bbb</p>\n");
+    g_assert_cmpstr (example188, ==,
+                     "<pre><code>aaa\n</code></pre>\n<p>bbb</p>\n");
 }
 
 static void
 test_markdown_list_items (void)
 {
     g_autofree gchar *example218 = parse ("- one\n\n two\n");
-    g_assert_cmpstr (example218, ==, "<ul>\n<li>one</li>\n</ul>\n<p>two</p>\n");
+    g_assert_cmpstr (example218, ==,
+                     "<ul>\n<li>one</li>\n</ul>\n<p>two</p>\n");
 
     g_autofree gchar *example219 = parse ("- one\n\n  two\n");
-    g_assert_cmpstr (example219, ==, "<ul>\n<li>\n<p>one</p>\n<p>two</p>\n</li>\n</ul>\n");
+    g_assert_cmpstr (example219, ==,
+                     "<ul>\n<li>\n<p>one</p>\n<p>two</p>\n</li>\n</ul>\n");
 
     g_autofree gchar *example220 = parse (" -    one\n\n     two\n");
-    g_assert_cmpstr (example220, ==, "<ul>\n<li>one</li>\n</ul>\n<pre><code> two\n</code></pre>\n");
+    g_assert_cmpstr (
+        example220, ==,
+        "<ul>\n<li>one</li>\n</ul>\n<pre><code> two\n</code></pre>\n");
 
     g_autofree gchar *example221 = parse (" -    one\n\n      two\n");
-    g_assert_cmpstr (example221, ==, "<ul>\n<li>\n<p>one</p>\n<p>two</p>\n</li>\n</ul>\n");
+    g_assert_cmpstr (example221, ==,
+                     "<ul>\n<li>\n<p>one</p>\n<p>two</p>\n</li>\n</ul>\n");
 
     g_autofree gchar *example224 = parse ("-one\n\n2.two\n");
     g_assert_cmpstr (example224, ==, "<p>-one</p>\n<p>2.two</p>\n");
 
     g_autofree gchar *example225 = parse ("- foo\n\n\n  bar\n");
-    g_assert_cmpstr (example225, ==, "<ul>\n<li>\n<p>foo</p>\n<p>bar</p>\n</li>\n</ul>\n");
+    g_assert_cmpstr (example225, ==,
+                     "<ul>\n<li>\n<p>foo</p>\n<p>bar</p>\n</li>\n</ul>\n");
 
-    g_autofree gchar *example227 = parse ("- Foo\n\n      bar\n\n\n      baz\n");
-    g_assert_cmpstr (example227, ==, "<ul>\n<li>\n<p>Foo</p>\n<pre><code>bar\n\n\nbaz\n</code></pre>\n</li>\n</ul>\n");
+    g_autofree gchar *example227
+        = parse ("- Foo\n\n      bar\n\n\n      baz\n");
+    g_assert_cmpstr (example227, ==,
+                     "<ul>\n<li>\n<p>Foo</p>\n<pre><code>bar\n\n\nbaz\n</"
+                     "code></pre>\n</li>\n</ul>\n");
 
     g_autofree gchar *example229 = parse ("1234567890. not ok\n");
     g_assert_cmpstr (example229, ==, "<p>1234567890. not ok</p>\n");
@@ -226,19 +253,27 @@ test_markdown_list_items (void)
     g_assert_cmpstr (example232, ==, "<p>-1. not ok</p>\n");
 
     g_autofree gchar *example233 = parse ("- foo\n\n      bar\n");
-    g_assert_cmpstr (example233, ==, "<ul>\n<li>\n<p>foo</p>\n<pre><code>bar\n</code></pre>\n</li>\n</ul>\n");
+    g_assert_cmpstr (example233, ==,
+                     "<ul>\n<li>\n<p>foo</p>\n<pre><code>bar\n</code></"
+                     "pre>\n</li>\n</ul>\n");
 
-    g_autofree gchar *example235 = parse ("    indented code\n\nparagraph\n\n    more code\n");
-    g_assert_cmpstr (example235, ==, "<pre><code>indented code\n</code></pre>\n<p>paragraph</p>\n<pre><code>more code\n</code></pre>\n");
+    g_autofree gchar *example235
+        = parse ("    indented code\n\nparagraph\n\n    more code\n");
+    g_assert_cmpstr (example235, ==,
+                     "<pre><code>indented "
+                     "code\n</code></pre>\n<p>paragraph</p>\n<pre><code>more "
+                     "code\n</code></pre>\n");
 
     g_autofree gchar *example238 = parse ("   foo\n\nbar\n");
     g_assert_cmpstr (example238, ==, "<p>foo</p>\n<p>bar</p>\n");
 
     g_autofree gchar *example239 = parse ("-    foo\n\n  bar\n");
-    g_assert_cmpstr (example239, ==, "<ul>\n<li>foo</li>\n</ul>\n<p>bar</p>\n");
+    g_assert_cmpstr (example239, ==,
+                     "<ul>\n<li>foo</li>\n</ul>\n<p>bar</p>\n");
 
     g_autofree gchar *example240 = parse ("-  foo\n\n   bar\n");
-    g_assert_cmpstr (example240, ==, "<ul>\n<li>\n<p>foo</p>\n<p>bar</p>\n</li>\n</ul>\n");
+    g_assert_cmpstr (example240, ==,
+                     "<ul>\n<li>\n<p>foo</p>\n<p>bar</p>\n</li>\n</ul>\n");
 
     g_autofree gchar *example242 = parse ("-   \n  foo\n");
     g_assert_cmpstr (example242, ==, "<ul>\n<li>foo</li>\n</ul>\n");
@@ -247,10 +282,12 @@ test_markdown_list_items (void)
     g_assert_cmpstr (example243, ==, "<ul>\n<li></li>\n</ul>\n<p>foo</p>\n");
 
     g_autofree gchar *example244 = parse ("- foo\n-\n- bar\n");
-    g_assert_cmpstr (example244, ==, "<ul>\n<li>foo</li>\n<li></li>\n<li>bar</li>\n</ul>\n");
+    g_assert_cmpstr (example244, ==,
+                     "<ul>\n<li>foo</li>\n<li></li>\n<li>bar</li>\n</ul>\n");
 
     g_autofree gchar *example245 = parse ("- foo\n-   \n- bar\n");
-    g_assert_cmpstr (example245, ==, "<ul>\n<li>foo</li>\n<li></li>\n<li>bar</li>\n</ul>\n");
+    g_assert_cmpstr (example245, ==,
+                     "<ul>\n<li>foo</li>\n<li></li>\n<li>bar</li>\n</ul>\n");
 
     g_autofree gchar *example247 = parse ("*\n");
     g_assert_cmpstr (example247, ==, "<ul>\n<li></li>\n</ul>\n");
@@ -258,63 +295,107 @@ test_markdown_list_items (void)
     g_autofree gchar *example248 = parse ("foo\n*\n\nfoo\n1.\n");
     g_assert_cmpstr (example248, ==, "<p>foo\n*</p>\n<p>foo\n1.</p>\n");
 
-    g_autofree gchar *example252 = parse ("    1.  A paragraph\n        with two lines.\n\n            indented code\n\n        > A block quote.\n");
-    g_assert_cmpstr (example252, ==, "<pre><code>1.  A paragraph\n    with two lines.\n\n        indented code\n\n    &gt; A block quote.\n</code></pre>\n");
+    g_autofree gchar *example252
+        = parse ("    1.  A paragraph\n        with two lines.\n\n            "
+                 "indented code\n\n        > A block quote.\n");
+    g_assert_cmpstr (
+        example252, ==,
+        "<pre><code>1.  A paragraph\n    with two lines.\n\n        indented "
+        "code\n\n    &gt; A block quote.\n</code></pre>\n");
 
-    g_autofree gchar *example257 = parse ("- foo\n  - bar\n    - baz\n      - boo\n");
-    g_assert_cmpstr (example257, ==, "<ul>\n<li>\n<p>foo</p>\n<ul>\n<li>\n<p>bar</p>\n<ul>\n<li>\n<p>baz</p>\n<ul>\n<li>boo</li>\n</ul>\n</li>\n</ul>\n</li>\n</ul>\n</li>\n</ul>\n");
+    g_autofree gchar *example257
+        = parse ("- foo\n  - bar\n    - baz\n      - boo\n");
+    g_assert_cmpstr (example257, ==,
+                     "<ul>\n<li>\n<p>foo</p>\n<ul>\n<li>\n<p>bar</"
+                     "p>\n<ul>\n<li>\n<p>baz</p>\n<ul>\n<li>boo</li>\n</"
+                     "ul>\n</li>\n</ul>\n</li>\n</ul>\n</li>\n</ul>\n");
 
-    g_autofree gchar *example258 = parse ("- foo\n - bar\n  - baz\n   - boo\n");
-    g_assert_cmpstr (example258, ==, "<ul>\n<li>foo</li>\n<li>bar</li>\n<li>baz</li>\n<li>boo</li>\n</ul>\n");
+    g_autofree gchar *example258
+        = parse ("- foo\n - bar\n  - baz\n   - boo\n");
+    g_assert_cmpstr (example258, ==,
+                     "<ul>\n<li>foo</li>\n<li>bar</li>\n<li>baz</"
+                     "li>\n<li>boo</li>\n</ul>\n");
 
     g_autofree gchar *example261 = parse ("- - foo\n");
-    g_assert_cmpstr (example261, ==, "<ul>\n<li>\n<ul>\n<li>foo</li>\n</ul>\n</li>\n</ul>\n");
+    g_assert_cmpstr (example261, ==,
+                     "<ul>\n<li>\n<ul>\n<li>foo</li>\n</ul>\n</li>\n</ul>\n");
 }
 
 static void
 test_markdown_lists (void)
 {
     g_autofree gchar *example264 = parse ("- foo\n- bar\n+ baz\n");
-    g_assert_cmpstr (example264, ==, "<ul>\n<li>foo</li>\n<li>bar</li>\n</ul>\n<ul>\n<li>baz</li>\n</ul>\n");
+    g_assert_cmpstr (example264, ==,
+                     "<ul>\n<li>foo</li>\n<li>bar</li>\n</ul>\n<ul>\n<li>baz</"
+                     "li>\n</ul>\n");
 
     g_autofree gchar *example266 = parse ("Foo\n- bar\n- baz\n");
-    g_assert_cmpstr (example266, ==, "<p>Foo</p>\n<ul>\n<li>bar</li>\n<li>baz</li>\n</ul>\n");
+    g_assert_cmpstr (example266, ==,
+                     "<p>Foo</p>\n<ul>\n<li>bar</li>\n<li>baz</li>\n</ul>\n");
 
-    g_autofree gchar *example267 = parse ("The number of windows in my house is\n14.  The number of doors is 6.\n");
-    g_assert_cmpstr (example267, ==, "<p>The number of windows in my house is\n14.  The number of doors is 6.</p>\n");
+    g_autofree gchar *example267
+        = parse ("The number of windows in my house is\n14.  The number of "
+                 "doors is 6.\n");
+    g_assert_cmpstr (example267, ==,
+                     "<p>The number of windows in my house is\n14.  The "
+                     "number of doors is 6.</p>\n");
 
     g_autofree gchar *example269 = parse ("- foo\n\n- bar\n\n\n- baz\n");
-    g_assert_cmpstr (example269, ==, "<ul>\n<li>foo</li>\n<li>bar</li>\n<li>baz</li>\n</ul>\n");
+    g_assert_cmpstr (
+        example269, ==,
+        "<ul>\n<li>foo</li>\n<li>bar</li>\n<li>baz</li>\n</ul>\n");
 
-    g_autofree gchar *example270 = parse ("- foo\n  - bar\n    - baz\n\n\n      bim\n");
-    g_assert_cmpstr (example270, ==, "<ul>\n<li>\n<p>foo</p>\n<ul>\n<li>\n<p>bar</p>\n<ul>\n<li>\n<p>baz</p>\n<p>bim</p>\n</li>\n</ul>\n</li>\n</ul>\n</li>\n</ul>\n");
+    g_autofree gchar *example270
+        = parse ("- foo\n  - bar\n    - baz\n\n\n      bim\n");
+    g_assert_cmpstr (
+        example270, ==,
+        "<ul>\n<li>\n<p>foo</p>\n<ul>\n<li>\n<p>bar</p>\n<ul>\n<li>\n<p>baz</"
+        "p>\n<p>bim</p>\n</li>\n</ul>\n</li>\n</ul>\n</li>\n</ul>\n");
 
-    g_autofree gchar *example273 = parse ("- a\n - b\n  - c\n   - d\n    - e\n   - f\n  - g\n - h\n- i\n");
-    g_assert_cmpstr (example273, ==, "<ul>\n<li>a</li>\n<li>b</li>\n<li>c</li>\n<li>d</li>\n<li>e</li>\n<li>f</li>\n<li>g</li>\n<li>h</li>\n<li>i</li>\n</ul>\n");
+    g_autofree gchar *example273 = parse (
+        "- a\n - b\n  - c\n   - d\n    - e\n   - f\n  - g\n - h\n- i\n");
+    g_assert_cmpstr (
+        example273, ==,
+        "<ul>\n<li>a</li>\n<li>b</li>\n<li>c</li>\n<li>d</li>\n<li>e</"
+        "li>\n<li>f</li>\n<li>g</li>\n<li>h</li>\n<li>i</li>\n</ul>\n");
 
     g_autofree gchar *example275 = parse ("- a\n- b\n\n- c\n");
-    g_assert_cmpstr (example275, ==, "<ul>\n<li>a</li>\n<li>b</li>\n<li>c</li>\n</ul>\n");
+    g_assert_cmpstr (example275, ==,
+                     "<ul>\n<li>a</li>\n<li>b</li>\n<li>c</li>\n</ul>\n");
 
     g_autofree gchar *example276 = parse ("* a\n*\n\n* c\n");
-    g_assert_cmpstr (example276, ==, "<ul>\n<li>a</li>\n<li></li>\n<li>c</li>\n</ul>\n");
+    g_assert_cmpstr (example276, ==,
+                     "<ul>\n<li>a</li>\n<li></li>\n<li>c</li>\n</ul>\n");
 
     g_autofree gchar *example277 = parse ("- a\n- b\n\n  c\n- d\n");
-    g_assert_cmpstr (example277, ==, "<ul>\n<li>a</li>\n<li>\n<p>b</p>\n<p>c</p>\n</li>\n<li>d</li>\n</ul>\n");
+    g_assert_cmpstr (example277, ==,
+                     "<ul>\n<li>a</li>\n<li>\n<p>b</p>\n<p>c</p>\n</"
+                     "li>\n<li>d</li>\n</ul>\n");
 
     g_autofree gchar *example280 = parse ("- a\n  - b\n\n    c\n- d\n");
-    g_assert_cmpstr (example280, ==, "<ul>\n<li>\n<p>a</p>\n<ul>\n<li>\n<p>b</p>\n<p>c</p>\n</li>\n</ul>\n</li>\n<li>d</li>\n</ul>\n");
+    g_assert_cmpstr (example280, ==,
+                     "<ul>\n<li>\n<p>a</p>\n<ul>\n<li>\n<p>b</p>\n<p>c</p>\n</"
+                     "li>\n</ul>\n</li>\n<li>d</li>\n</ul>\n");
 
     g_autofree gchar *example283 = parse ("- a\n");
     g_assert_cmpstr (example283, ==, "<ul>\n<li>a</li>\n</ul>\n");
 
     g_autofree gchar *example284 = parse ("- a\n  - b\n");
-    g_assert_cmpstr (example284, ==, "<ul>\n<li>\n<p>a</p>\n<ul>\n<li>b</li>\n</ul>\n</li>\n</ul>\n");
+    g_assert_cmpstr (
+        example284, ==,
+        "<ul>\n<li>\n<p>a</p>\n<ul>\n<li>b</li>\n</ul>\n</li>\n</ul>\n");
 
     g_autofree gchar *example286 = parse ("* foo\n  * bar\n\n  baz\n");
-    g_assert_cmpstr (example286, ==, "<ul>\n<li>\n<p>foo</p>\n<ul>\n<li>bar</li>\n</ul>\n<p>baz</p>\n</li>\n</ul>\n");
+    g_assert_cmpstr (example286, ==,
+                     "<ul>\n<li>\n<p>foo</p>\n<ul>\n<li>bar</li>\n</"
+                     "ul>\n<p>baz</p>\n</li>\n</ul>\n");
 
-    g_autofree gchar *example287 = parse ("- a\n  - b\n  - c\n\n- d\n  - e\n  - f\n");
-    g_assert_cmpstr (example287, ==, "<ul>\n<li>\n<p>a</p>\n<ul>\n<li>b</li>\n<li>c</li>\n</ul>\n</li>\n<li>\n<p>d</p>\n<ul>\n<li>e</li>\n<li>f</li>\n</ul>\n</li>\n</ul>\n");
+    g_autofree gchar *example287
+        = parse ("- a\n  - b\n  - c\n\n- d\n  - e\n  - f\n");
+    g_assert_cmpstr (example287, ==,
+                     "<ul>\n<li>\n<p>a</p>\n<ul>\n<li>b</li>\n<li>c</li>\n</"
+                     "ul>\n</li>\n<li>\n<p>d</p>\n<ul>\n<li>e</li>\n<li>f</"
+                     "li>\n</ul>\n</li>\n</ul>\n");
 }
 
 static void
@@ -323,14 +404,25 @@ test_markdown_inlines (void)
     g_autofree gchar *example288 = parse ("`hi`lo`\n");
     g_assert_cmpstr (example288, ==, "<p><code>hi</code>lo`</p>\n");
 
-    g_autofree gchar *example289 = parse ("\\!\\\"\\#\\$\\%\\&\\'\\(\\)\\*\\+\\,\\-\\.\\/\\:\\;\\<\\=\\>\\?\\@\\[\\\\\\]\\^\\_\\`\\{\\|\\}\\~\n");
-    g_assert_cmpstr (example289, ==, "<p>!&quot;#$%&amp;'()*+,-./:;&lt;=&gt;?@[\\]^_`{|}~</p>\n");
+    g_autofree gchar *example289
+        = parse ("\\!\\\"\\#\\$\\%\\&\\'\\(\\)\\*\\+\\,\\-\\.\\/"
+                 "\\:\\;\\<\\=\\>\\?\\@\\[\\\\\\]\\^\\_\\`\\{\\|\\}\\~\n");
+    g_assert_cmpstr (
+        example289, ==,
+        "<p>!&quot;#$%&amp;'()*+,-./:;&lt;=&gt;?@[\\]^_`{|}~</p>\n");
 
     g_autofree gchar *example290 = parse ("\\\t\\A\\a\\ \\3\\φ\\«\n");
     g_assert_cmpstr (example290, ==, "<p>\\\t\\A\\a\\ \\3\\φ\\«</p>\n");
 
-    g_autofree gchar *example291 = parse ("\\*not emphasized*\n\\<br/> not a tag\n\\[not a link](/foo)\n\\`not code`\n1\\. not a list\n\\* not a list\n\\# not a heading\n\\[foo]: /url \"not a reference\"\n");
-    g_assert_cmpstr (example291, ==, "<p>*not emphasized*\n&lt;br/&gt; not a tag\n[not a link](/foo)\n`not code`\n1. not a list\n* not a list\n# not a heading\n[foo]: /url &quot;not a reference&quot;</p>\n");
+    g_autofree gchar *example291 = parse (
+        "\\*not emphasized*\n\\<br/> not a tag\n\\[not a link](/foo)\n\\`not "
+        "code`\n1\\. not a list\n\\* not a list\n\\# not a heading\n\\[foo]: "
+        "/url \"not a reference\"\n");
+    g_assert_cmpstr (
+        example291, ==,
+        "<p>*not emphasized*\n&lt;br/&gt; not a tag\n[not a link](/foo)\n`not "
+        "code`\n1. not a list\n* not a list\n# not a heading\n[foo]: /url "
+        "&quot;not a reference&quot;</p>\n");
 
     g_autofree gchar *example292 = parse ("\\\\*emphasis*\n");
     g_assert_cmpstr (example292, ==, "<p>\\<em>emphasis</em></p>\n");
@@ -370,7 +462,8 @@ test_markdown_code_spans (void)
     g_assert_cmpstr (example322, ==, "<p>*foo<code>*</code></p>\n");
 
     g_autofree gchar *example326 = parse ("`<http://foo.bar.`baz>`\n");
-    g_assert_cmpstr (example326, ==, "<p><code>&lt;http://foo.bar.</code>baz&gt;`</p>\n");
+    g_assert_cmpstr (example326, ==,
+                     "<p><code>&lt;http://foo.bar.</code>baz&gt;`</p>\n");
 
     g_autofree gchar *example328 = parse ("```foo``\n");
     g_assert_cmpstr (example328, ==, "<p>```foo``</p>\n");
@@ -395,7 +488,7 @@ test_markdown_emphasis (void)
     g_assert_cmpstr (example333, ==, "<p>a*&quot;foo&quot;*</p>\n");
 
     g_autofree gchar *example334 = parse ("* a *\n");
-    //FIXME g_assert_cmpstr (example334, ==, "<p>* a *</p>\n");
+    // FIXME g_assert_cmpstr (example334, ==, "<p>* a *</p>\n");
 
     g_autofree gchar *example335 = parse ("foo*bar*\n");
     g_assert_cmpstr (example335, ==, "<p>foo<em>bar</em></p>\n");
@@ -500,7 +593,9 @@ test_markdown_emphasis (void)
     g_assert_cmpstr (example368, ==, "<p>пристаням__стремятся__</p>\n");
 
     g_autofree gchar *example369 = parse ("__foo, __bar__, baz__\n");
-    g_assert_cmpstr (example369, ==, "<p><strong>foo, <strong>bar</strong>, baz</strong></p>\n");
+    g_assert_cmpstr (
+        example369, ==,
+        "<p><strong>foo, <strong>bar</strong>, baz</strong></p>\n");
 
     g_autofree gchar *example370 = parse ("foo-__(bar)__\n");
     g_assert_cmpstr (example370, ==, "<p>foo-<strong>(bar)</strong></p>\n");
@@ -512,13 +607,21 @@ test_markdown_emphasis (void)
     g_assert_cmpstr (example372, ==, "<p>**(**foo)</p>\n");
 
     g_autofree gchar *example373 = parse ("*(**foo**)*\n");
-    g_assert_cmpstr (example373, ==, "<p><em>(<strong>foo</strong>)</em></p>\n");
+    g_assert_cmpstr (example373, ==,
+                     "<p><em>(<strong>foo</strong>)</em></p>\n");
 
-    g_autofree gchar *example374 = parse ("**Gomphocarpus (*Gomphocarpus physocarpus*, syn.\n*Asclepias physocarpa*)**\n");
-    g_assert_cmpstr (example374, ==, "<p><strong>Gomphocarpus (<em>Gomphocarpus physocarpus</em>, syn.\n<em>Asclepias physocarpa</em>)</strong></p>\n");
+    g_autofree gchar *example374
+        = parse ("**Gomphocarpus (*Gomphocarpus physocarpus*, "
+                 "syn.\n*Asclepias physocarpa*)**\n");
+    g_assert_cmpstr (
+        example374, ==,
+        "<p><strong>Gomphocarpus (<em>Gomphocarpus physocarpus</em>, "
+        "syn.\n<em>Asclepias physocarpa</em>)</strong></p>\n");
 
     g_autofree gchar *example375 = parse ("**foo \"*bar*\" foo**\n");
-    g_assert_cmpstr (example375, ==, "<p><strong>foo &quot;<em>bar</em>&quot; foo</strong></p>\n");
+    g_assert_cmpstr (
+        example375, ==,
+        "<p><strong>foo &quot;<em>bar</em>&quot; foo</strong></p>\n");
 
     g_autofree gchar *example376 = parse ("**foo**bar\n");
     g_assert_cmpstr (example376, ==, "<p><strong>foo</strong>bar</p>\n");
@@ -530,7 +633,8 @@ test_markdown_emphasis (void)
     g_assert_cmpstr (example378, ==, "<p>__(__foo)</p>\n");
 
     g_autofree gchar *example379 = parse ("_(__foo__)_\n");
-    g_assert_cmpstr (example379, ==, "<p><em>(<strong>foo</strong>)</em></p>\n");
+    g_assert_cmpstr (example379, ==,
+                     "<p><em>(<strong>foo</strong>)</em></p>\n");
 
     g_autofree gchar *example380 = parse ("__foo__bar\n");
     g_assert_cmpstr (example380, ==, "<p>__foo__bar</p>\n");
@@ -539,7 +643,8 @@ test_markdown_emphasis (void)
     g_assert_cmpstr (example381, ==, "<p>__пристаням__стремятся</p>\n");
 
     g_autofree gchar *example382 = parse ("__foo__bar__baz__\n");
-    g_assert_cmpstr (example382, ==, "<p><strong>foo__bar__baz</strong></p>\n");
+    g_assert_cmpstr (example382, ==,
+                     "<p><strong>foo__bar__baz</strong></p>\n");
 
     g_autofree gchar *example383 = parse ("__(bar)__.\n");
     g_assert_cmpstr (example383, ==, "<p><strong>(bar)</strong>.</p>\n");
@@ -548,7 +653,8 @@ test_markdown_emphasis (void)
     g_assert_cmpstr (example385, ==, "<p><em>foo\nbar</em></p>\n");
 
     g_autofree gchar *example386 = parse ("_foo __bar__ baz_\n");
-    g_assert_cmpstr (example386, ==, "<p><em>foo <strong>bar</strong> baz</em></p>\n");
+    g_assert_cmpstr (example386, ==,
+                     "<p><em>foo <strong>bar</strong> baz</em></p>\n");
 
     g_autofree gchar *example387 = parse ("_foo _bar_ baz_\n");
     g_assert_cmpstr (example387, ==, "<p><em>foo <em>bar</em> baz</em></p>\n");
@@ -560,64 +666,85 @@ test_markdown_emphasis (void)
     g_assert_cmpstr (example389, ==, "<p><em>foo <em>bar</em></em></p>\n");
 
     g_autofree gchar *example390 = parse ("*foo **bar** baz*\n");
-    g_assert_cmpstr (example390, ==, "<p><em>foo <strong>bar</strong> baz</em></p>\n");
+    g_assert_cmpstr (example390, ==,
+                     "<p><em>foo <strong>bar</strong> baz</em></p>\n");
 
     g_autofree gchar *example391 = parse ("*foo**bar**baz*\n");
-    g_assert_cmpstr (example391, ==, "<p><em>foo<strong>bar</strong>baz</em></p>\n");
+    g_assert_cmpstr (example391, ==,
+                     "<p><em>foo<strong>bar</strong>baz</em></p>\n");
 
     g_autofree gchar *example392 = parse ("***foo** bar*\n");
-    g_assert_cmpstr (example392, ==, "<p><em><strong>foo</strong> bar</em></p>\n");
+    g_assert_cmpstr (example392, ==,
+                     "<p><em><strong>foo</strong> bar</em></p>\n");
 
     g_autofree gchar *example393 = parse ("*foo **bar***\n");
-    g_assert_cmpstr (example393, ==, "<p><em>foo <strong>bar</strong></em></p>\n");
+    g_assert_cmpstr (example393, ==,
+                     "<p><em>foo <strong>bar</strong></em></p>\n");
 
     g_autofree gchar *example394 = parse ("*foo**bar***\n");
-    g_assert_cmpstr (example394, ==, "<p><em>foo<strong>bar</strong></em></p>\n");
+    g_assert_cmpstr (example394, ==,
+                     "<p><em>foo<strong>bar</strong></em></p>\n");
 
     g_autofree gchar *example395 = parse ("*foo **bar *baz* bim** bop*\n");
-    g_assert_cmpstr (example395, ==, "<p><em>foo <strong>bar <em>baz</em> bim</strong> bop</em></p>\n");
+    g_assert_cmpstr (
+        example395, ==,
+        "<p><em>foo <strong>bar <em>baz</em> bim</strong> bop</em></p>\n");
 
     g_autofree gchar *example397 = parse ("** is not an empty emphasis\n");
     g_assert_cmpstr (example397, ==, "<p>** is not an empty emphasis</p>\n");
 
-    g_autofree gchar *example398 = parse ("**** is not an empty strong emphasis\n");
-    g_assert_cmpstr (example398, ==, "<p>**** is not an empty strong emphasis</p>\n");
+    g_autofree gchar *example398
+        = parse ("**** is not an empty strong emphasis\n");
+    g_assert_cmpstr (example398, ==,
+                     "<p>**** is not an empty strong emphasis</p>\n");
 
     g_autofree gchar *example400 = parse ("**foo\nbar**\n");
     g_assert_cmpstr (example400, ==, "<p><strong>foo\nbar</strong></p>\n");
 
     g_autofree gchar *example401 = parse ("__foo _bar_ baz__\n");
-    g_assert_cmpstr (example401, ==, "<p><strong>foo <em>bar</em> baz</strong></p>\n");
+    g_assert_cmpstr (example401, ==,
+                     "<p><strong>foo <em>bar</em> baz</strong></p>\n");
 
     g_autofree gchar *example402 = parse ("__foo __bar__ baz__\n");
-    g_assert_cmpstr (example402, ==, "<p><strong>foo <strong>bar</strong> baz</strong></p>\n");
+    g_assert_cmpstr (example402, ==,
+                     "<p><strong>foo <strong>bar</strong> baz</strong></p>\n");
 
     g_autofree gchar *example403 = parse ("____foo__ bar__\n");
-    g_assert_cmpstr (example403, ==, "<p><strong><strong>foo</strong> bar</strong></p>\n");
+    g_assert_cmpstr (example403, ==,
+                     "<p><strong><strong>foo</strong> bar</strong></p>\n");
 
     g_autofree gchar *example404 = parse ("**foo **bar****\n");
-    g_assert_cmpstr (example404, ==, "<p><strong>foo <strong>bar</strong></strong></p>\n");
+    g_assert_cmpstr (example404, ==,
+                     "<p><strong>foo <strong>bar</strong></strong></p>\n");
 
     g_autofree gchar *example405 = parse ("**foo *bar* baz**\n");
-    g_assert_cmpstr (example405, ==, "<p><strong>foo <em>bar</em> baz</strong></p>\n");
+    g_assert_cmpstr (example405, ==,
+                     "<p><strong>foo <em>bar</em> baz</strong></p>\n");
 
     g_autofree gchar *example406 = parse ("**foo*bar*baz**\n");
-    g_assert_cmpstr (example406, ==, "<p><strong>foo<em>bar</em>baz</strong></p>\n");
+    g_assert_cmpstr (example406, ==,
+                     "<p><strong>foo<em>bar</em>baz</strong></p>\n");
 
     g_autofree gchar *example407 = parse ("***foo* bar**\n");
-    g_assert_cmpstr (example407, ==, "<p><strong><em>foo</em> bar</strong></p>\n");
+    g_assert_cmpstr (example407, ==,
+                     "<p><strong><em>foo</em> bar</strong></p>\n");
 
     g_autofree gchar *example408 = parse ("**foo *bar***\n");
-    g_assert_cmpstr (example408, ==, "<p><strong>foo <em>bar</em></strong></p>\n");
+    g_assert_cmpstr (example408, ==,
+                     "<p><strong>foo <em>bar</em></strong></p>\n");
 
     g_autofree gchar *example409 = parse ("**foo *bar **baz**\nbim* bop**\n");
-    g_assert_cmpstr (example409, ==, "<p><strong>foo <em>bar <strong>baz</strong>\nbim</em> bop</strong></p>\n");
+    g_assert_cmpstr (example409, ==,
+                     "<p><strong>foo <em>bar <strong>baz</strong>\nbim</em> "
+                     "bop</strong></p>\n");
 
     g_autofree gchar *example411 = parse ("__ is not an empty emphasis\n");
     g_assert_cmpstr (example411, ==, "<p>__ is not an empty emphasis</p>\n");
 
-    g_autofree gchar *example412 = parse ("____ is not an empty strong emphasis\n");
-    g_assert_cmpstr (example412, ==, "<p>____ is not an empty strong emphasis</p>\n");
+    g_autofree gchar *example412
+        = parse ("____ is not an empty strong emphasis\n");
+    g_assert_cmpstr (example412, ==,
+                     "<p>____ is not an empty strong emphasis</p>\n");
 
     g_autofree gchar *example413 = parse ("foo ***\n");
     g_assert_cmpstr (example413, ==, "<p>foo ***</p>\n");
@@ -704,28 +831,37 @@ test_markdown_emphasis (void)
     g_assert_cmpstr (example440, ==, "<p><em><em>foo</em></em></p>\n");
 
     g_autofree gchar *example441 = parse ("****foo****\n");
-    g_assert_cmpstr (example441, ==, "<p><strong><strong>foo</strong></strong></p>\n");
+    g_assert_cmpstr (example441, ==,
+                     "<p><strong><strong>foo</strong></strong></p>\n");
 
     g_autofree gchar *example442 = parse ("____foo____\n");
-    g_assert_cmpstr (example442, ==, "<p><strong><strong>foo</strong></strong></p>\n");
+    g_assert_cmpstr (example442, ==,
+                     "<p><strong><strong>foo</strong></strong></p>\n");
 
     g_autofree gchar *example443 = parse ("******foo******\n");
-    g_assert_cmpstr (example443, ==, "<p><strong><strong><strong>foo</strong></strong></strong></p>\n");
+    g_assert_cmpstr (
+        example443, ==,
+        "<p><strong><strong><strong>foo</strong></strong></strong></p>\n");
 
     g_autofree gchar *example444 = parse ("***foo***\n");
     g_assert_cmpstr (example444, ==, "<p><em><strong>foo</strong></em></p>\n");
 
     g_autofree gchar *example445 = parse ("_____foo_____\n");
-    g_assert_cmpstr (example445, ==, "<p><em><strong><strong>foo</strong></strong></em></p>\n");
+    g_assert_cmpstr (
+        example445, ==,
+        "<p><em><strong><strong>foo</strong></strong></em></p>\n");
 
     g_autofree gchar *example446 = parse ("*foo _bar* baz_\n");
     g_assert_cmpstr (example446, ==, "<p><em>foo _bar</em> baz_</p>\n");
 
     g_autofree gchar *example447 = parse ("*foo __bar *baz bim__ bam*\n");
-    g_assert_cmpstr (example447, ==, "<p><em>foo <strong>bar *baz bim</strong> bam</em></p>\n");
+    g_assert_cmpstr (
+        example447, ==,
+        "<p><em>foo <strong>bar *baz bim</strong> bam</em></p>\n");
 
     g_autofree gchar *example448 = parse ("**foo **bar baz**\n");
-    g_assert_cmpstr (example448, ==, "<p>**foo <strong>bar baz</strong></p>\n");
+    g_assert_cmpstr (example448, ==,
+                     "<p>**foo <strong>bar baz</strong></p>\n");
 
     g_autofree gchar *example449 = parse ("*foo *bar baz*\n");
     g_assert_cmpstr (example449, ==, "<p>*foo <em>bar baz</em></p>\n");
@@ -755,7 +891,7 @@ static gchar *serialize_url_node (SnapdMarkdownNode *node);
 static gchar *
 serialize_url_nodes (GPtrArray *nodes)
 {
-    g_autoptr(GString) text = g_string_new ("");
+    g_autoptr (GString) text = g_string_new ("");
     for (int i = 0; i < nodes->len; i++) {
         SnapdMarkdownNode *node = g_ptr_array_index (nodes, i);
         g_autofree gchar *node_text = serialize_url_node (node);
@@ -768,32 +904,33 @@ serialize_url_nodes (GPtrArray *nodes)
 static gchar *
 serialize_url_node (SnapdMarkdownNode *node)
 {
-   GPtrArray *children = snapd_markdown_node_get_children (node);
+    GPtrArray *children = snapd_markdown_node_get_children (node);
 
-   g_autofree gchar *contents = NULL;
-   switch (snapd_markdown_node_get_node_type (node)) {
-   case SNAPD_MARKDOWN_NODE_TYPE_TEXT:
-       return g_strdup (snapd_markdown_node_get_text (node));
+    g_autofree gchar *contents = NULL;
+    switch (snapd_markdown_node_get_node_type (node)) {
+    case SNAPD_MARKDOWN_NODE_TYPE_TEXT:
+        return g_strdup (snapd_markdown_node_get_text (node));
 
-   case SNAPD_MARKDOWN_NODE_TYPE_PARAGRAPH:
-       contents = serialize_url_nodes (children);
-       return g_strdup_printf ("<p>%s</p>", contents);
+    case SNAPD_MARKDOWN_NODE_TYPE_PARAGRAPH:
+        contents = serialize_url_nodes (children);
+        return g_strdup_printf ("<p>%s</p>", contents);
 
-   case SNAPD_MARKDOWN_NODE_TYPE_URL:
-       contents = serialize_url_nodes (children);
-       return g_strdup_printf ("<url>%s</url>", contents);
+    case SNAPD_MARKDOWN_NODE_TYPE_URL:
+        contents = serialize_url_nodes (children);
+        return g_strdup_printf ("<url>%s</url>", contents);
 
-   default:
-       g_assert_not_reached ();
-       return NULL;
-   }
+    default:
+        g_assert_not_reached ();
+        return NULL;
+    }
 }
 
 static gchar *
 parse_url (const gchar *text)
 {
-    g_autoptr(SnapdMarkdownParser) parser = snapd_markdown_parser_new (SNAPD_MARKDOWN_VERSION_0);
-    g_autoptr(GPtrArray) nodes = snapd_markdown_parser_parse (parser, text);
+    g_autoptr (SnapdMarkdownParser) parser
+        = snapd_markdown_parser_new (SNAPD_MARKDOWN_VERSION_0);
+    g_autoptr (GPtrArray) nodes = snapd_markdown_parser_parse (parser, text);
     return serialize_url_nodes (nodes);
 }
 
@@ -855,9 +992,10 @@ test_markdown_urls (void)
 static gchar *
 parse_whitespace (const gchar *text)
 {
-    g_autoptr(SnapdMarkdownParser) parser = snapd_markdown_parser_new (SNAPD_MARKDOWN_VERSION_0);
+    g_autoptr (SnapdMarkdownParser) parser
+        = snapd_markdown_parser_new (SNAPD_MARKDOWN_VERSION_0);
     g_assert_false (snapd_markdown_parser_get_preserve_whitespace (parser));
-    g_autoptr(GPtrArray) nodes = snapd_markdown_parser_parse (parser, text);
+    g_autoptr (GPtrArray) nodes = snapd_markdown_parser_parse (parser, text);
     return serialize_nodes (nodes);
 }
 
@@ -876,8 +1014,10 @@ test_markdown_whitespace (void)
     g_autofree gchar *whitespace3 = parse_whitespace ("New \n line");
     g_assert_cmpstr (whitespace3, ==, "<p>New line</p>\n");
 
-    g_autofree gchar *whitespace4 = parse_whitespace ("A  *very  emphasised*  line");
-    g_assert_cmpstr (whitespace4, ==, "<p>A <em>very emphasised</em> line</p>\n");
+    g_autofree gchar *whitespace4
+        = parse_whitespace ("A  *very  emphasised*  line");
+    g_assert_cmpstr (whitespace4, ==,
+                     "<p>A <em>very emphasised</em> line</p>\n");
 }
 
 int
@@ -886,7 +1026,8 @@ main (int argc, char **argv)
     g_test_init (&argc, &argv, NULL);
 
     g_test_add_func ("/markdown/empty", test_markdown_empty);
-    g_test_add_func ("/markdown/single-character", test_markdown_single_character);
+    g_test_add_func ("/markdown/single-character",
+                     test_markdown_single_character);
     g_test_add_func ("/markdown/precedence", test_markdown_precedence);
     g_test_add_func ("/markdown/indented-code", test_markdown_indented_code);
     g_test_add_func ("/markdown/paragraphs", test_markdown_paragraphs);
@@ -895,7 +1036,8 @@ main (int argc, char **argv)
     g_test_add_func ("/markdown/inlines", test_markdown_inlines);
     g_test_add_func ("/markdown/code-spans", test_markdown_code_spans);
     g_test_add_func ("/markdown/emphasis", test_markdown_emphasis);
-    g_test_add_func ("/markdown/textual-content", test_markdown_textual_content);
+    g_test_add_func ("/markdown/textual-content",
+                     test_markdown_textual_content);
     g_test_add_func ("/markdown/urls", test_markdown_urls);
     g_test_add_func ("/markdown/whitespace", test_markdown_whitespace);
 

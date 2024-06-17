@@ -1,10 +1,10 @@
 /*
  * Copyright (C) 2016 Canonical Ltd.
  *
- * This library is free software; you can redistribute it and/or modify it under
- * the terms of the GNU Lesser General Public License as published by the Free
- * Software Foundation; either version 2 or version 3 of the License.
- * See http://www.gnu.org/copyleft/lgpl.html the full text of the license.
+ * This library is free software; you can redistribute it and/or modify it
+ * under the terms of the GNU Lesser General Public License as published by the
+ * Free Software Foundation; either version 2 or version 3 of the License. See
+ * http://www.gnu.org/copyleft/lgpl.html the full text of the license.
  */
 
 #include "snapd-system-information.h"
@@ -16,13 +16,15 @@
  * @include: snapd-glib/snapd-glib.h
  *
  * A #SnapdSystemInformation object contains the system information returned
- * from snapd. It is requested using snapd_client_get_system_information_sync().
+ * from snapd. It is requested using
+ * snapd_client_get_system_information_sync().
  */
 
 /**
  * SnapdSystemInformation:
  *
- * #SnapdSystemInformation contains information about the system snapd is running on.
+ * #SnapdSystemInformation contains information about the system snapd is
+ * running on.
  *
  * Since: 1.0
  */
@@ -116,7 +118,8 @@ snapd_system_information_get_binaries_directory (SnapdSystemInformation *self)
  * snapd_system_information_get_build_id:
  * @system_information: a #SnapdSystemInformation.
  *
- * Gets the unique build ID for the snap build, e.g. "efdd0b5e69b0742fa5e5bad0771df4d1df2459d1"
+ * Gets the unique build ID for the snap build, e.g.
+ * "efdd0b5e69b0742fa5e5bad0771df4d1df2459d1"
  *
  * Returns: a build ID.
  *
@@ -133,7 +136,8 @@ snapd_system_information_get_build_id (SnapdSystemInformation *self)
  * snapd_system_information_get_confinement:
  * @system_information: a #SnapdSystemInformation.
  *
- * Get the level of confinement the system supports, e.g. %SNAPD_SYSTEM_CONFINEMENT_STRICT.
+ * Get the level of confinement the system supports, e.g.
+ * %SNAPD_SYSTEM_CONFINEMENT_STRICT.
  *
  * Returns: a #SnapdSystemConfinement.
  *
@@ -142,7 +146,8 @@ snapd_system_information_get_build_id (SnapdSystemInformation *self)
 SnapdSystemConfinement
 snapd_system_information_get_confinement (SnapdSystemInformation *self)
 {
-    g_return_val_if_fail (SNAPD_IS_SYSTEM_INFORMATION (self), SNAPD_SYSTEM_CONFINEMENT_UNKNOWN);
+    g_return_val_if_fail (SNAPD_IS_SYSTEM_INFORMATION (self),
+                          SNAPD_SYSTEM_CONFINEMENT_UNKNOWN);
     return self->confinement;
 }
 
@@ -252,7 +257,8 @@ snapd_system_information_get_os_version (SnapdSystemInformation *self)
  * snapd_system_information_get_refresh_hold:
  * @system_information: a #SnapdSystemInformation.
  *
- * Get the time refreshes will be applied at, or %NULL if they are applied immediately.
+ * Get the time refreshes will be applied at, or %NULL if they are applied
+ * immediately.
  *
  * Returns: (transfer none) (allow-none): a #GDateTime.
  *
@@ -286,7 +292,8 @@ snapd_system_information_get_refresh_last (SnapdSystemInformation *self)
  * snapd_system_information_get_refresh_next:
  * @system_information: a #SnapdSystemInformation.
  *
- * Get the time the next refresh is scheduled for, or %NULL if none has been scheduled.
+ * Get the time the next refresh is scheduled for, or %NULL if none has been
+ * scheduled.
  *
  * Returns: (transfer none) (allow-none): a #GDateTime.
  *
@@ -337,11 +344,12 @@ snapd_system_information_get_refresh_timer (SnapdSystemInformation *self)
  * snapd_system_information_get_sandbox_features:
  * @system_information: a #SnapdSystemInformation.
  *
- * Gets the sandbox features that snapd provides. Each backend in snapd provides
- * a list of features that it supports. For example, the "confinement-options"
- * backend may provide "classic", "devmode" and "strict".
+ * Gets the sandbox features that snapd provides. Each backend in snapd
+ * provides a list of features that it supports. For example, the
+ * "confinement-options" backend may provide "classic", "devmode" and "strict".
  *
- * Returns: (transfer none) (element-type utf8 GStrv): a hash table of string arrays keyed by backend name.
+ * Returns: (transfer none) (element-type utf8 GStrv): a hash table of string
+ * arrays keyed by backend name.
  *
  * Since: 1.42
  */
@@ -404,7 +412,10 @@ snapd_system_information_get_version (SnapdSystemInformation *self)
 }
 
 static void
-snapd_system_information_set_property (GObject *object, guint prop_id, const GValue *value, GParamSpec *pspec)
+snapd_system_information_set_property (GObject *object,
+                                       guint prop_id,
+                                       const GValue *value,
+                                       GParamSpec *pspec)
 {
     SnapdSystemInformation *self = SNAPD_SYSTEM_INFORMATION (object);
 
@@ -471,7 +482,8 @@ snapd_system_information_set_property (GObject *object, guint prop_id, const GVa
         break;
     case PROP_SANDBOX_FEATURES:
         g_hash_table_unref (self->sandbox_features);
-        self->sandbox_features = g_hash_table_ref (g_value_get_pointer (value));
+        self->sandbox_features
+            = g_hash_table_ref (g_value_get_pointer (value));
         break;
     case PROP_SERIES:
         g_free (self->series);
@@ -492,7 +504,10 @@ snapd_system_information_set_property (GObject *object, guint prop_id, const GVa
 }
 
 static void
-snapd_system_information_get_property (GObject *object, guint prop_id, GValue *value, GParamSpec *pspec)
+snapd_system_information_get_property (GObject *object,
+                                       guint prop_id,
+                                       GValue *value,
+                                       GParamSpec *pspec)
 {
     SnapdSystemInformation *self = SNAPD_SYSTEM_INFORMATION (object);
 
@@ -594,142 +609,105 @@ snapd_system_information_class_init (SnapdSystemInformationClass *klass)
     gobject_class->get_property = snapd_system_information_get_property;
     gobject_class->finalize = snapd_system_information_finalize;
 
-    g_object_class_install_property (gobject_class,
-                                     PROP_ARCHITECTURE,
-                                     g_param_spec_string ("architecture",
-                                                          "architecture",
-                                                          "System architecture",
-                                                          NULL,
-                                                          G_PARAM_READWRITE | G_PARAM_CONSTRUCT_ONLY));
-    g_object_class_install_property (gobject_class,
-                                     PROP_BINARIES_DIRECTORY,
-                                     g_param_spec_string ("binaries-directory",
-                                                          "binaries-directory",
-                                                          "Directory with snap binaries",
-                                                          NULL,
-                                                          G_PARAM_READWRITE | G_PARAM_CONSTRUCT_ONLY));
-    g_object_class_install_property (gobject_class,
-                                     PROP_BUILD_ID,
-                                     g_param_spec_string ("build-id",
-                                                          "build-id",
-                                                          "Unique build ID for snap build",
-                                                          NULL,
-                                                          G_PARAM_READWRITE | G_PARAM_CONSTRUCT_ONLY));
-    g_object_class_install_property (gobject_class,
-                                     PROP_CONFINEMENT,
-                                     g_param_spec_enum ("confinement",
-                                                        "confinement",
-                                                        "Confinement level supported by system",
-                                                        SNAPD_TYPE_SYSTEM_CONFINEMENT, SNAPD_SYSTEM_CONFINEMENT_UNKNOWN,
-                                                        G_PARAM_READWRITE | G_PARAM_CONSTRUCT_ONLY));
-    g_object_class_install_property (gobject_class,
-                                     PROP_KERNEL_VERSION,
-                                     g_param_spec_string ("kernel-version",
-                                                          "kernel-version",
-                                                          "Kernel version",
-                                                          NULL,
-                                                          G_PARAM_READWRITE | G_PARAM_CONSTRUCT_ONLY));
-    g_object_class_install_property (gobject_class,
-                                     PROP_MANAGED,
-                                     g_param_spec_boolean ("managed",
-                                                           "managed",
-                                                           "TRUE if snapd managing the system",
-                                                           FALSE,
-                                                           G_PARAM_READWRITE | G_PARAM_CONSTRUCT_ONLY));
-    g_object_class_install_property (gobject_class,
-                                     PROP_MOUNT_DIRECTORY,
-                                     g_param_spec_string ("mount-directory",
-                                                          "mount-directory",
-                                                          "Directory snaps are mounted in",
-                                                          NULL,
-                                                          G_PARAM_READWRITE | G_PARAM_CONSTRUCT_ONLY));
-    g_object_class_install_property (gobject_class,
-                                     PROP_ON_CLASSIC,
-                                     g_param_spec_boolean ("on-classic",
-                                                           "on-classic",
-                                                           "TRUE if running in a classic system",
-                                                           FALSE,
-                                                           G_PARAM_READWRITE | G_PARAM_CONSTRUCT_ONLY));
-    g_object_class_install_property (gobject_class,
-                                     PROP_OS_ID,
-                                     g_param_spec_string ("os-id",
-                                                          "os-id",
-                                                          "Operating system ID",
-                                                          NULL,
-                                                          G_PARAM_READWRITE | G_PARAM_CONSTRUCT_ONLY));
-    g_object_class_install_property (gobject_class,
-                                     PROP_OS_VERSION,
-                                     g_param_spec_string ("os-version",
-                                                          "os-version",
-                                                          "Operating system version",
-                                                          NULL,
-                                                          G_PARAM_READWRITE | G_PARAM_CONSTRUCT_ONLY));
-    g_object_class_install_property (gobject_class,
-                                     PROP_REFRESH_HOLD,
-                                     g_param_spec_boxed ("refresh-hold",
-                                                         "refresh-hold",
-                                                         "Time refreshes will be applied",
-                                                         G_TYPE_DATE_TIME,
-                                                         G_PARAM_READWRITE | G_PARAM_CONSTRUCT_ONLY));
-    g_object_class_install_property (gobject_class,
-                                     PROP_REFRESH_LAST,
-                                     g_param_spec_boxed ("refresh-last",
-                                                         "refresh-last",
-                                                         "Last time a refresh occurred",
-                                                         G_TYPE_DATE_TIME,
-                                                         G_PARAM_READWRITE | G_PARAM_CONSTRUCT_ONLY));
-    g_object_class_install_property (gobject_class,
-                                     PROP_REFRESH_NEXT,
-                                     g_param_spec_boxed ("refresh-next",
-                                                         "refresh-next",
-                                                         "Next time a refresh is scheduled for",
-                                                         G_TYPE_DATE_TIME,
-                                                         G_PARAM_READWRITE | G_PARAM_CONSTRUCT_ONLY));
-    g_object_class_install_property (gobject_class,
-                                     PROP_REFRESH_SCHEDULE,
-                                     g_param_spec_string ("refresh-schedule",
-                                                          "refresh-schedule",
-                                                          "Refresh schedule",
-                                                          NULL,
-                                                          G_PARAM_READWRITE | G_PARAM_CONSTRUCT_ONLY));
-    g_object_class_install_property (gobject_class,
-                                     PROP_REFRESH_TIMER,
-                                     g_param_spec_string ("refresh-timer",
-                                                          "refresh-timer",
-                                                          "Refresh timer",
-                                                          NULL,
-                                                          G_PARAM_READWRITE | G_PARAM_CONSTRUCT_ONLY));
-    g_object_class_install_property (gobject_class,
-                                     PROP_SANDBOX_FEATURES,
-                                     g_param_spec_pointer ("sandbox-features",
-                                                           "sandbox-features",
-                                                           "Sandbox features",
-                                                           G_PARAM_READWRITE | G_PARAM_CONSTRUCT_ONLY));
-    g_object_class_install_property (gobject_class,
-                                     PROP_SERIES,
-                                     g_param_spec_string ("series",
-                                                          "series",
-                                                          "Snappy release series",
-                                                          NULL,
-                                                          G_PARAM_READWRITE | G_PARAM_CONSTRUCT_ONLY));
-    g_object_class_install_property (gobject_class,
-                                     PROP_STORE,
-                                     g_param_spec_string ("store",
-                                                          "store",
-                                                          "Snap store",
-                                                          NULL,
-                                                          G_PARAM_READWRITE | G_PARAM_CONSTRUCT_ONLY));
-    g_object_class_install_property (gobject_class,
-                                     PROP_VERSION,
-                                     g_param_spec_string ("version",
-                                                          "version",
-                                                          "Snappy version",
-                                                          NULL,
-                                                          G_PARAM_READWRITE | G_PARAM_CONSTRUCT_ONLY));
+    g_object_class_install_property (
+        gobject_class, PROP_ARCHITECTURE,
+        g_param_spec_string ("architecture", "architecture",
+                             "System architecture", NULL,
+                             G_PARAM_READWRITE | G_PARAM_CONSTRUCT_ONLY));
+    g_object_class_install_property (
+        gobject_class, PROP_BINARIES_DIRECTORY,
+        g_param_spec_string ("binaries-directory", "binaries-directory",
+                             "Directory with snap binaries", NULL,
+                             G_PARAM_READWRITE | G_PARAM_CONSTRUCT_ONLY));
+    g_object_class_install_property (
+        gobject_class, PROP_BUILD_ID,
+        g_param_spec_string ("build-id", "build-id",
+                             "Unique build ID for snap build", NULL,
+                             G_PARAM_READWRITE | G_PARAM_CONSTRUCT_ONLY));
+    g_object_class_install_property (
+        gobject_class, PROP_CONFINEMENT,
+        g_param_spec_enum ("confinement", "confinement",
+                           "Confinement level supported by system",
+                           SNAPD_TYPE_SYSTEM_CONFINEMENT,
+                           SNAPD_SYSTEM_CONFINEMENT_UNKNOWN,
+                           G_PARAM_READWRITE | G_PARAM_CONSTRUCT_ONLY));
+    g_object_class_install_property (
+        gobject_class, PROP_KERNEL_VERSION,
+        g_param_spec_string ("kernel-version", "kernel-version",
+                             "Kernel version", NULL,
+                             G_PARAM_READWRITE | G_PARAM_CONSTRUCT_ONLY));
+    g_object_class_install_property (
+        gobject_class, PROP_MANAGED,
+        g_param_spec_boolean ("managed", "managed",
+                              "TRUE if snapd managing the system", FALSE,
+                              G_PARAM_READWRITE | G_PARAM_CONSTRUCT_ONLY));
+    g_object_class_install_property (
+        gobject_class, PROP_MOUNT_DIRECTORY,
+        g_param_spec_string ("mount-directory", "mount-directory",
+                             "Directory snaps are mounted in", NULL,
+                             G_PARAM_READWRITE | G_PARAM_CONSTRUCT_ONLY));
+    g_object_class_install_property (
+        gobject_class, PROP_ON_CLASSIC,
+        g_param_spec_boolean ("on-classic", "on-classic",
+                              "TRUE if running in a classic system", FALSE,
+                              G_PARAM_READWRITE | G_PARAM_CONSTRUCT_ONLY));
+    g_object_class_install_property (
+        gobject_class, PROP_OS_ID,
+        g_param_spec_string ("os-id", "os-id", "Operating system ID", NULL,
+                             G_PARAM_READWRITE | G_PARAM_CONSTRUCT_ONLY));
+    g_object_class_install_property (
+        gobject_class, PROP_OS_VERSION,
+        g_param_spec_string ("os-version", "os-version",
+                             "Operating system version", NULL,
+                             G_PARAM_READWRITE | G_PARAM_CONSTRUCT_ONLY));
+    g_object_class_install_property (
+        gobject_class, PROP_REFRESH_HOLD,
+        g_param_spec_boxed ("refresh-hold", "refresh-hold",
+                            "Time refreshes will be applied", G_TYPE_DATE_TIME,
+                            G_PARAM_READWRITE | G_PARAM_CONSTRUCT_ONLY));
+    g_object_class_install_property (
+        gobject_class, PROP_REFRESH_LAST,
+        g_param_spec_boxed ("refresh-last", "refresh-last",
+                            "Last time a refresh occurred", G_TYPE_DATE_TIME,
+                            G_PARAM_READWRITE | G_PARAM_CONSTRUCT_ONLY));
+    g_object_class_install_property (
+        gobject_class, PROP_REFRESH_NEXT,
+        g_param_spec_boxed ("refresh-next", "refresh-next",
+                            "Next time a refresh is scheduled for",
+                            G_TYPE_DATE_TIME,
+                            G_PARAM_READWRITE | G_PARAM_CONSTRUCT_ONLY));
+    g_object_class_install_property (
+        gobject_class, PROP_REFRESH_SCHEDULE,
+        g_param_spec_string ("refresh-schedule", "refresh-schedule",
+                             "Refresh schedule", NULL,
+                             G_PARAM_READWRITE | G_PARAM_CONSTRUCT_ONLY));
+    g_object_class_install_property (
+        gobject_class, PROP_REFRESH_TIMER,
+        g_param_spec_string ("refresh-timer", "refresh-timer", "Refresh timer",
+                             NULL,
+                             G_PARAM_READWRITE | G_PARAM_CONSTRUCT_ONLY));
+    g_object_class_install_property (
+        gobject_class, PROP_SANDBOX_FEATURES,
+        g_param_spec_pointer ("sandbox-features", "sandbox-features",
+                              "Sandbox features",
+                              G_PARAM_READWRITE | G_PARAM_CONSTRUCT_ONLY));
+    g_object_class_install_property (
+        gobject_class, PROP_SERIES,
+        g_param_spec_string ("series", "series", "Snappy release series", NULL,
+                             G_PARAM_READWRITE | G_PARAM_CONSTRUCT_ONLY));
+    g_object_class_install_property (
+        gobject_class, PROP_STORE,
+        g_param_spec_string ("store", "store", "Snap store", NULL,
+                             G_PARAM_READWRITE | G_PARAM_CONSTRUCT_ONLY));
+    g_object_class_install_property (
+        gobject_class, PROP_VERSION,
+        g_param_spec_string ("version", "version", "Snappy version", NULL,
+                             G_PARAM_READWRITE | G_PARAM_CONSTRUCT_ONLY));
 }
 
 static void
 snapd_system_information_init (SnapdSystemInformation *self)
 {
-    self->sandbox_features = g_hash_table_new_full (g_str_hash, g_str_equal, g_free, (GDestroyNotify) g_strfreev);
+    self->sandbox_features = g_hash_table_new_full (
+        g_str_hash, g_str_equal, g_free, (GDestroyNotify)g_strfreev);
 }

@@ -1,10 +1,10 @@
 /*
  * Copyright (C) 2019 Canonical Ltd.
  *
- * This library is free software; you can redistribute it and/or modify it under
- * the terms of the GNU Lesser General Public License as published by the Free
- * Software Foundation; either version 2 or version 3 of the License.
- * See http://www.gnu.org/copyleft/lgpl.html the full text of the license.
+ * This library is free software; you can redistribute it and/or modify it
+ * under the terms of the GNU Lesser General Public License as published by the
+ * Free Software Foundation; either version 2 or version 3 of the License. See
+ * http://www.gnu.org/copyleft/lgpl.html the full text of the license.
  */
 
 #include "snapd-put-snap-conf.h"
@@ -18,16 +18,20 @@ struct _SnapdPutSnapConf
     GHashTable *key_values;
 };
 
-G_DEFINE_TYPE (SnapdPutSnapConf, snapd_put_snap_conf, snapd_request_async_get_type ())
+G_DEFINE_TYPE (SnapdPutSnapConf,
+               snapd_put_snap_conf,
+               snapd_request_async_get_type ())
 
 SnapdPutSnapConf *
-_snapd_put_snap_conf_new (const gchar *name, GHashTable *key_values, GCancellable *cancellable, GAsyncReadyCallback callback, gpointer user_data)
+_snapd_put_snap_conf_new (const gchar *name,
+                          GHashTable *key_values,
+                          GCancellable *cancellable,
+                          GAsyncReadyCallback callback,
+                          gpointer user_data)
 {
-    SnapdPutSnapConf *self = SNAPD_PUT_SNAP_CONF (g_object_new (snapd_put_snap_conf_get_type (),
-                                                                "cancellable", cancellable,
-                                                                "ready-callback", callback,
-                                                                "ready-callback-data", user_data,
-                                                                NULL));
+    SnapdPutSnapConf *self = SNAPD_PUT_SNAP_CONF (g_object_new (
+        snapd_put_snap_conf_get_type (), "cancellable", cancellable,
+        "ready-callback", callback, "ready-callback-data", user_data, NULL));
     self->name = g_strdup (name);
     self->key_values = g_hash_table_ref (key_values);
 
@@ -39,12 +43,12 @@ generate_put_snap_conf_request (SnapdRequest *request, GBytes **body)
 {
     SnapdPutSnapConf *self = SNAPD_PUT_SNAP_CONF (request);
 
-    g_autoptr(GString) path = g_string_new ("http://snapd/v2/snaps/");
+    g_autoptr (GString) path = g_string_new ("http://snapd/v2/snaps/");
     g_string_append_uri_escaped (path, self->name, NULL, TRUE);
     g_string_append (path, "/conf");
     SoupMessage *message = soup_message_new ("PUT", path->str);
 
-    g_autoptr(JsonBuilder) builder = json_builder_new ();
+    g_autoptr (JsonBuilder) builder = json_builder_new ();
     json_builder_begin_object (builder);
     GHashTableIter iter;
     g_hash_table_iter_init (&iter, self->key_values);
@@ -76,11 +80,11 @@ snapd_put_snap_conf_finalize (GObject *object)
 static void
 snapd_put_snap_conf_class_init (SnapdPutSnapConfClass *klass)
 {
-   SnapdRequestClass *request_class = SNAPD_REQUEST_CLASS (klass);
-   GObjectClass *gobject_class = G_OBJECT_CLASS (klass);
+    SnapdRequestClass *request_class = SNAPD_REQUEST_CLASS (klass);
+    GObjectClass *gobject_class = G_OBJECT_CLASS (klass);
 
-   request_class->generate_request = generate_put_snap_conf_request;
-   gobject_class->finalize = snapd_put_snap_conf_finalize;
+    request_class->generate_request = generate_put_snap_conf_request;
+    gobject_class->finalize = snapd_put_snap_conf_finalize;
 }
 
 static void

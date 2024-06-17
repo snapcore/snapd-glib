@@ -1,10 +1,10 @@
 /*
  * Copyright (C) 2019 Canonical Ltd.
  *
- * This library is free software; you can redistribute it and/or modify it under
- * the terms of the GNU Lesser General Public License as published by the Free
- * Software Foundation; either version 2 or version 3 of the License.
- * See http://www.gnu.org/copyleft/lgpl.html the full text of the license.
+ * This library is free software; you can redistribute it and/or modify it
+ * under the terms of the GNU Lesser General Public License as published by the
+ * Free Software Foundation; either version 2 or version 3 of the License. See
+ * http://www.gnu.org/copyleft/lgpl.html the full text of the license.
  */
 
 #ifndef SNAPD_MARKDOWN_PARSER_H
@@ -15,28 +15,29 @@
 #include <Snapd/MarkdownNode>
 
 class QSnapdMarkdownParserPrivate;
-class Q_DECL_EXPORT QSnapdMarkdownParser : public QObject
-{
+class Q_DECL_EXPORT QSnapdMarkdownParser : public QObject {
     Q_OBJECT
 
-    Q_PROPERTY(bool preserveWhitespace READ preserveWhitespace WRITE setPreserveWhitespace)
+    Q_PROPERTY (bool preserveWhitespace READ preserveWhitespace WRITE
+                    setPreserveWhitespace)
 
-public:
+  public:
     enum MarkdownVersion
     {
         MarkdownVersion0,
     };
-    Q_ENUM(MarkdownVersion)
-    explicit QSnapdMarkdownParser (MarkdownVersion version, QObject* parent = 0);
-    ~QSnapdMarkdownParser();
+    Q_ENUM (MarkdownVersion)
+    explicit QSnapdMarkdownParser (MarkdownVersion version,
+                                   QObject *parent = 0);
+    ~QSnapdMarkdownParser ();
 
     void setPreserveWhitespace (bool preserveWhitespace) const;
     bool preserveWhitespace () const;
     QList<QSnapdMarkdownNode> parse (const QString &text) const;
 
-private:
+  private:
     QScopedPointer<QSnapdMarkdownParserPrivate> d_ptr;
-    Q_DECLARE_PRIVATE(QSnapdMarkdownParser)
+    Q_DECLARE_PRIVATE (QSnapdMarkdownParser)
 };
 
 #endif

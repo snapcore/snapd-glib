@@ -1,10 +1,10 @@
 /*
  * Copyright (C) 2018 Canonical Ltd.
  *
- * This library is free software; you can redistribute it and/or modify it under
- * the terms of the GNU Lesser General Public License as published by the Free
- * Software Foundation; either version 2 or version 3 of the License.
- * See http://www.gnu.org/copyleft/lgpl.html the full text of the license.
+ * This library is free software; you can redistribute it and/or modify it
+ * under the terms of the GNU Lesser General Public License as published by the
+ * Free Software Foundation; either version 2 or version 3 of the License. See
+ * http://www.gnu.org/copyleft/lgpl.html the full text of the license.
  */
 
 #include <string.h>
@@ -18,7 +18,8 @@
  * @include: snapd-glib/snapd-glib.h
  *
  * A #SnapdMaintenance contains maintenance information for the snapd daemon.
- * The current maintenance information can be retrieved using snapd_client_get_maintenance ().
+ * The current maintenance information can be retrieved using
+ * snapd_client_get_maintenance ().
  */
 
 /**
@@ -50,7 +51,8 @@ G_DEFINE_TYPE (SnapdMaintenance, snapd_maintenance, G_TYPE_OBJECT)
  * snapd_maintenance_get_kind:
  * @maintenance: a #SnapdMaintenance.
  *
- * Get the kind of maintenance kind, e.g. %SNAPD_MAINTENANCE_KIND_DAEMON_RESTART.
+ * Get the kind of maintenance kind, e.g.
+ * %SNAPD_MAINTENANCE_KIND_DAEMON_RESTART.
  *
  * Returns: a #SnapdMaintenanceKind.
  *
@@ -59,7 +61,8 @@ G_DEFINE_TYPE (SnapdMaintenance, snapd_maintenance, G_TYPE_OBJECT)
 SnapdMaintenanceKind
 snapd_maintenance_get_kind (SnapdMaintenance *self)
 {
-    g_return_val_if_fail (SNAPD_IS_MAINTENANCE (self), SNAPD_MAINTENANCE_KIND_UNKNOWN);
+    g_return_val_if_fail (SNAPD_IS_MAINTENANCE (self),
+                          SNAPD_MAINTENANCE_KIND_UNKNOWN);
     return self->kind;
 }
 
@@ -81,7 +84,10 @@ snapd_maintenance_get_message (SnapdMaintenance *self)
 }
 
 static void
-snapd_maintenance_set_property (GObject *object, guint prop_id, const GValue *value, GParamSpec *pspec)
+snapd_maintenance_set_property (GObject *object,
+                                guint prop_id,
+                                const GValue *value,
+                                GParamSpec *pspec)
 {
     SnapdMaintenance *self = SNAPD_MAINTENANCE (object);
 
@@ -100,7 +106,10 @@ snapd_maintenance_set_property (GObject *object, guint prop_id, const GValue *va
 }
 
 static void
-snapd_maintenance_get_property (GObject *object, guint prop_id, GValue *value, GParamSpec *pspec)
+snapd_maintenance_get_property (GObject *object,
+                                guint prop_id,
+                                GValue *value,
+                                GParamSpec *pspec)
 {
     SnapdMaintenance *self = SNAPD_MAINTENANCE (object);
 
@@ -136,20 +145,17 @@ snapd_maintenance_class_init (SnapdMaintenanceClass *klass)
     gobject_class->get_property = snapd_maintenance_get_property;
     gobject_class->finalize = snapd_maintenance_finalize;
 
-    g_object_class_install_property (gobject_class,
-                                     PROP_KIND,
-                                     g_param_spec_enum ("kind",
-                                                        "kind",
-                                                        "Maintenance kind",
-                                                        SNAPD_TYPE_MAINTENANCE_KIND, SNAPD_MAINTENANCE_KIND_UNKNOWN,
-                                                        G_PARAM_READWRITE | G_PARAM_CONSTRUCT_ONLY));
-    g_object_class_install_property (gobject_class,
-                                     PROP_MESSAGE,
-                                     g_param_spec_string ("message",
-                                                          "message",
-                                                          "User readable message",
-                                                          NULL,
-                                                          G_PARAM_READWRITE | G_PARAM_CONSTRUCT_ONLY));
+    g_object_class_install_property (
+        gobject_class, PROP_KIND,
+        g_param_spec_enum ("kind", "kind", "Maintenance kind",
+                           SNAPD_TYPE_MAINTENANCE_KIND,
+                           SNAPD_MAINTENANCE_KIND_UNKNOWN,
+                           G_PARAM_READWRITE | G_PARAM_CONSTRUCT_ONLY));
+    g_object_class_install_property (
+        gobject_class, PROP_MESSAGE,
+        g_param_spec_string ("message", "message", "User readable message",
+                             NULL,
+                             G_PARAM_READWRITE | G_PARAM_CONSTRUCT_ONLY));
 }
 
 static void

@@ -1,19 +1,18 @@
 /*
  * Copyright (C) 2016 Canonical Ltd.
  *
- * This library is free software; you can redistribute it and/or modify it under
- * the terms of the GNU Lesser General Public License as published by the Free
- * Software Foundation; either version 2 or version 3 of the License.
- * See http://www.gnu.org/copyleft/lgpl.html the full text of the license.
+ * This library is free software; you can redistribute it and/or modify it
+ * under the terms of the GNU Lesser General Public License as published by the
+ * Free Software Foundation; either version 2 or version 3 of the License. See
+ * http://www.gnu.org/copyleft/lgpl.html the full text of the license.
  */
 
 #include <snapd-glib/snapd-glib.h>
 
 #include "Snapd/request.h"
 
-class QSnapdRequestPrivate
-{
-public:
+class QSnapdRequestPrivate {
+  public:
     QSnapdRequestPrivate (void *snapd_client)
     {
         client = SNAPD_CLIENT (g_object_ref (snapd_client));
@@ -37,39 +36,40 @@ public:
     SnapdChange *change = NULL;
 };
 
-QSnapdRequest::QSnapdRequest (void *snapd_client, QObject *parent) :
-    QObject (parent),
-    d_ptr (new QSnapdRequestPrivate (snapd_client)) {}
-
-QSnapdRequest::~QSnapdRequest ()
-{}
-
-void* QSnapdRequest::getClient () const
+QSnapdRequest::QSnapdRequest (void *snapd_client, QObject *parent)
+    : QObject (parent), d_ptr (new QSnapdRequestPrivate (snapd_client))
 {
-    Q_D(const QSnapdRequest);
+}
+
+QSnapdRequest::~QSnapdRequest () {}
+
+void *
+QSnapdRequest::getClient () const
+{
+    Q_D (const QSnapdRequest);
     return d->client;
 }
 
-void* QSnapdRequest::getCancellable () const
+void *
+QSnapdRequest::getCancellable () const
 {
-    Q_D(const QSnapdRequest);
+    Q_D (const QSnapdRequest);
     return d->cancellable;
 }
 
-void QSnapdRequest::finish (void *error)
+void
+QSnapdRequest::finish (void *error)
 {
-    Q_D(QSnapdRequest);
+    Q_D (QSnapdRequest);
 
     d->finished = true;
     if (error == NULL) {
         d->error = NoError;
         d->errorString = "";
-    }
-    else {
-        GError *e = (GError *) error;
+    } else {
+        GError *e = (GError *)error;
         if (e->domain == SNAPD_ERROR) {
-            switch ((SnapdError) e->code)
-            {
+            switch ((SnapdError)e->code) {
             case SNAPD_ERROR_CONNECTION_FAILED:
                 d->error = QSnapdRequest::QSnapdError::ConnectionFailed;
                 break;
@@ -170,7 +170,8 @@ void QSnapdRequest::finish (void *error)
                 d->error = QSnapdRequest::QSnapdError::AppNotFound;
                 break;
             case SNAPD_ERROR_ARCHITECTURE_NOT_AVAILABLE:
-                d->error = QSnapdRequest::QSnapdError::ArchitectureNotAvailable;
+                d->error
+                    = QSnapdRequest::QSnapdError::ArchitectureNotAvailable;
                 break;
             case SNAPD_ERROR_CHANGE_CONFLICT:
                 d->error = QSnapdRequest::QSnapdError::ChangeConflict;
@@ -183,8 +184,7 @@ void QSnapdRequest::finish (void *error)
                 d->error = QSnapdRequest::QSnapdError::UnknownError;
                 break;
             }
-        }
-        else if (g_error_matches (e, G_IO_ERROR, G_IO_ERROR_CANCELLED))
+        } else if (g_error_matches (e, G_IO_ERROR, G_IO_ERROR_CANCELLED))
             d->error = QSnapdRequest::QSnapdError::Cancelled;
         else
             d->error = QSnapdRequest::QSnapdError::UnknownError;
@@ -193,39 +193,45 @@ void QSnapdRequest::finish (void *error)
     emit complete ();
 }
 
-bool QSnapdRequest::isFinished () const
+bool
+QSnapdRequest::isFinished () const
 {
-    Q_D(const QSnapdRequest);
+    Q_D (const QSnapdRequest);
     return d->finished;
 }
 
-QSnapdRequest::QSnapdError QSnapdRequest::error () const
+QSnapdRequest::QSnapdError
+QSnapdRequest::error () const
 {
-    Q_D(const QSnapdRequest);
+    Q_D (const QSnapdRequest);
     return d->error;
 }
 
-QString QSnapdRequest::errorString () const
+QString
+QSnapdRequest::errorString () const
 {
-    Q_D(const QSnapdRequest);
+    Q_D (const QSnapdRequest);
     return d->errorString;
 }
 
-void QSnapdRequest::cancel ()
+void
+QSnapdRequest::cancel ()
 {
-    Q_D(QSnapdRequest);
+    Q_D (QSnapdRequest);
     g_cancellable_cancel (d->cancellable);
 }
 
-void QSnapdRequest::handleProgress (void *change)
+void
+QSnapdRequest::handleProgress (void *change)
 {
-    Q_D(QSnapdRequest);
+    Q_D (QSnapdRequest);
     d->change = SNAPD_CHANGE (g_object_ref (change));
     emit progress ();
 }
 
-QSnapdChange *QSnapdRequest::change () const
+QSnapdChange *
+QSnapdRequest::change () const
 {
-    Q_D(const QSnapdRequest);
+    Q_D (const QSnapdRequest);
     return new QSnapdChange (d->change);
 }

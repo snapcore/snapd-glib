@@ -1,10 +1,10 @@
 /*
  * Copyright (C) 2023 Canonical Ltd.
  *
- * This library is free software; you can redistribute it and/or modify it under
- * the terms of the GNU Lesser General Public License as published by the Free
- * Software Foundation; either version 2 or version 3 of the License.
- * See http://www.gnu.org/copyleft/lgpl.html the full text of the license.
+ * This library is free software; you can redistribute it and/or modify it
+ * under the terms of the GNU Lesser General Public License as published by the
+ * Free Software Foundation; either version 2 or version 3 of the License. See
+ * http://www.gnu.org/copyleft/lgpl.html the full text of the license.
  */
 
 #include "snapd-category-details.h"
@@ -14,8 +14,8 @@
  * @short_description: Snap category details metadata
  * @include: snapd-glib/snapd-glib.h
  *
- * A #SnapdCategoryDetails contains the metadata for a given snap category as returned
- * using snapd_client_get_categories_sync().
+ * A #SnapdCategoryDetails contains the metadata for a given snap category as
+ * returned using snapd_client_get_categories_sync().
  */
 
 /**
@@ -60,7 +60,10 @@ snapd_category_details_get_name (SnapdCategoryDetails *self)
 }
 
 static void
-snapd_category_details_set_property (GObject *object, guint prop_id, const GValue *value, GParamSpec *pspec)
+snapd_category_details_set_property (GObject *object,
+                                     guint prop_id,
+                                     const GValue *value,
+                                     GParamSpec *pspec)
 {
     SnapdCategoryDetails *self = SNAPD_CATEGORY_DETAILS (object);
 
@@ -76,7 +79,10 @@ snapd_category_details_set_property (GObject *object, guint prop_id, const GValu
 }
 
 static void
-snapd_category_details_get_property (GObject *object, guint prop_id, GValue *value, GParamSpec *pspec)
+snapd_category_details_get_property (GObject *object,
+                                     guint prop_id,
+                                     GValue *value,
+                                     GParamSpec *pspec)
 {
     SnapdCategoryDetails *self = SNAPD_CATEGORY_DETAILS (object);
 
@@ -109,13 +115,10 @@ snapd_category_details_class_init (SnapdCategoryDetailsClass *klass)
     gobject_class->get_property = snapd_category_details_get_property;
     gobject_class->finalize = snapd_category_details_finalize;
 
-    g_object_class_install_property (gobject_class,
-                                     PROP_NAME,
-                                     g_param_spec_string ("name",
-                                                          "name",
-                                                          "The category name",
-                                                          NULL,
-                                                          G_PARAM_READWRITE | G_PARAM_CONSTRUCT_ONLY));
+    g_object_class_install_property (
+        gobject_class, PROP_NAME,
+        g_param_spec_string ("name", "name", "The category name", NULL,
+                             G_PARAM_READWRITE | G_PARAM_CONSTRUCT_ONLY));
 }
 
 static void

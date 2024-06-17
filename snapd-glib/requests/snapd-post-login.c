@@ -1,10 +1,10 @@
 /*
  * Copyright (C) 2017 Canonical Ltd.
  *
- * This library is free software; you can redistribute it and/or modify it under
- * the terms of the GNU Lesser General Public License as published by the Free
- * Software Foundation; either version 2 or version 3 of the License.
- * See http://www.gnu.org/copyleft/lgpl.html the full text of the license.
+ * This library is free software; you can redistribute it and/or modify it
+ * under the terms of the GNU Lesser General Public License as published by the
+ * Free Software Foundation; either version 2 or version 3 of the License. See
+ * http://www.gnu.org/copyleft/lgpl.html the full text of the license.
  */
 
 #include "snapd-post-login.h"
@@ -24,14 +24,16 @@ struct _SnapdPostLogin
 G_DEFINE_TYPE (SnapdPostLogin, snapd_post_login, snapd_request_get_type ())
 
 SnapdPostLogin *
-_snapd_post_login_new (const gchar *email, const gchar *password, const gchar *otp,
-                       GCancellable *cancellable, GAsyncReadyCallback callback, gpointer user_data)
+_snapd_post_login_new (const gchar *email,
+                       const gchar *password,
+                       const gchar *otp,
+                       GCancellable *cancellable,
+                       GAsyncReadyCallback callback,
+                       gpointer user_data)
 {
-    SnapdPostLogin *self = SNAPD_POST_LOGIN (g_object_new (snapd_post_login_get_type (),
-                                                           "cancellable", cancellable,
-                                                           "ready-callback", callback,
-                                                           "ready-callback-data", user_data,
-                                                           NULL));
+    SnapdPostLogin *self = SNAPD_POST_LOGIN (g_object_new (
+        snapd_post_login_get_type (), "cancellable", cancellable,
+        "ready-callback", callback, "ready-callback-data", user_data, NULL));
     self->email = g_strdup (email);
     self->password = g_strdup (password);
     self->otp = g_strdup (otp);
@@ -52,7 +54,7 @@ generate_post_login_request (SnapdRequest *request, GBytes **body)
 
     SoupMessage *message = soup_message_new ("POST", "http://snapd/v2/login");
 
-    g_autoptr(JsonBuilder) builder = json_builder_new ();
+    g_autoptr (JsonBuilder) builder = json_builder_new ();
     json_builder_begin_object (builder);
     json_builder_set_member_name (builder, "email");
     json_builder_add_string_value (builder, self->email);
@@ -72,11 +74,17 @@ generate_post_login_request (SnapdRequest *request, GBytes **body)
 }
 
 static gboolean
-parse_post_login_response (SnapdRequest *request, guint status_code, const gchar *content_type, GBytes *body, SnapdMaintenance **maintenance, GError **error)
+parse_post_login_response (SnapdRequest *request,
+                           guint status_code,
+                           const gchar *content_type,
+                           GBytes *body,
+                           SnapdMaintenance **maintenance,
+                           GError **error)
 {
     SnapdPostLogin *self = SNAPD_POST_LOGIN (request);
 
-    g_autoptr(JsonObject) response = _snapd_json_parse_response (content_type, body, maintenance, NULL, error);
+    g_autoptr (JsonObject) response = _snapd_json_parse_response (
+        content_type, body, maintenance, NULL, error);
     if (response == NULL)
         return FALSE;
     /* FIXME: Needs json-glib to be fixed to use json_node_unref */
@@ -85,7 +93,8 @@ parse_post_login_response (SnapdRequest *request, guint status_code, const gchar
     if (result == NULL)
         return FALSE;
 
-    self->user_information = _snapd_json_parse_user_information (result, error);
+    self->user_information
+        = _snapd_json_parse_user_information (result, error);
     json_node_unref (result);
     if (self->user_information == NULL)
         return FALSE;
@@ -109,12 +118,12 @@ snapd_post_login_finalize (GObject *object)
 static void
 snapd_post_login_class_init (SnapdPostLoginClass *klass)
 {
-   SnapdRequestClass *request_class = SNAPD_REQUEST_CLASS (klass);
-   GObjectClass *gobject_class = G_OBJECT_CLASS (klass);
+    SnapdRequestClass *request_class = SNAPD_REQUEST_CLASS (klass);
+    GObjectClass *gobject_class = G_OBJECT_CLASS (klass);
 
-   request_class->generate_request = generate_post_login_request;
-   request_class->parse_response = parse_post_login_response;
-   gobject_class->finalize = snapd_post_login_finalize;
+    request_class->generate_request = generate_post_login_request;
+    request_class->parse_response = parse_post_login_response;
+    gobject_class->finalize = snapd_post_login_finalize;
 }
 
 static void
